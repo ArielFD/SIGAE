@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "desempenoambientals",
+  "info": {
+    "singularName": "desempenoambiental",
+    "pluralName": "desempenoambientals",
+    "displayName": "desempenoambiental"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "entidad": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::entidad.entidad"
+    },
+    "anno": {
+      "type": "integer"
+    },
+    "exist_coordinador": {
+      "type": "integer"
+    },
+    "exist_diagnostico": {
+      "type": "integer"
+    },
+    "exist_politica": {
+      "type": "integer"
+    },
+    "exist_indicadores": {
+      "type": "integer"
+    },
+    "exist_plan_accion": {
+      "type": "integer"
+    },
+    "exist_legislacion": {
+      "type": "integer"
+    },
+    "exist_plan_capacitacion": {
+      "type": "integer"
+    },
+    "exist_accionespml": {
+      "type": "integer"
+    },
+    "exist_program_gestionambiental": {
+      "type": "integer"
+    },
+    "exist_recurso_financiero": {
+      "type": "integer"
+    },
+    "aprovechamiento_economico": {
+      "type": "integer"
+    },
+    "exist_sistem_tratamiento": {
+      "type": "integer"
+    },
+    "disminucion_carga_contaminante": {
+      "type": "integer"
+    },
+    "observaciones": {
+      "type": "text"
+    }
+  }
+}

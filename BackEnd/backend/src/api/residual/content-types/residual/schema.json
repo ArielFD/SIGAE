@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "residuals",
+  "info": {
+    "singularName": "residual",
+    "pluralName": "residuals",
+    "displayName": "residual",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "categorias": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::categoria.categoria"
+    },
+    "tipo_residual": {
+      "type": "string"
+    },
+    "cantidad": {
+      "type": "string"
+    },
+    "disposicion": {
+      "type": "text"
+    },
+    "aprovechamiento_cant": {
+      "type": "string"
+    },
+    "fecha_residual": {
+      "type": "string"
+    },
+    "unidads": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::unidad.unidad"
+    }
+  }
+}

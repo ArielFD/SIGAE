@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sis_tratamientos",
+  "info": {
+    "singularName": "sis-tratamiento",
+    "pluralName": "sis-tratamientos",
+    "displayName": "sis_tratamiento"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "actacontrol": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::actacontrol.actacontrol"
+    },
+    "eficiencia": {
+      "type": "string"
+    },
+    "idoneidad": {
+      "type": "string"
+    },
+    "estado": {
+      "type": "string"
+    }
+  }
+}

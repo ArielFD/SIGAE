@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "trampa_grasas",
+  "info": {
+    "singularName": "trampa-grasa",
+    "pluralName": "trampa-grasas",
+    "displayName": "trampa_grasa"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "actacontrol": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::actacontrol.actacontrol"
+    },
+    "bien": {
+      "type": "integer"
+    },
+    "mal": {
+      "type": "integer"
+    },
+    "regular": {
+      "type": "integer"
+    }
+  }
+}

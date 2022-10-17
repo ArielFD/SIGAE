@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "prioridads",
+  "info": {
+    "singularName": "prioridad",
+    "pluralName": "prioridads",
+    "displayName": "prioridad"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "prioridad": {
+      "type": "integer"
+    }
+  }
+}

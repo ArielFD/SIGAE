@@ -1,0 +1,15 @@
+module.exports = {
+    routes: [
+      {
+        method: 'GET',
+        path: '/getOrganismo',
+        handler: 'organismo.updateUnPublishedData',
+        config: {
+            auth:false,
+          policies: [],
+          prefix: "",
+          description: "This is a test endpoint",
+        }
+      }
+    ]
+  }

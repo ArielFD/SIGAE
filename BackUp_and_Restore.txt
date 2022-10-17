@@ -1,0 +1,19 @@
+BackUp and Restore Database in PostgreSQL
+##################################################################################
+sudo -u postgres pg_dump -Fc SIGAE > ./database/migrations/backup_test.sql
+sudo -u postgres dropdb SIGAE
+sudo -u postgres createdb -O postgres SIGAE
+sudo -u postgres pg_restore -d SIGAE < ./database/migrations/backup_test.sql
+#########################################################################################################
+#########################################################################################################
+This is the combo I'm using to backup, drop, create and restore my database (on macOS and Linux):
+
+sudo -u postgres pg_dump -Fc mydb > ./mydb.sql
+sudo -u postgres dropdb mydb
+sudo -u postgres createdb -O db_user mydb
+sudo -u postgres pg_restore -d mydb < ./mydb.sql
+Misc
+-Fc will compress the database (Format custom)
+List PostgreSQL users: sudo -u postgres psql -c "\du+"
+You may want to add hostname and date to ./mydb.sql, then change it by:
+./`hostname`_mydb_`date +"%Y%m%d_%H%M"`.sql

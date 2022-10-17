@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "osdes",
+  "info": {
+    "singularName": "osde",
+    "pluralName": "osdes",
+    "displayName": "OSDE",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string"
+    },
+    "oace": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::organismo.organismo",
+      "inversedBy": "osdes"
+    }
+  }
+}

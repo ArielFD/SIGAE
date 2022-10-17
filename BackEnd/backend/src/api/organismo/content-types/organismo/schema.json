@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "organismos",
+  "info": {
+    "singularName": "organismo",
+    "pluralName": "organismos",
+    "displayName": "OACE",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "organismo": {
+      "type": "string"
+    },
+    "osdes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::osde.osde",
+      "mappedBy": "oace"
+    }
+  }
+}

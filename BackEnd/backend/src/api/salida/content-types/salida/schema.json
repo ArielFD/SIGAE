@@ -1,0 +1,18 @@
+{
+  "kind": "collectionType",
+  "collectionName": "salidas",
+  "info": {
+    "singularName": "salida",
+    "pluralName": "salidas",
+    "displayName": "salida"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "salida": {
+      "type": "date"
+    }
+  }
+}

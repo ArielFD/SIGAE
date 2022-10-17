@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "entidads",
+  "info": {
+    "singularName": "entidad",
+    "pluralName": "entidads",
+    "displayName": "entidad",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "organismo": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::organismo.organismo"
+    },
+    "municipio": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::municipio.municipio"
+    },
+    "entidad": {
+      "type": "string"
+    },
+    "nomb_director": {
+      "type": "string"
+    },
+    "num_telefono": {
+      "type": "string"
+    },
+    "nomb_coordinador": {
+      "type": "string"
+    },
+    "cant_trabajadores": {
+      "type": "integer"
+    },
+    "objeto_social": {
+      "type": "text"
+    },
+    "tipo_fuente": {
+      "type": "string"
+    },
+    "activo": {
+      "type": "string"
+    },
+    "referencia": {
+      "type": "string"
+    },
+    "fanno": {
+      "type": "integer"
+    },
+    "ianno": {
+      "type": "integer"
+    }
+  }
+}

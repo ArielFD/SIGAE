@@ -1,0 +1,98 @@
+{
+  "kind": "collectionType",
+  "collectionName": "actacontrols",
+  "info": {
+    "singularName": "actacontrol",
+    "pluralName": "actacontrols",
+    "displayName": "actacontrol",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fechavisita": {
+      "type": "date"
+    },
+    "atendido_por": {
+      "type": "text"
+    },
+    "comision_control": {
+      "type": "text"
+    },
+    "politica_ambiental": {
+      "type": "string"
+    },
+    "diagnostico_ambiental": {
+      "type": "string"
+    },
+    "medidas_corto": {
+      "type": "integer"
+    },
+    "medidas_mediano": {
+      "type": "integer"
+    },
+    "medidas_largo": {
+      "type": "integer"
+    },
+    "cumplidas_corto": {
+      "type": "integer"
+    },
+    "cumplidas_mediano": {
+      "type": "integer"
+    },
+    "cumplidas_largo": {
+      "type": "integer"
+    },
+    "deficiencias": {
+      "type": "text"
+    },
+    "recomendaciones": {
+      "type": "text"
+    },
+    "observaciones": {
+      "type": "text"
+    },
+    "consumo_agua": {
+      "type": "text"
+    },
+    "consumo_energetico": {
+      "type": "text"
+    },
+    "entidad": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entidad.entidad"
+    },
+    "residuals": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::residual.residual"
+    },
+    "sistema_de_tratamiento": {
+      "type": "string"
+    },
+    "idoneidad": {
+      "type": "string"
+    },
+    "estado_tecnico": {
+      "type": "string"
+    },
+    "eficiencia": {
+      "type": "string"
+    },
+    "trampa_de_grasa": {
+      "type": "string"
+    },
+    "estadoGrasaBien": {
+      "type": "integer"
+    },
+    "estadoGrasaRegular": {
+      "type": "integer"
+    },
+    "estadoGrasaMal": {
+      "type": "integer"
+    }
+  }
+}
