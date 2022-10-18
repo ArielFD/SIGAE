@@ -596,9 +596,7 @@ function addingId(params) {
 }
 
 function editFields(params) {
-  data.entidades.forEach(element => {
-    if (element.nombre = selected.value[0].entidad) data.identidadEdit = { id: element.id }
-  });
+  
   if (selected.value[0].residuals.length > 0) { 
     data.aprovechamientoEdit = "si"
     for (let index = 0; index < selected.value[0].residuals.length; index++) {
@@ -639,6 +637,9 @@ function editFields(params) {
 }
 
 function Edit(params) {
+  data.entidades.forEach(element => {
+    if (element.nombre == data.entidadEdit) data.identidadEdit = { id: element.id }
+  });
   const dataRest = {
     data: {
       sistema_de_tratamiento: data.tratamientoEdit,
@@ -693,7 +694,7 @@ function Edit(params) {
 
 function Create() {
   data.entidades.forEach(element => {
-    if (element.nombre = model.value[0]) data.tempEntidad = { id: element.id }
+    if (element.nombre == model.value) data.tempEntidad = { id: element.id }
   });
   const dataRest = {
     data: {

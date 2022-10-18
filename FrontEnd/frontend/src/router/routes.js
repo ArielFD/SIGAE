@@ -33,6 +33,10 @@ const routes = [
         path: "Registrar/desempeñoAmbiental",
         name:"desempeñoAmbiental",
         component: () => import("pages/registrar/desempeño_Ambiental.vue"),
+      },{
+        path: "Registrar/planEnfrentamiento",
+        name:"planEnfrentamiento",
+        component: () => import("pages/registrar/planEnfrentamiento.vue"),
       },
       //############################Reportes############################
       {

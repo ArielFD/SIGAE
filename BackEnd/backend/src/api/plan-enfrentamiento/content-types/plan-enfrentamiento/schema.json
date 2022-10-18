@@ -1,0 +1,57 @@
+{
+  "kind": "collectionType",
+  "collectionName": "plan_enfrentamientos",
+  "info": {
+    "singularName": "plan-enfrentamiento",
+    "pluralName": "plan-enfrentamientos",
+    "displayName": "planEnfrentamiento",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "entidad": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::entidad.entidad"
+    },
+    "plan": {
+      "type": "boolean"
+    },
+    "sistema": {
+      "type": "boolean"
+    },
+    "trampa": {
+      "type": "boolean"
+    },
+    "permiso": {
+      "type": "boolean"
+    },
+    "licencia": {
+      "type": "boolean"
+    },
+    "desechos": {
+      "type": "boolean"
+    },
+    "inversiones": {
+      "type": "boolean"
+    },
+    "observaciones": {
+      "type": "text"
+    },
+    "medidas": {
+      "type": "integer"
+    },
+    "cumplidas": {
+      "type": "integer"
+    },
+    "evaluadas": {
+      "type": "integer"
+    },
+    "incumplidas": {
+      "type": "integer"
+    }
+  }
+}

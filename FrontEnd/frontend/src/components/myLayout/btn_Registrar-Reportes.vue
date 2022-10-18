@@ -23,6 +23,10 @@
             <q-item-section>Desempeño Ambiental</q-item-section>
             
           </q-item>
+          <q-item clickable :to="{ name: 'planEnfrentamiento' }" class="text-black">
+            <q-item-section>Plan de enfrentamiento</q-item-section>
+            
+          </q-item>
         </q-list>
       </q-menu>
     </q-btn>

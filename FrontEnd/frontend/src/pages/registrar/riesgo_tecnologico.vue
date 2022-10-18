@@ -13,7 +13,7 @@
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
-                                <q-item-label><b>Nuevo: "Nuevo riesgo tecnologico"</b></q-item-label>
+                                <q-item-label><b>Nuevo: "Riesgo tecnologico"</b></q-item-label>
                             </q-item-section>
                         </q-item>
 
@@ -23,22 +23,21 @@
                             <div class="row">
                                 <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
                                     v-model="model" :options="options" @filter="filterFn" label="Entidad" />
-                                <q-input outlined dense v-model="data.año" type="number" hint="Año"
-                                    class="col-2" />
+                                <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
                             </div>
                         </q-card-section>
 
-                        <q-checkbox v-model="data.aprovechamiento" color="secondary"
+                        <q-checkbox v-model="data.sustancia" color="secondary"
                             label="Materiales o sustancias peligrosas" true-value="si" false-value="no"
                             class="full-width justify-center" />
 
-                        <div class="q-pa-md" v-if="data.aprovechamiento=='si'">
+                        <div class="q-pa-md" v-if="data.sustancia=='si'">
                             <q-table title="Tabla de Materiales y Sustancias peligrosas" :rows="data.rowsMateriales"
                                 :columns="columnsMateriales" row-key="name" selection="single"
                                 v-model:selected="selected" />
 
                             <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
-                                @click="data.cardCreate=true">Agregar</q-btn>
+                                @click="data.cardCreateMaterial=true">Agregar</q-btn>
                             <q-dialog v-model="data.cardCreateMaterial">
                                 <q-card class="my-card bg-primary">
                                     <q-card-section>
@@ -46,19 +45,18 @@
                                     </q-card-section>
 
                                     <q-card-section class="q-pa-sm">
-                                        <q-input outlined dense v-model="data.tipoResidual" label="Nombre del material"
+                                        <q-input outlined dense v-model="data.tipoMaterial" label="Nombre del material"
                                             class="my-input" lazy-rules :rules="alerts.inputRules" />
                                         <q-select class="col-8 q-mr-xl text-black" dense outlined
                                             v-model="data.categoria" :options="data.category" label="Categoria" />
-                                        <q-input outlined dense v-model="data.cantidadGenerada" label="Cantidad"
-                                            type="number" class="my-input" lazy-rules :rules="alerts.inputRules" />
+                                        <q-input outlined dense v-model="data.cantidad" label="Cantidad" type="number"
+                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
                                         <q-select class="col-8 q-mr-xl text-black" dense outlined v-model="data.unidad"
                                             :options="data.unid" label="Unidad" />
-                                        <q-input outlined dense v-model="data.disposicionFinal"
-                                            label="Forma de contencion" class="my-input" lazy-rules
-                                            :rules="alerts.inputRules" />
-                                        <q-input outlined dense v-model="data.aprovechamiento" label="Alcance"
+                                        <q-input outlined dense v-model="data.contencion" label="Forma de contencion"
                                             class="my-input" lazy-rules :rules="alerts.inputRules" />
+                                        <q-input outlined dense v-model="data.alcance" label="Alcance" class="my-input"
+                                            lazy-rules :rules="alerts.inputRules" />
                                     </q-card-section>
 
                                     <q-separator />
@@ -83,7 +81,77 @@
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
+                <q-dialog v-model="data.cardEdit">
+                    <q-card class="my-card bg-primary" flat bordered>
+                        <q-item>
+                            <q-item-section>
+                                <q-item-label><b>Editar: "Riesgo tecnologico"</b></q-item-label>
+                            </q-item-section>
+                        </q-item>
 
+                        <q-separator />
+
+                        <q-card-section>
+                            <div class="row">
+                                <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
+                                    v-model="data.entidadEdit" :options="options" @filter="filterFn" label="Entidad" />
+                                <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año" class="col-2" />
+                            </div>
+                        </q-card-section>
+
+                        <q-checkbox v-model="data.sustanciaEdit" color="secondary"
+                            label="Materiales o sustancias peligrosas" true-value="si" false-value="no"
+                            class="full-width justify-center" />
+
+                        <div class="q-pa-md" v-if="data.sustanciaEdit=='si'">
+                            <q-table title="Tabla de Materiales y Sustancias peligrosas" :rows="data.rowsMateriales"
+                                :columns="columnsMateriales" row-key="name" selection="single"
+                                v-model:selected="selected" />
+
+                            <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
+                                @click="data.cardCreateMaterial=true">Agregar</q-btn>
+                            <q-dialog v-model="data.cardCreateMaterial">
+                                <q-card class="my-card bg-primary">
+                                    <q-card-section>
+                                        <div class="text-h6">Nuevo Material o Sustancia</div>
+                                    </q-card-section>
+
+                                    <q-card-section class="q-pa-sm">
+                                        <q-input outlined dense v-model="data.tipoMaterial" label="Nombre del material"
+                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
+                                        <q-select class="col-8 q-mr-xl text-black" dense outlined
+                                            v-model="data.categoria" :options="data.category" label="Categoria" />
+                                        <q-input outlined dense v-model="data.cantidad" label="Cantidad" type="number"
+                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
+                                        <q-select class="col-8 q-mr-xl text-black" dense outlined v-model="data.unidad"
+                                            :options="data.unid" label="Unidad" />
+                                        <q-input outlined dense v-model="data.contencion" label="Forma de contencion"
+                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
+                                        <q-input outlined dense v-model="data.alcance" label="Alcance" class="my-input"
+                                            lazy-rules :rules="alerts.inputRules" />
+                                    </q-card-section>
+
+                                    <q-separator />
+
+                                    <q-card-actions align="right">
+                                        <q-btn v-close-popup flat color="secondary" label="Crear"
+                                            @click="CreateMaterial" />
+                                    </q-card-actions>
+                                </q-card>
+                            </q-dialog>
+                            <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="DeleteMaterial">
+                                Eliminar
+                            </q-btn>
+                        </div>
+
+                        <q-separator dark />
+
+                        <q-card-actions class="justify-end">
+                            <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
+                            <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                        </q-card-actions>
+                    </q-card>
+                </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
             </q-card-actions>
         </q-card>
@@ -151,9 +219,28 @@ let data = reactive({
     unidades: [],
     unid: [],
     entidades: [],
-    tempEntidad:[],
-    año:"",
-    id_Sustancia:[]
+    tempEntidad: [],
+    año: "",
+    id_Sustancia: [],
+    id_Sustancias: [],
+    categoria: "",
+    unidad: "",
+    tipoMaterial: "",
+    cantidad: "",
+    contencion: "",
+    alcance: "",
+    sustancia: "no",
+    identidadEdit:"",
+    sustanciaEdit:"no",
+    id_ResidualEdit:[],
+    entidadEdit:"",
+    añoEdit:"",
+    id_SustanciaEdit:[],
+
+    cardEdit: false,
+    cardCreate: false,
+    cardCreateMaterial: false,
+
 })
 
 onMounted(() => {
@@ -161,76 +248,158 @@ onMounted(() => {
     getUnidades()
     getEntidad()
     getInstalacion()
-    getSustancias()
+    getSustancias(data.id_Sustancia)
 })
 
 function filterFn(val, update) {
-  if (val === '') {
+    if (val === '') {
+        update(() => {
+            options.value = stringOptions
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
     update(() => {
-      options.value = stringOptions
-
-      // here you have access to "ref" which
-      // is the Vue reference of the QSelect
+        const needle = val.toLowerCase()
+        options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
     })
-    return
-  }
+}
 
-  update(() => {
-    const needle = val.toLowerCase()
-    options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-  })
+function editFields(params) {
+  data.entidades.forEach(element => {
+    if (element.nombre == selected.value[0].entidad) data.identidadEdit = { id: element.id }
+  });
+  if (selected.value[0].id_sustancia.length > 0) { 
+    data.sustanciaEdit = "si"
+    for (let index = 0; index < selected.value[0].id_sustancia.length; index++) {
+      data.id_SustanciaEdit.push({id:selected.value[0].id_sustancia[index]})
+      data.id_Sustancia.push(selected.value[0].id_sustancia[index])
+    }
+    getSustancias(data.id_Sustancia)
+   }
+  else { data.sustanciaEdit = "no" }
+  (data.añoEdit = selected.value[0].año),
+    (data.entidadEdit = selected.value[0].entidad),
+    (data.cardEdit = true);
+}
+
+function CreateMaterial(params) {
+    let tempCategory = ""
+    let tempUnid = ""
+
+    data.categorias.forEach(element => {
+        if (element.categoria == data.categoria) tempCategory = element.id
+    });
+
+    data.unidades.forEach(element => {
+        if (element.unidad == data.unidad) tempUnid = element.id
+    });
+
+    const dataRest = {
+        data: {
+            descripcion: data.tipoMaterial,
+            categoria: tempCategory,
+            cantidad: data.cantidad,
+            unidad: tempUnid,
+            contencion: data.contencion,
+            alcance: data.alcance,
+        },
+    };
+    console.log(dataRest);
+
+    const authorization = {
+        headers: {
+            Authorization: `Bearer ${auth.jwt}`,
+        },
+    };
+
+    api
+        .post("/sustancias", dataRest, authorization)
+        .then(function (response) {
+            console.log(response);
+            data.id_Sustancia.push(response.data.data.id)
+            getSustancias(data.id_Sustancia);
+            data.id_Sustancias.push({ id: response.data.data.id })
+        })
+        .catch(function (error) {
+            console.log(error.response);
+        });
 }
 
 function Create() {
-    console.log(model.value);
-  data.entidades.forEach(element => {
-    if (element.nombre == model.value) {
-        data.tempEntidad = { id: element.id }
-        console.log("Entra", model.value[0]);
-    }
-  });
-  const dataRest = {
-    data: {
-        entidad: data.tempEntidad,
-        anno: data.año,
-        sustancias: data.id_Sustancia,
-    },
-  };
-
-  const authorization = {
-    headers: {
-      Authorization: `Bearer ${auth.jwt}`,
-    },
-  };
-
-  api
-    .post("/instalacionespeligrosas", dataRest, authorization)
-    .then(function (response) {
-      console.log(response);
-      getInstalacion();
-    })
-    .catch(function (error) {
-      console.log(error.response);
+    data.entidades.forEach(element => {
+        if (element.nombre == model.value) {
+            data.tempEntidad = { id: element.id }
+        }
     });
+    const dataRest = {
+        data: {
+            entidad: data.tempEntidad,
+            anno: data.año,
+            sustancias: data.id_Sustancias,
+        },
+    };
+
+    const authorization = {
+        headers: {
+            Authorization: `Bearer ${auth.jwt}`,
+        },
+    };
+
+    api
+        .post("/instalacionespeligrosas", dataRest, authorization)
+        .then(function (response) {
+            console.log(response);
+            getInstalacion();
+        })
+        .catch(function (error) {
+            console.log(error.response);
+        });
+}
+
+function DeleteMaterial(params) {
+    let tempId = selected.value[0].id
+    api
+        .delete(`/sustancias/${tempId}`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            console.log(response);
+            for (let index = 0; index < data.id_Sustancia.length; index++) {
+                if (tempId == data.id_Sustancia[index]) {
+                    data.id_Sustancia.splice(index, 1)
+                }
+            }
+            getSustancias(data.id_Sustancia)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    selected.value = []
 }
 
 function Delete(params) {
-  for (let index = 0; index < selected.value.length; index++) {
-    api
-      .delete(`/instalacionespeligrosas/${selected.value[index].id}`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        getInstalacion()
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    for (let index = 0; index < selected.value.length; index++) {
+        api
+            .delete(`/instalacionespeligrosas/${selected.value[index].id}`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                getInstalacion()
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 
-  }
-  selected.value = []
+    }
+    selected.value = []
 }
 
 function getCategorias(params) {
@@ -306,37 +475,28 @@ function getEntidad(params) {
 }
 
 async function getSustancias(params) {
-    data.rows = [];
+    data.rowsMateriales = [];
     let count = 1
-    for (let index = 1; index < 15; index++) {
+    for (let index = 0; index < params.length; index++) {
         await api
-            .get(`/sustancias?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+            .get(`/sustancias/${params[index]}?populate=%2A`, {
                 headers: {
                     Authorization: "Bearer " + auth.jwt,
                 },
             })
             .then(function (response) {
                 console.log(response);
-
-                for (let i = 0; i < response.data.data.length; i++) {
-                    let temp = "";
-                    //   const element = [];
-                    //   for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-                    //     element.push(response.data.data[i].attributes.residuals.data[index].id)
-                    //   }
-                    // if(response.data.data[i].attributes.sustancias.data.length==0) temp="no"
-                    // else temp="si"
-                    data.rowsMateriales.push({
-                        name: count,
-                        descripcion: response.data.data[i].attributes.descripcion,
-                        categoria: response.data.data[i].attributes.categoria.data[0].attributes.categoria,
-                        cantidad: response.data.data[i].attributes.cantidad,
-                        unidad: response.data.data[i].attributes.unidad.data[0].attributes.unidad,
-                        contencion: response.data.data[i].attributes.contencion,
-                        alcance: response.data.data[i].attributes.alcance,
-                    });
-                    count++
-                }
+                data.rowsMateriales.push({
+                    name: count,
+                    id: params[index],
+                    descripcion: response.data.data.attributes.descripcion,
+                    categoria: response.data.data.attributes.categoria.data[0].attributes.categoria,
+                    cantidad: response.data.data.attributes.cantidad,
+                    unidad: response.data.data.attributes.unidad.data[0].attributes.unidad,
+                    contencion: response.data.data.attributes.contencion,
+                    alcance: response.data.data.attributes.alcance,
+                });
+                count++
             })
             .catch(function (error) {
                 console.log(error.response);
@@ -368,19 +528,19 @@ async function getInstalacion(params) {
                     //   for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
                     //     element.push(response.data.data[i].attributes.residuals.data[index].id)
                     //   }
-                    if (response.data.data[i].attributes.entidad.data!=null) {
-                    if(response.data.data[i].attributes.anno==null) response.data.data[i].attributes.anno="-"
-                    if (response.data.data[i].attributes.sustancias.data.length == 0) temp = "no"
-                    else temp = "si"
-                    data.rows.push({
-                        name: count,
-                        entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                        año: response.data.data[i].attributes.anno,
-                        sustancia: temp,
-                        sustancia: element,
-                        id: response.data.data[i].id
-                    });
-                }
+                    if (response.data.data[i].attributes.entidad.data != null) {
+                        if (response.data.data[i].attributes.anno == null) response.data.data[i].attributes.anno = "-"
+                        if (response.data.data[i].attributes.sustancias.data.length == 0) temp = "no"
+                        else temp = "si"
+                        data.rows.push({
+                            name: count,
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                            año: response.data.data[i].attributes.anno,
+                            sustancia: temp,
+                            id_sustancia: element,
+                            id: response.data.data[i].id
+                        });
+                    }
                     count++
                 }
             })
