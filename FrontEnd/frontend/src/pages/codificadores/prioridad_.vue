@@ -162,7 +162,7 @@
     api
       .put(`/prioridads/${selected.value[0].id}`, dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         getPrioridads();
       })
       .catch(function (error) {
@@ -186,7 +186,7 @@
     api
       .post("/prioridads", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         getPrioridads();
       })
       .catch(function (error) {
@@ -218,7 +218,7 @@
         },
       })
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         data.rows = [];
         for (let i = 0; i < response.data.data.length; i++) {
           data.rows.push({

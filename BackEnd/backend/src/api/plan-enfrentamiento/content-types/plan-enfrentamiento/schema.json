@@ -52,6 +52,27 @@
     },
     "incumplidas": {
       "type": "integer"
+    },
+    "nombrePermiso": {
+      "type": "string"
+    },
+    "cuerpoReceptor": {
+      "type": "string"
+    },
+    "nombreLicencia": {
+      "type": "string"
+    },
+    "observacionesDesechos": {
+      "type": "text"
+    },
+    "marchaAcorde": {
+      "type": "boolean"
+    },
+    "descripcion": {
+      "type": "text"
+    },
+    "fecha": {
+      "type": "date"
     }
   }
 }

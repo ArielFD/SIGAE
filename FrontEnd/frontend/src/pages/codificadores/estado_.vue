@@ -160,7 +160,7 @@ function Edit(params) {
   api
     .put(`/estados/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getEstados();
     })
     .catch(function (error) {
@@ -184,7 +184,7 @@ function Create() {
   api
     .post("/estados", dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getEstados();
     })
     .catch(function (error) {
@@ -216,7 +216,7 @@ function getEstados(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.data.length; i++) {
         data.rows.push({

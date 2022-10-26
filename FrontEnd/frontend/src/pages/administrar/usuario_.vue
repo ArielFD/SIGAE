@@ -278,7 +278,7 @@ function Edit(params) {
   api
     .put(`/users/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getUsuarios()
     })
     .catch(function (error) {
@@ -310,7 +310,7 @@ function Create() {
   api
     .post("/users", dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getUsuarios();
     })
     .catch(function (error) {

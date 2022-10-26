@@ -2,15 +2,34 @@
   <div>
     <q-card class="my-card q-ma-md bg-primary" bordered>
       <q-card-section>
-        <q-table class="my-sticky-header-table" title="Actas de Control" :rows="data.rows" :columns="columns"
-          row-key="entidad" :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
-          v-model:pagination="pagination" />
+        <q-table class="my-sticky-header-table" :rows="data.rows" :columns="columns" row-key="name"
+          :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
+          v-model:pagination="pagination" :filter="filter">
+          <template v-slot:top>
+            <div style="width: 100%" class="row justify-between">
+              <div class="col-3 text-h6">Actas de Control</div>
+              <div class="col-3">
+                <div class="row justify-center">
+                  <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año" class="col-3" />
+                  <q-btn flat round color="secondary" icon="search" class="col-1" @click="getActacontrol()" />
+                </div>
+              </div>
+              <div class="col" style="max-width: 300px">
+                <q-input dense debounce="400" color="primary" v-model="filter">
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+          </template>
+        </q-table>
       </q-card-section>
 
       <q-card-actions class="justify-end">
         <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
         <q-dialog v-model="data.cardCreate">
-          <q-card class="my-card bg-primary" flat bordered>
+          <q-card class="my-card bg-primary" flat bordered style="width: 100%">
             <q-item>
               <q-item-section>
                 <q-item-label><b>Nuevo: "Acta de Control"</b></q-item-label>
@@ -35,7 +54,7 @@
                 <q-radio v-model="data.tratamiento" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="no"
                   label="No" color="secondary" />
               </div>
-              <div style="max-width: 50%" v-if="data.tratamiento=='si'">
+              <div style="max-width: 100%" v-if="data.tratamiento=='si'">
                 <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
                 <div>
                   <q-item>
@@ -54,13 +73,13 @@
                   <q-item>
                     <q-item-section avatar>Estado tecnico:</q-item-section>
                     <q-item-section>
-                      <div>
+                      <div class="row">
                         <q-radio v-model="data.estadoTecnico" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                          val="Mal" label="Mal" color="secondary" />
+                          val="mal" label="Mal" color="secondary" />
                         <q-radio v-model="data.estadoTecnico" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                          val="Regular" label="Regular" color="secondary" />
+                          val="regular" label="Regular" color="secondary" />
                         <q-radio v-model="data.estadoTecnico" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                          val="Bien" label="Bien" color="secondary" />
+                          val="bien" label="Bien" color="secondary" />
                       </div>
                     </q-item-section>
                   </q-item>
@@ -71,11 +90,11 @@
                     <q-item-section>
                       <div>
                         <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                          val="Mal" label="Mal" color="secondary" />
+                          val="mal" label="Mal" color="secondary" />
                         <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                          val="Regular" label="Regular" color="secondary" />
+                          val="regular" label="Regular" color="secondary" />
                         <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                          val="Bien" label="Bien" color="secondary" />
+                          val="bien" label="Bien" color="secondary" />
                       </div>
                     </q-item-section>
                   </q-item>
@@ -88,7 +107,7 @@
                 <q-radio v-model="data.tipoGrasa" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="no"
                   label="No" color="secondary" />
               </div>
-              <div style="max-width: 50%" v-if="data.tipoGrasa=='si'">
+              <div style="max-width: 100%" v-if="data.tipoGrasa=='si'">
                 <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
                 <div class="row">
                   <q-input outlined dense v-model="data.estadoBien" type="number" label="Bien" class="q-pl-md"
@@ -160,13 +179,13 @@
             <q-checkbox v-model="data.aprovechamiento" color="secondary" label="Aprovechamiento de residuales"
               true-value="si" false-value="no" class="full-width justify-center" />
 
-            <aprovechamiento v-if="data.aprovechamiento=='si'" @addId='addingId' />
+            <aprovechamiento v-if="data.aprovechamiento=='si'" @addId='addingId' :idResidual="data.id_ResidualEdit" />
 
             <q-separator dark />
 
             <q-card-actions class="justify-end">
               <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
-              <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+              <q-btn no-caps class="text-white bg-secondary" @click="clear">Limpiar Campos</q-btn>
             </q-card-actions>
           </q-card>
         </q-dialog>
@@ -198,7 +217,7 @@
                 <q-radio v-model="data.tratamientoEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                   val="no" label="No" color="secondary" />
               </div>
-              <div style="max-width: 50%" v-if="data.tratamientoEdit=='si'">
+              <div style="max-width: 100%" v-if="data.tratamientoEdit=='si'">
                 <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
                 <div>
                   <q-item>
@@ -251,7 +270,7 @@
                 <q-radio v-model="data.tipoGrasaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                   val="no" label="No" color="secondary" />
               </div>
-              <div style="max-width: 50%" v-if="data.tipoGrasaEdit=='si'">
+              <div style="max-width: 100%" v-if="data.tipoGrasaEdit=='si'">
                 <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
                 <div class="row">
                   <q-input outlined dense v-model="data.estadoBienEdit" type="number" label="Bien" class="q-pl-md"
@@ -330,7 +349,6 @@
 
             <q-card-actions class="justify-end">
               <q-btn no-caps class="text-white bg-secondary" @click="Edit">Editar</q-btn>
-              <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
             </q-card-actions>
           </q-card>
         </q-dialog>
@@ -342,7 +360,7 @@
 
 <script setup>
 import aprovechamiento from "components/aprovechamiento_.vue"
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, computed, watch } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
@@ -357,6 +375,7 @@ const pagination = ref({
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
+const filter = ref('');
 const columns = [
   {
     name: "No",
@@ -375,117 +394,82 @@ const columns = [
     sortable: true,
   },
   {
-    name: "atendido_por",
+    name: "fechavisita",
     align: "center",
-    label: "Atendido por",
-    field: "atendido_por",
+    label: "Fecha",
+    field: "fechavisita",
     sortable: true,
   },
   {
-    name: "comision_control",
+    name: "politica_ambiental",
     align: "center",
-    label: "Comision de control",
-    field: "comision_control",
-    sortable: true,
-  },
-  {
-    name: "consumo_agua",
-    align: "center",
-    label: "Consumo de agua",
-    field: "consumo_agua",
-    sortable: true,
-  },
-  {
-    name: "consumo_energetico",
-    align: "center",
-    label: "Consumo energetico",
-    field: "consumo_energetico",
-    sortable: true,
-  },
-  {
-    name: "cumplidas_corto",
-    align: "center",
-    label: "Cumplidas a corto",
-    field: "cumplidas_corto",
-    sortable: true,
-  },
-  {
-    name: "cumplidas_mediano",
-    align: "center",
-    label: "Cumplidas a mediano",
-    field: "cumplidas_mediano",
-    sortable: true,
-  },
-  {
-    name: "cumplidas_largo",
-    align: "center",
-    label: "Cumplidas a largo",
-    field: "cumplidas_largo",
-    sortable: true,
-  },
-  {
-    name: "deficiencias",
-    align: "center",
-    label: "deficiencias",
-    field: "deficiencias",
+    label: "Politica/Amb",
+    field: "politica_ambiental",
     sortable: true,
   },
   {
     name: "diagnostico_ambiental",
     align: "center",
-    label: "Diagnostico ambiental",
+    label: "Diagnostico/Amb",
     field: "diagnostico_ambiental",
-    sortable: true,
-  },
-  {
-    name: "fechavisita",
-    align: "center",
-    label: "Fecha de visita",
-    field: "fechavisita",
     sortable: true,
   },
   {
     name: "medidas_corto",
     align: "center",
-    label: "Medidas a corto",
+    label: "Medidas/C",
     field: "medidas_corto",
     sortable: true,
   },
   {
     name: "medidas_mediano",
     align: "center",
-    label: "Medidas a mediano",
+    label: "Medidas/M",
     field: "medidas_mediano",
     sortable: true,
   },
   {
     name: "medidas_largo",
     align: "center",
-    label: "Medidas a largo",
+    label: "Medidas/L",
     field: "medidas_largo",
     sortable: true,
   },
   {
-    name: "observaciones",
+    name: "cumplidas_corto",
     align: "center",
-    label: "Observaciones",
-    field: "observaciones",
+    label: "Cumplidas/C",
+    field: "cumplidas_corto",
     sortable: true,
   },
   {
-    name: "politica_ambiental",
+    name: "cumplidas_mediano",
     align: "center",
-    label: "Politica ambiental",
-    field: "politica_ambiental",
+    label: "Cumplidas/M",
+    field: "cumplidas_mediano",
     sortable: true,
   },
   {
-    name: "recomendaciones",
+    name: "cumplidas_largo",
     align: "center",
-    label: "Recomendaciones",
-    field: "recomendaciones",
+    label: "Cumplidas/L",
+    field: "cumplidas_largo",
     sortable: true,
   },
+  {
+    name: "sistema_de_tratamiento",
+    align: "center",
+    label: "Sistema de tratamiento",
+    field: "sistema_de_tratamiento",
+    sortable: true,
+  },
+  {
+    name: "residuales",
+    align: "center",
+    label: "Aprovechamiento de residuales",
+    field: "residuales",
+    sortable: true,
+  }
 ];
 
 const stringOptions = []
@@ -493,6 +477,7 @@ const model = ref([])
 const options = ref(stringOptions)
 
 let data = reactive({
+  fecha_actual: new Date(),
   rows: [],
   id_Residual: [],
 
@@ -558,6 +543,7 @@ let data = reactive({
   identidadEdit: "",
   entidadEdit: "",
   id_ResidualEdit: [],
+  ResidualAntiguo: [],
 
   categoriaEdit: "",
   cardEdit: false,
@@ -566,6 +552,80 @@ let data = reactive({
   entidades: [],
   tempEntidad: []
 });
+
+function clear(params) {
+  data.tratamiento= "no"
+  data.idoniedad= ""
+  data.estadoTecnico= ""
+  data.eficiencia= ""
+
+  data.tipoGrasa= "no"
+  data.estadoBien= "0"
+  data.estadoMal="0",
+  data.estadoRegular= "0"
+  data.politica= "no"
+  data.diagnostico= "no"
+
+  data.atendido_por= ""
+  data.comision_control= ""
+  data.consumo_agua= ""
+  data.consumo_energetico= ""
+  data.cumplidas_corto= "0"
+  data.cumplidas_largo= "0"
+  data.cumplidas_mediano= "0"
+  data.deficiencias= ""
+  data.diagnostico= "no"
+  data.fechavisita= ""
+  data.medidas_corto= "0"
+  data.medidas_largo= "0"
+  data.medidas_mediano="0"
+  data.observaciones= ""
+  data.politica_ambiental= ""
+  data.recomendaciones= ""
+  data.aprovechamiento= "no"
+}
+
+watch(() => model.value, (value) => {
+  clear()
+  data.entidades.forEach(element => {
+    if (element.nombre == value) {
+      const actualYear = new Date()
+      api
+        .get(`/actacontrols?populate=%2A&filters[fechavisita][$containsi]=${actualYear.getFullYear().toString()}&sort[0]=fechavisita%3Adesc`, {
+          headers: {
+            Authorization: "Bearer " + auth.jwt,
+          },
+        }).then(function (response) {
+          console.log(response);
+          for (let i = 0; i < response.data.data.length; i++) {
+            if (response.data.data[i].attributes.entidad.data.id == element.id) {
+              data.medidas_corto = response.data.data[i].attributes.medidas_corto
+              data.medidas_largo = response.data.data[i].attributes.medidas_largo
+              data.medidas_mediano = response.data.data[i].attributes.medidas_mediano
+              data.cumplidas_corto = response.data.data[i].attributes.cumplidas_corto
+              data.cumplidas_largo = response.data.data[i].attributes.cumplidas_largo
+              data.cumplidas_mediano = response.data.data[i].attributes.cumplidas_mediano
+              let residuales = "no"
+              let element = [];
+              for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+                element.push(response.data.data[i].attributes.residuals.data[index].id)
+              }
+              if (element.length > 0) residuales = "si"
+              data.ResidualAntiguo = element
+              for (let index = 0; index < data.ResidualAntiguo.length; index++) {
+                data.id_ResidualEdit.push({ id: data.ResidualAntiguo[index] })
+              }
+              data.aprovechamiento = residuales
+              break;
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  });
+})
 
 function filterFn(val, update) {
   if (val === '') {
@@ -585,10 +645,14 @@ function filterFn(val, update) {
 }
 
 onMounted(() => {
+  getYear()
   getActacontrol();
   getEntidad()
-
 });
+
+function getYear(params) {
+  data.fecha_actual = data.fecha_actual.getFullYear()
+}
 
 function addingId(params) {
   data.id_Residual.push({ id: params })
@@ -596,13 +660,13 @@ function addingId(params) {
 }
 
 function editFields(params) {
-  
-  if (selected.value[0].residuals.length > 0) { 
+
+  if (selected.value[0].residuals.length > 0) {
     data.aprovechamientoEdit = "si"
     for (let index = 0; index < selected.value[0].residuals.length; index++) {
-      data.id_ResidualEdit.push({id:selected.value[0].residuals[index]})
+      data.id_ResidualEdit.push({ id: selected.value[0].residuals[index] })
     }
-   }
+  }
   else { data.aprovechamientoEdit = "no" }
   (data.tratamientoEdit = selected.value[0].sistema_de_tratamiento),
     (data.idoniedadEdit = selected.value[0].idoneidad),
@@ -684,7 +748,7 @@ function Edit(params) {
   api
     .put(`/actacontrols/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getActacontrol();
     })
     .catch(function (error) {
@@ -736,7 +800,7 @@ function Create() {
   api
     .post("/actacontrols", dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getActacontrol();
     })
     .catch(function (error) {
@@ -765,12 +829,12 @@ function Delete(params) {
 
 function getEntidad(params) {
   api
-    .get(`/entidads`, {
+    .get(`/entidads?filters[activo][$eq]=s`, {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },
     }).then(function (response) {
-      console.log(response);
+      //console.log(response);
       for (let i = 0; i < response.data.data.length; i++) {
         data.entidades.push({
           nombre: response.data.data[i].attributes.entidad,
@@ -788,22 +852,23 @@ function getEntidad(params) {
 
 async function getActacontrol(params) {
   data.rows = [];
-  let count=1
-  for (let index = 1; index < 12; index++) {
-    await api
-      .get(`/actacontrols?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          const element = [];
-          for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-            element.push(response.data.data[i].attributes.residuals.data[index].id)
-          }
-
+  let count = 1
+  await api
+    .get(`/actacontrols?populate=%2A&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      //console.log(response);
+      for (let i = 0; i < response.data.data.length; i++) {
+        let residuales = "no"
+        const element = [];
+        for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+          element.push(response.data.data[i].attributes.residuals.data[index].id)
+        }
+        if (element.length > 0) residuales = "si"
+        if (response.data.data[i].attributes.entidad.data != null) {
           data.rows.push({
             name: count,
             id: response.data.data[i].id,
@@ -815,13 +880,13 @@ async function getActacontrol(params) {
             cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
             cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
             deficiencias: response.data.data[i].attributes.deficiencias,
-            diagnostico_ambiental: response.data.data[i].attributes.diagnostico_ambiental.toLowerCase(),
+            diagnostico_ambiental: response.data.data[i].attributes.diagnostico_ambiental,
             fechavisita: response.data.data[i].attributes.fechavisita,
             medidas_corto: response.data.data[i].attributes.medidas_corto,
             medidas_largo: response.data.data[i].attributes.medidas_largo,
             medidas_mediano: response.data.data[i].attributes.medidas_mediano,
             observaciones: response.data.data[i].attributes.observaciones,
-            politica_ambiental: response.data.data[i].attributes.politica_ambiental.toLowerCase(),
+            politica_ambiental: response.data.data[i].attributes.politica_ambiental,
             recomendaciones: response.data.data[i].attributes.recomendaciones,
             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
             idEntidad: response.data.data[i].attributes.entidad.data.id,
@@ -833,15 +898,17 @@ async function getActacontrol(params) {
             estadoGrasaBien: response.data.data[i].attributes.estadoGrasaBien,
             estadoGrasaRegular: response.data.data[i].attributes.estadoGrasaRegular,
             estadoGrasaMal: response.data.data[i].attributes.estadoGrasaMal,
-            residuals: element
+            residuals: element,
+            residuales: residuales
           });
-          count++
         }
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
-  }
+        count++
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
 }
 
 function getSelectedString() {

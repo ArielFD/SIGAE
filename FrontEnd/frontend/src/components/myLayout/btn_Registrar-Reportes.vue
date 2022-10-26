@@ -7,6 +7,10 @@
             <q-item-section>Acta de Control</q-item-section>
             
           </q-item>
+          <q-item clickable :to="{ name: 'planEnfrentamiento' }" class="text-black">
+            <q-item-section>Plan de enfrentamiento</q-item-section>
+            
+          </q-item>
           <q-item clickable :to="{ name: 'riesgoTecnologico' }" class="text-black">
             <q-item-section>Riesgo Tecnologico</q-item-section>
             
@@ -21,10 +25,6 @@
           </q-item>
           <q-item clickable :to="{ name: 'desempeñoAmbiental' }" class="text-black">
             <q-item-section>Desempeño Ambiental</q-item-section>
-            
-          </q-item>
-          <q-item clickable :to="{ name: 'planEnfrentamiento' }" class="text-black">
-            <q-item-section>Plan de enfrentamiento</q-item-section>
             
           </q-item>
         </q-list>

@@ -54,6 +54,24 @@
     },
     "ianno": {
       "type": "integer"
+    },
+    "prioridad": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::prioridad.prioridad"
+    },
+    "salida": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::salida.salida"
+    },
+    "osde": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::osde.osde"
+    },
+    "PIB": {
+      "type": "string"
     }
   }
 }

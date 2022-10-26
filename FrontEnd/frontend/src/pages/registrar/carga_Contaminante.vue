@@ -52,8 +52,6 @@
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data.Grasas" type="number"
                                         label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PIB" type="number"
-                                        label="PIB(miles de pesos)" class="col-2 q-pa-xs" />
                                 </div>
                             </div>
                         </q-card-section>
@@ -110,8 +108,6 @@
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data.GrasasEdit" type="number"
                                         label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PIBEdit" type="number"
-                                        label="PIB(miles de pesos)" class="col-2 q-pa-xs" />
                                 </div>
                             </div>
                         </q-card-section>
@@ -246,13 +242,7 @@ const columns = [
         field: "Grasas_aceites",
         sortable: true,
     },
-    {
-        name: "PIB",
-        align: "center",
-        label: "PIB",
-        field: "PIB",
-        sortable: true,
-    }];
+];
 
 const stringOptions = []
 const model = ref([])
@@ -272,7 +262,6 @@ let data = reactive({
     Hidrocarburos: "0",
     Flujo: "0",
     Grasas: "0",
-    _PIB: "0",
     año:"0",
 
     _DB05Edit: "0",
@@ -287,7 +276,6 @@ let data = reactive({
     HidrocarburosEdit: "0",
     FlujoEdit: "0",
     GrasasEdit: "0",
-    _PIBEdit: "0",
     añoEdit:"0",
     entidadEdit:"",
 
@@ -334,7 +322,6 @@ function editFields(params) {
     (data.HidrocarburosEdit = selected.value[0].Hidrocarburos),
     (data.FlujoEdit = selected.value[0].Flujo),
     (data.GrasasEdit = selected.value[0].Grasas_aceites),
-    (data._PIBEdit = selected.value[0].PIB),
     (data.añoEdit = selected.value[0].anno),
     (data.entidadEdit = selected.value[0].entidad),
     (data.cardEdit = true);
@@ -356,7 +343,6 @@ function Edit(params) {
             Hidrocarburos:data.HidrocarburosEdit,
             NTK:data._NTKEdit,
             PH:data._PHEdit,
-            PIB:data._PIBEdit,
             PT:data._PTEdit,
             ST:data._STEdit,
             S_SED:data._SSEDEdit,
@@ -375,7 +361,7 @@ function Edit(params) {
     api
         .put(`/cargacontaminantes/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             getContaminantes();
         })
         .catch(function (error) {
@@ -397,7 +383,6 @@ function Create() {
             Hidrocarburos:data.Hidrocarburos,
             NTK:data._NTK,
             PH:data._PH,
-            PIB:data._PIB,
             PT:data._PT,
             ST:data._ST,
             S_SED:data._SSED,
@@ -407,7 +392,6 @@ function Create() {
         },
     };
 
-    console.log(dataRest);
     const authorization = {
         headers: {
             Authorization: `Bearer ${auth.jwt}`,
@@ -417,7 +401,7 @@ function Create() {
     api
         .post("/cargacontaminantes", dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             getContaminantes();
         })
         .catch(function (error) {
@@ -446,12 +430,12 @@ function Delete(params) {
 
 function getEntidad(params) {
     api
-        .get(`/entidads`, {
+        .get(`/entidads?filters[activo][$eq]=s`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -472,14 +456,15 @@ async function getContaminantes(params) {
     let count = 1
     for (let index = 1; index < 3; index++) {
         await api
-            .get(`/cargacontaminantes?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+            .get(`/cargacontaminantes?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc`, {
                 headers: {
                     Authorization: "Bearer " + auth.jwt,
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
+                    if(response.data.data[i].attributes.entidad.data.length>0){
                     data.rows.push({
                         name: count,
                         id: response.data.data[i].id,
@@ -499,6 +484,7 @@ async function getContaminantes(params) {
                         anno: response.data.data[i].attributes.anno,
                         COND: response.data.data[i].attributes.COND
                     });
+                }
                     count++
                 }
             })

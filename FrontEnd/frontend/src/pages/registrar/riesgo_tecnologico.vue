@@ -308,7 +308,6 @@ function CreateMaterial(params) {
             alcance: data.alcance,
         },
     };
-    console.log(dataRest);
 
     const authorization = {
         headers: {
@@ -319,7 +318,7 @@ function CreateMaterial(params) {
     api
         .post("/sustancias", dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             data.id_Sustancia.push(response.data.data.id)
             getSustancias(data.id_Sustancia);
             data.id_Sustancias.push({ id: response.data.data.id })
@@ -352,7 +351,7 @@ function Create() {
     api
         .post("/instalacionespeligrosas", dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             getInstalacion();
         })
         .catch(function (error) {
@@ -369,7 +368,7 @@ function DeleteMaterial(params) {
             },
         })
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let index = 0; index < data.id_Sustancia.length; index++) {
                 if (tempId == data.id_Sustancia[index]) {
                     data.id_Sustancia.splice(index, 1)
@@ -410,7 +409,7 @@ function getCategorias(params) {
             },
         })
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.categorias.push({
                     id: response.data.data[i].id,
@@ -434,7 +433,7 @@ function getUnidades(params) {
             },
         })
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.unidades.push({
                     id: response.data.data[i].id,
@@ -457,7 +456,7 @@ function getEntidad(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -465,7 +464,6 @@ function getEntidad(params) {
                 }
                 )
             }
-            console.log(data.entidades);
             data.entidades.forEach(element => {
                 stringOptions.push(element.nombre)
             });
@@ -485,7 +483,7 @@ async function getSustancias(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 data.rowsMateriales.push({
                     name: count,
                     id: params[index],
@@ -516,7 +514,7 @@ async function getInstalacion(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
 
                 for (let i = 0; i < response.data.data.length; i++) {
                     const element = [];

@@ -162,7 +162,7 @@ function Edit(params) {
   api
     .put(`/categorias/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getCategorias();
     })
     .catch(function (error) {
@@ -186,7 +186,7 @@ function Create() {
   api
     .post("/categorias", dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getCategorias();
     })
     .catch(function (error) {
@@ -217,7 +217,7 @@ function getCategorias(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.data.length; i++) {
         data.rows.push({

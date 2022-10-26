@@ -4,7 +4,8 @@
   "info": {
     "singularName": "salida",
     "pluralName": "salidas",
-    "displayName": "salida"
+    "displayName": "salida",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,7 +13,7 @@
   "pluginOptions": {},
   "attributes": {
     "salida": {
-      "type": "date"
+      "type": "string"
     }
   }
 }

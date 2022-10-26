@@ -1,10 +1,9 @@
 <template>
     <div>
-        {{selected}}
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Actas de Control" :rows="data.rows" :columns="columns"
-                    row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
+                <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" :rows="data.rows"
+                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
                     v-model:selected="selected" v-model:pagination="pagination" />
             </q-card-section>
 
@@ -25,6 +24,7 @@
                                 <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
                                     v-model="model" :options="options" @filter="filterFn" label="Entidad"
                                     style="max-width: 50%" />
+                                    <q-input outlined dense v-model="data.fecha" type="date" hint="Fecha" />
                             </div>
                             <div>
                                 <q-item>
@@ -62,38 +62,6 @@
                             </div>
                             <div>
                                 <q-item>
-                                    <q-item-section avatar>Sistema de tratamiento:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.sistema" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.sistema" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Trampa de grasa:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.trampa" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.trampa" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div>
-                                <q-item>
                                     <q-item-section avatar>Tiene permiso de vertimiento:</q-item-section>
                                     <q-item-section>
                                         <div class="row">
@@ -107,6 +75,21 @@
                                     </q-item-section>
                                 </q-item>
 
+                            </div>
+                            <div v-if="data.permiso=='si'">
+                                <div>
+                                    Detalles:
+                                    <q-item>
+                                        <q-item-section>
+                                            <div>
+                                                <q-input outlined dense v-model="data.nombrePermiso" class="q-pa-sm"
+                                                    type="text" label="Nombre del documento" style="max-width: 100%" />
+                                                <q-input outlined dense v-model="data.cuerpo" class="q-pa-sm"
+                                                    type="text" style="max-width: 100%" label="Cuerpo receptor" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
                             </div>
                             <div>
                                 <q-item>
@@ -124,6 +107,19 @@
                                 </q-item>
 
                             </div>
+                            <div v-if="data.licencia=='si'">
+                                <div>
+                                    Detalles:
+                                    <q-item>
+                                        <q-item-section>
+                                            <div>
+                                                <q-input outlined dense v-model="data.nombreLicencia" class="q-pa-sm"
+                                                    type="text" label="Nombre del documento" style="max-width: 100%" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
                             <div>
                                 <q-item>
                                     <q-item-section avatar>Tiene plan de manejo de desechos peligrosos:</q-item-section>
@@ -140,6 +136,19 @@
                                 </q-item>
 
                             </div>
+                            <div v-if="data.desechos=='si'">
+                                <div>
+                                    <q-item>
+                                        <q-item-section>
+                                            <div>
+                                                <q-input outlined dense v-model="data.observacionesDesechos"
+                                                    class="q-pa-sm" type="textarea" label="Observaciones"
+                                                    style="max-width: 100%" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
                             <div>
                                 <q-item>
                                     <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
@@ -155,6 +164,32 @@
                                     </q-item-section>
                                 </q-item>
 
+                            </div>
+                            <div v-if="data.inversiones=='si'">
+                                <div>
+                                    Detalles:
+                                    <q-item>
+                                        <q-item-section>
+                                            <q-item>
+                                                <q-item-section avatar>Marcha acorde al cronograma:</q-item-section>
+                                                <q-item-section>
+                                                    <div class="row">
+                                                        <q-radio v-model="data.marcha" checked-icon="task_alt"
+                                                            unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                            color="secondary" />
+                                                        <q-radio v-model="data.marcha" checked-icon="task_alt"
+                                                            unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                            color="secondary" />
+                                                    </div>
+                                                </q-item-section>
+                                            </q-item>
+                                            <div>
+                                                <q-input outlined dense v-model="data.descripcion" class="q-pa-sm"
+                                                    type="textarea" label="Descripcion" style="max-width: 100%" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
                             </div>
                             <q-input v-model="data.observaciones" filled type="textarea" label="Observaciones"
                                 class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" />
@@ -184,6 +219,7 @@
                                 <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
                                     v-model="data.entidadEdit" :options="options" @filter="filterFn" label="Entidad"
                                     style="max-width: 50%" />
+                                    <q-input outlined dense v-model="data.fechaEdit" type="date" hint="Fecha" />
                             </div>
                             <div>
                                 <q-item>
@@ -224,38 +260,6 @@
                             </div>
                             <div>
                                 <q-item>
-                                    <q-item-section avatar>Sistema de tratamiento:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.sistemaEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.sistemaEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Trampa de grasa:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.trampaEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.trampaEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div>
-                                <q-item>
                                     <q-item-section avatar>Tiene permiso de vertimiento:</q-item-section>
                                     <q-item-section>
                                         <div class="row">
@@ -269,6 +273,21 @@
                                     </q-item-section>
                                 </q-item>
 
+                            </div>
+                            <div v-if="data.permisoEdit=='si'">
+                                <div>
+                                    Detalles:
+                                    <q-item>
+                                        <q-item-section>
+                                            <div>
+                                                <q-input outlined dense v-model="data.nombrePermisoEdit" class="q-pa-sm"
+                                                    type="text" label="Nombre del documento" style="max-width: 100%" />
+                                                <q-input outlined dense v-model="data.cuerpoEdit" class="q-pa-sm"
+                                                    type="text" style="max-width: 100%" label="Cuerpo receptor" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
                             </div>
                             <div>
                                 <q-item>
@@ -286,6 +305,20 @@
                                 </q-item>
 
                             </div>
+                            <div v-if="data.licenciaEdit=='si'">
+                                <div>
+                                    Detalles:
+                                    <q-item>
+                                        <q-item-section>
+                                            <div>
+                                                <q-input outlined dense v-model="data.nombreLicenciaEdit"
+                                                    class="q-pa-sm" type="text" label="Nombre del documento"
+                                                    style="max-width: 100%" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
                             <div>
                                 <q-item>
                                     <q-item-section avatar>Tiene plan de manejo de desechos peligrosos:</q-item-section>
@@ -301,6 +334,19 @@
                                     </q-item-section>
                                 </q-item>
 
+                            </div>
+                            <div v-if="data.desechosEdit=='si'">
+                                <div>
+                                    <q-item>
+                                        <q-item-section>
+                                            <div>
+                                                <q-input outlined dense v-model="data.observacionesDesechosEdit"
+                                                    class="q-pa-sm" type="textarea" label="Observaciones"
+                                                    style="max-width: 100%" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
                             </div>
                             <div>
                                 <q-item>
@@ -318,6 +364,32 @@
                                 </q-item>
 
                             </div>
+                            <div v-if="data.inversionesEdit=='si'">
+                                <div>
+                                    Detalles:
+                                    <q-item>
+                                        <q-item-section>
+                                            <q-item>
+                                                <q-item-section avatar>Marcha acorde al cronograma:</q-item-section>
+                                                <q-item-section>
+                                                    <div class="row">
+                                                        <q-radio v-model="data.marchaEdit" checked-icon="task_alt"
+                                                            unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                            color="secondary" />
+                                                        <q-radio v-model="data.marchaEdit" checked-icon="task_alt"
+                                                            unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                            color="secondary" />
+                                                    </div>
+                                                </q-item-section>
+                                            </q-item>
+                                            <div>
+                                                <q-input outlined dense v-model="data.descripcionEdit" class="q-pa-sm"
+                                                    type="textarea" label="Descripcion" style="max-width: 100%" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
+                                </div>
+                            </div>
                             <q-input v-model="data.observacionesEdit" filled type="textarea" label="Observaciones"
                                 class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" />
                         </q-card-section>
@@ -325,7 +397,7 @@
                         <q-separator dark />
 
                         <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Edit">Agregar</q-btn>
+                            <q-btn no-caps class="text-white bg-secondary" @click="Edit">Editar</q-btn>
                             <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
                         </q-card-actions>
                     </q-card>
@@ -370,24 +442,17 @@ const columns = [
         sortable: true,
     },
     {
+        name: "fecha",
+        align: "center",
+        label: "Fecha",
+        field: "fecha",
+        sortable: true,
+    },
+    {
         name: "plan",
         align: "center",
         label: "Plan correctamente elaborado",
         field: "plan",
-        sortable: true,
-    },
-    {
-        name: "sistema",
-        align: "center",
-        label: "Sistema de tratamiento",
-        field: "sistema",
-        sortable: true,
-    },
-    {
-        name: "trampa",
-        align: "center",
-        label: "Trampa de grasa",
-        field: "trampa",
         sortable: true,
     },
     {
@@ -410,13 +475,6 @@ const columns = [
         label: "Inversiones en ejecucion o preparacion",
         field: "inversiones",
         sortable: true,
-    },
-    {
-        name: "observaciones",
-        align: "center",
-        label: "Observaciones",
-        field: "observaciones",
-        sortable: true,
     }
 ];
 
@@ -433,12 +491,19 @@ let data = reactive({
     observaciones: "",
     permiso: "",
     plan: "",
-    sistema: "",
-    trampa: "",
+    sistema: "no",
+    trampa: "no",
     medidas: "",
     cumplidas: "",
     evaluadas: "",
     incumplidas: "",
+    nombrePermiso: "",
+    cuerpo: "",
+    nombreLicencia: "",
+    observacionesDesechos: "",
+    marcha: "",
+    descripcion: "",
+    fecha:"",
 
     desechosEdit: "",
     inversionesEdit: "",
@@ -446,12 +511,19 @@ let data = reactive({
     observacionesEdit: "",
     permisoEdit: "",
     planEdit: "",
-    sistemaEdit: "",
-    trampaEdit: "",
+    sistemaEdit: "no",
+    trampaEdit: "no",
     medidasEdit: "",
     cumplidasEdit: "",
     evaluadasEdit: "",
     incumplidasEdit: "",
+    nombrePermisoEdit: "",
+    cuerpoEdit: "",
+    nombreLicenciaEdit: "",
+    observacionesDesechosEdit: "",
+    marchaEdit: "",
+    descripcionEdit: "",
+    fechaEdit:"",
 
     categoriaEdit: "",
     cardEdit: false,
@@ -459,8 +531,8 @@ let data = reactive({
 
     entidades: [],
     tempEntidad: [],
-    entidadEdit:"",
-    identidadEdit:""
+    entidadEdit: "",
+    identidadEdit: ""
 });
 
 function filterFn(val, update) {
@@ -488,7 +560,7 @@ onMounted(() => {
 
 
 function editFields(params) {
-        (data.planEdit = selected.value[0].plan),
+    (data.planEdit = selected.value[0].plan),
         (data.sistemaEdit = selected.value[0].sistema),
         (data.trampaEdit = selected.value[0].trampa),
         (data.permisoEdit = selected.value[0].permiso),
@@ -499,6 +571,13 @@ function editFields(params) {
         (data.medidasEdit = selected.value[0].medidas),
         (data.cumplidasEdit = selected.value[0].cumplidas),
         (data.evaluadasEdit = selected.value[0].evaluadas),
+        (data.nombrePermisoEdit = selected.value[0].nombrePermiso),
+        (data.cuerpoEdit = selected.value[0].cuerpoReceptor),
+        (data.nombreLicenciaEdit = selected.value[0].nombreLicencia),
+        (data.observacionesDesechosEdit = selected.value[0].observacionesDesechos),
+        (data.marchaEdit = selected.value[0].marchaAcorde),
+        (data.descripcionEdit = selected.value[0].descripcion),
+        (data.fechaEdit = selected.value[0].fecha),
         (data.incumplidasEdit = selected.value[0].incumplidas),
         (data.entidadEdit = selected.value[0].entidad),
         (data.cardEdit = true);
@@ -523,6 +602,13 @@ function Edit(params) {
             evaluadas: data.evaluadasEdit,
             incumplidas: data.incumplidasEdit,
             entidad: data.identidadEdit,
+            nombrePermiso: data.nombrePermisoEdit,
+            cuerpoReceptor: data.cuerpoEdit,
+            nombreLicencia: data.nombreLicenciaEdit,
+            observacionesDesechos: data.observacionesDesechosEdit,
+            marchaAcorde: data.marchaEdit,
+            descripcion: data.descripcionEdit,
+            fecha: data.fechaEdit
         },
     };
 
@@ -547,7 +633,7 @@ function Edit(params) {
     api
         .put(`/plan-enfrentamientos/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             getEnfrentamiento();
         })
         .catch(function (error) {
@@ -574,6 +660,13 @@ function Create() {
             evaluadas: data.evaluadas,
             incumplidas: data.incumplidas,
             entidad: data.tempEntidad,
+            nombrePermiso: data.nombrePermiso,
+            cuerpoReceptor: data.cuerpo,
+            nombreLicencia: data.nombreLicencia,
+            observacionesDesechos: data.observacionesDesechos,
+            marchaAcorde: data.marcha,
+            descripcion: data.descripcion,
+            fecha:data.fecha
         },
     };
 
@@ -594,7 +687,7 @@ function Create() {
     api
         .post("/plan-enfrentamientos", dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             getEnfrentamiento();
         })
         .catch(function (error) {
@@ -623,12 +716,12 @@ function Delete(params) {
 
 function getEntidad(params) {
     api
-        .get(`/entidads`, {
+        .get(`/entidads?filters[activo][$eq]=s`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -673,6 +766,13 @@ async function getEnfrentamiento(params) {
                         cumplidas: response.data.data[i].attributes.cumplidas,
                         evaluadas: response.data.data[i].attributes.evaluadas,
                         incumplidas: response.data.data[i].attributes.incumplidas,
+                        cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
+                        descripcion: response.data.data[i].attributes.descripcion,
+                        marchaAcorde: response.data.data[i].attributes.marchaAcorde,
+                        nombreLicencia: response.data.data[i].attributes.nombreLicencia,
+                        nombrePermiso: response.data.data[i].attributes.nombrePermiso,
+                        observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
+                        fecha: response.data.data[i].attributes.fecha,
                     });
                     Object.keys(data.rows[i]).forEach(function (key) {
                         if (data.rows[i][key] === true) {

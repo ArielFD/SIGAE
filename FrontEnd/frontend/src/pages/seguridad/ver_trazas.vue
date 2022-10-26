@@ -94,7 +94,7 @@
         },
       })
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         data.rows = [];
         for (let i = 0; i < response.data.data.length; i++) {
           data.rows.push({

@@ -160,7 +160,7 @@ function Edit(params) {
   api
     .put(`/unidads/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getUnidads();
     })
     .catch(function (error) {
@@ -186,7 +186,7 @@ function Create() {
     api
       .post("/unidads", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         getUnidads();
       })
       .catch(function (error) {
@@ -220,7 +220,7 @@ function getUnidads(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.data.length; i++) {
         data.rows.push({

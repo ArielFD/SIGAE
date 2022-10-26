@@ -37,7 +37,7 @@ export const useAuthStore = defineStore({
       await api
         .post("/trazas", data, authorization)
         .then(function (response) {
-          console.log(response);
+          //console.log(response);
         })
         .catch(function (error) {
           console.log(error);

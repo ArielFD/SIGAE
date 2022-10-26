@@ -5,12 +5,12 @@
         <q-img src="~assets/Layout_/baner_1.png" class="banner" />
         <q-img src="~assets/Layout_/baner_2.png" class="banner" />
       </q-toolbar>
-      <q-toolbar class="no-padding glossy" style="background-color: rgb(32, 105, 126)">
+      <q-toolbar class="row no-padding glossy justify-between" style="background-color: rgb(32, 105, 126)">
         <btn_Administrador v-if="data.admin"/>
         <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
         <q-btn push no-caps label="Cerrar Sesion" @click="auth.jwt=''" to="/login"/>
       </q-toolbar>
-      <q-toolbar >
+      <!-- <q-toolbar >
 
       </q-toolbar>
 
@@ -18,7 +18,7 @@
 
       <q-toolbar >
         <q-btn push disable color="secondary" text-color="white" label="Bienvenido" />
-      </q-toolbar>
+      </q-toolbar> -->
     </q-header>
 
     <q-footer elevated>
@@ -61,7 +61,7 @@ onMounted(() => {
           },
         })
         .then(function (response) {
-          console.log(response);
+          //console.log(response);
           if (
             response.data.role.name === "Administrador"){
               data.admin=true

@@ -131,7 +131,7 @@ function getOSDEs(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       for (let i = 0; i < response.data.data.length; i++) {
         if(response.data.data[i].attributes.oace.data==null){
           data.osdes.push({
@@ -223,7 +223,7 @@ function Create() {
   api
     .post("/organismos", dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getOrganismos();
     })
     .catch(function (error) {
@@ -254,7 +254,7 @@ function getOrganismos(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.data.length; i++) {
         let arr = []

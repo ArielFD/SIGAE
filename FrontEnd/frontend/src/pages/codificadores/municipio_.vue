@@ -160,7 +160,7 @@ function Edit(params) {
   api
     .put(`/municipios/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       getMunicipios();
     })
     .catch(function (error) {
@@ -184,7 +184,7 @@ function Create() {
     api
       .post("/municipios", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         getMunicipios();
       })
       .catch(function (error) {
@@ -218,7 +218,7 @@ function getMunicipios(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.data.length; i++) {
         data.rows.push({

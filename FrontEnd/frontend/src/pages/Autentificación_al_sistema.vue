@@ -102,7 +102,7 @@ async function Login() {
       password: auth.password,
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       alertRules.alerts[1].message = "Sesion Iniciada, Bienvenido!!!";
       $q.notify(alertRules.alerts[1]);
       auth.jwt = response.data.jwt;

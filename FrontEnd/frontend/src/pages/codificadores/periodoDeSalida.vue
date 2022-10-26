@@ -162,7 +162,7 @@
     api
       .put(`/salidas/${selected.value[0].id}`, dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         getSalidas();
       })
       .catch(function (error) {
@@ -186,7 +186,7 @@
     api
       .post("/salidas", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         getSalidas();
       })
       .catch(function (error) {
