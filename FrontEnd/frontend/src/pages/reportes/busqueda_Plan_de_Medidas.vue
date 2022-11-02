@@ -1,0 +1,382 @@
+<template>
+    <div>
+        <q-card class="my-card q-ma-md bg-primary" bordered>
+            <q-card-section>
+                <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows" :columns="columns"
+                    row-key="name" :selected-rows-label="getSelectedString"
+                    v-model:selected="selected" v-model:pagination="pagination">
+                    <template v-slot:top>
+                        <div style="width: 100%" class="row justify-start">
+                            <div class="col-3 text-h6">Plan de medidas</div>
+                            <div class="col-2">
+                                <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
+                                    :options="data.opcions" label="Busqueda por:" />
+                            </div>
+                            <div class="col-4" v-if="data.opcion=='Entidad'">
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined v-model="modelEntidad"
+                                    :options="optionsEntidad" @filter="filterFnEntidad" label="Entidad" />
+                            </div>
+                            <div class="col-4" v-if="data.opcion=='Organismo'">
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined v-model="modelOrganismo"
+                                    :options="optionsOrganismo" @filter="filterFnOrganismo" label="Organismo" />
+                            </div>
+                            <div class="col-3">
+                                <div class="row justify-center">
+                                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                                        class="col-6 text-black q-pa-xs" />
+                                    <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
+                                        @click="getActacontrol()" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </q-table>
+            </q-card-section>
+        </q-card>
+    </div>
+</template>
+
+<script setup>
+import { onMounted, reactive, ref } from "vue";
+import { api } from "boot/axios.js";
+import { useAuthStore } from "src/stores/auth-store";
+import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+
+const pagination = ref({
+  sortBy: "desc",
+  descending: false,
+  page: 1,
+  rowsPerPage: 17,
+});
+
+const auth = useAuthStore();
+const alerts = useAlertsRulesStore();
+const selected = ref([]);
+const columns = [
+    {
+        name: "No",
+        required: true,
+        align: "center",
+        label: "No",
+        field: (row) => row.name,
+        format: (val) => `${val}`,
+        sortable: true,
+    },
+    {
+        name: "entidad",
+        align: "center",
+        label: "Entidad",
+        field: "entidad",
+        sortable: true,
+    },
+    {
+        name: "organismo",
+        align: "center",
+        label: "Organismo",
+        field: "organismo",
+        sortable: true,
+    },
+    {
+        name: "medidas_corto",
+        align: "center",
+        label: "Medidas/C",
+        field: "medidas_corto",
+        sortable: true,
+    },
+    {
+        name: "cumplidas_corto",
+        align: "center",
+        label: "Cumplidas/C",
+        field: "cumplidas_corto",
+        sortable: true,
+    },
+    {
+        name: "porcientoCorto",
+        align: "center",
+        label: "%/C",
+        field: "porcientoCorto",
+        sortable: true,
+    },
+    {
+        name: "medidas_mediano",
+        align: "center",
+        label: "Medidas/M",
+        field: "medidas_mediano",
+        sortable: true,
+    },
+    {
+        name: "cumplidas_mediano",
+        align: "center",
+        label: "Cumplidas/M",
+        field: "cumplidas_mediano",
+        sortable: true,
+    },
+    {
+        name: "porcientoMedio",
+        align: "center",
+        label: "%/M",
+        field: "porcientoMedio",
+        sortable: true,
+    },
+    {
+        name: "medidas_largo",
+        align: "center",
+        label: "Medidas/L",
+        field: "medidas_largo",
+        sortable: true,
+    },
+    {
+        name: "cumplidas_largo",
+        align: "center",
+        label: "Cumplidas/L",
+        field: "cumplidas_largo",
+        sortable: true,
+    },
+    {
+        name: "porcientoLargo",
+        align: "center",
+        label: "%/L",
+        field: "porcientoLargo",
+        sortable: true,
+    },
+    {
+        name: "totalMedidas",
+        align: "center",
+        label: "Total Medidas",
+        field: "totalMedidas",
+        sortable: true,
+    },
+    {
+        name: "totalCumplidas",
+        align: "center",
+        label: "Total Cumplidas",
+        field: "totalCumplidas",
+        sortable: true,
+    },
+    {
+        name: "porcientoTotal",
+        align: "center",
+        label: "%/Total",
+        field: "porcientoTotal",
+        sortable: true,
+    },
+];
+
+const stringOptionsOrganismo = []
+const modelOrganismo = ref([])
+const optionsOrganismo = ref(stringOptionsOrganismo)
+
+const stringOptionsEntidad = []
+const modelEntidad = ref([])
+const optionsEntidad = ref(stringOptionsEntidad)
+
+let data = reactive({
+    rows: [],
+    opcion: "",
+    opcions: ["Entidad", "Organismo"],
+
+    entidades: [],
+    organismos: [],
+
+    fecha_actual: new Date(),
+
+});
+
+function getYear(params) {
+    data.fecha_actual = data.fecha_actual.getFullYear()
+}
+
+function filterFnEntidad(val, update) {
+    if (val === '') {
+        update(() => {
+            optionsEntidad.value = stringOptionsEntidad
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
+    update(() => {
+        const needle = val.toLowerCase()
+        optionsEntidad.value = stringOptionsEntidad.filter(v => v.toLowerCase().indexOf(needle) > -1)
+    })
+}
+
+function filterFnOrganismo(val, update) {
+    if (val === '') {
+        update(() => {
+            optionsOrganismo.value = stringOptionsOrganismo
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
+    update(() => {
+        const needle = val.toLowerCase()
+        optionsOrganismo.value = stringOptionsOrganismo.filter(v => v.toLowerCase().indexOf(needle) > -1)
+    })
+}
+
+onMounted(() => {
+    getYear(),
+        getEntidad(),
+        getOrganismos()
+});
+
+
+async function getOrganismos(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.organismos.push({
+                        id: response.data.data[i].id,
+                        organismo: response.data.data[i].attributes.organismo
+                    });
+                }
+                data.organismos.forEach(element => {
+                    stringOptionsOrganismo.push(element.organismo)
+                });
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
+
+function getEntidad(params) {
+    api
+        .get(`/entidads?filters[activo][$eq]=s`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        }).then(function (response) {
+            //console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                data.entidades.push({
+                    nombre: response.data.data[i].attributes.entidad,
+                    id: response.data.data[i].id
+                }
+                )
+            }
+            data.entidades.forEach(element => {
+                stringOptionsEntidad.push(element.nombre)
+            });
+        }).catch(function (error) {
+            console.log(error.response);
+        });
+}
+
+async function getActacontrol(params) {
+    data.rows = [];
+    let count = 1
+    await api
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                //Unidad de Camiones # 1
+                if (response.data.data[i].attributes.entidad.data != null) {
+                    if (data.opcion == 'Entidad' && response.data.data[i].attributes.entidad.data.attributes.entidad == modelEntidad.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows.push({
+                            name: count,
+                            id: response.data.data[i].id,
+                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
+                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
+                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
+                            medidas_corto: response.data.data[i].attributes.medidas_corto,
+                            medidas_largo: response.data.data[i].attributes.medidas_largo,
+                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
+                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
+                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
+                            porcientoCorto: (response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100,
+                            porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
+                            porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
+                            porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
+                        });
+                        count++
+                    } else if (data.opcion == 'Organismo' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows.push({
+                            name: count,
+                            id: response.data.data[i].id,
+                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
+                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
+                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
+                            medidas_corto: response.data.data[i].attributes.medidas_corto,
+                            medidas_largo: response.data.data[i].attributes.medidas_largo,
+                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
+                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
+                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
+                            porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
+                            porcientoMedio: ((response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100).toFixed(2),
+                            porcientoLargo: ((response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100).toFixed(2),
+                            porcientoTotal: (((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100).toFixed(2),
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
+                        });
+                        count++
+                    }
+                }
+            }
+            let cumplidas_corto=0,cumplidas_largo=0,cumplidas_mediano=0,medidas_corto=0,medidas_largo=0,medidas_mediano=0,totalMedidas=0,totalCumplidas=0,porcientoCorto=0,porcientoMedio=0.00,porcientoLargo=0.00,porcientoTotal=0.00;
+            data.rows.forEach(element => {
+                // if(element.porcientoCorto=="NaN") element.porcientoCorto=0
+                // if(element.porcientoMedio=="NaN") element.porcientoMedio=0
+                // if(element.porcientoLargo=="NaN") element.porcientoLargo=0
+                // if(element.porcientoTotal=="NaN") element.porcientoTotal=0
+                cumplidas_corto+=element.cumplidas_corto
+                cumplidas_largo+=element.cumplidas_largo
+                cumplidas_mediano+=element.cumplidas_mediano
+                medidas_corto+=element.medidas_corto
+                medidas_mediano+=element.medidas_mediano
+                medidas_largo+=element.medidas_largo
+                totalMedidas+=element.totalMedidas
+                totalCumplidas+=element.totalCumplidas
+                porcientoCorto=((cumplidas_corto/medidas_corto)*100).toFixed(2)
+                porcientoMedio=((cumplidas_mediano/medidas_mediano)*100).toFixed(2)
+                porcientoLargo=((cumplidas_largo/medidas_largo)*100).toFixed(2)
+                porcientoTotal=((totalCumplidas/totalMedidas)*100).toFixed(2)
+            });
+            data.rows.push({
+                            name: "Total",
+                            cumplidas_corto: cumplidas_corto,
+                            cumplidas_largo: cumplidas_largo,
+                            cumplidas_mediano: cumplidas_mediano,
+                            medidas_corto: medidas_corto,
+                            medidas_largo: medidas_largo,
+                            medidas_mediano: medidas_mediano,
+                            totalMedidas: totalMedidas,
+                            totalCumplidas: totalCumplidas,
+                            porcientoCorto: porcientoCorto,
+                            porcientoMedio: porcientoMedio,
+                            porcientoLargo: porcientoLargo,
+                            porcientoTotal: porcientoTotal,
+                            entidad: "",
+                            organismo: ""
+                        });
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+}
+
+</script>
+

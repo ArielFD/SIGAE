@@ -2,9 +2,9 @@
   <div>
     <q-card class="my-card q-ma-md bg-primary" bordered>
       <q-card-section>
-        <q-table class="my-sticky-header-table" title="Datos de las Entidades" :rows="data.rows" :columns="columns"
-          row-key="name" :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
-          v-model:pagination="pagination" :filter="filter">
+        <q-table class="my-sticky-header-table" title="Datos de las Entidades" dense :rows="data.rows"
+          :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
+          v-model:selected="selected" v-model:pagination="pagination" :filter="filter">
           <template v-slot:top>
             <div style="width: 100%" class="row justify-between">
               <div class="col-3 text-h6">Datos de la entidad</div>
@@ -15,6 +15,7 @@
                   </template>
                 </q-input>
               </div>
+              <q-btn color="secondary" icon-right="archive" label="Exportar a Ecxel" no-caps @click="exportTable" />
               <q-btn color="secondary" label="Cambiar el nombre de la Entidad" no-caps @click="editNombre" />
               <q-dialog v-model="data.cardCambiar">
                 <q-card class="my-card bg-primary" flat bordered>
@@ -151,14 +152,15 @@ import { onMounted, reactive, ref, watch } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { exportFile, useQuasar } from 'quasar'
 
 const pagination = ref({
   sortBy: "desc",
   descending: false,
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: 17,
 });
-
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -299,6 +301,53 @@ onMounted(() => {
   getPrioridad()
   getSalida()
 });
+
+function wrapCsvValue(val, formatFn, row) {
+  let formatted = formatFn !== void 0
+    ? formatFn(val, row)
+    : val
+
+  formatted = formatted === void 0 || formatted === null
+    ? ''
+    : String(formatted)
+
+  formatted = formatted.split('"').join('""')
+  /**
+   * Excel accepts \n and \r in strings, but some other CSV parsers do not
+   * Uncomment the next two lines to escape new lines
+   */
+  // .split('\n').join('\\n')
+  // .split('\r').join('\\r')
+
+  return `"${formatted}"`
+}
+
+function exportTable() {
+  // naive encoding to csv format
+  const content = [columns.map(col => wrapCsvValue(col.label))].concat(
+    data.rows.map(row => columns.map(col => wrapCsvValue(
+      typeof col.field === 'function'
+        ? col.field(row)
+        : row[col.field === void 0 ? col.name : col.field],
+      col.format,
+      row
+    )).join(','))
+  ).join('\r\n')
+
+  const status = exportFile(
+    'table-export.csv',
+    content,
+    'text/csv'
+  )
+
+  if (status !== true) {
+    $q.notify({
+      message: 'Browser denied file download...',
+      color: 'negative',
+      icon: 'warning'
+    })
+  }
+}
 
 function editNombre(params) {
   (data.entidadEdit = selected.value[0].entidad),
@@ -784,3 +833,4 @@ function getSelectedString() {
 }
 
 </script>
+

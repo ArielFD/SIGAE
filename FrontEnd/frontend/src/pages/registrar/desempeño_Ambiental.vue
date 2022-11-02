@@ -2,7 +2,7 @@
     <div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Desempeño ambiental" :rows="data.rows" :columns="columns"
+                <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows" :columns="columns"
                     row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
                     v-model:selected="selected" v-model:pagination="pagination" :filter="filter">
                     <template v-slot:top>
@@ -117,37 +117,31 @@
                                 </div>
                                 <div class="column items-start">
                                     <q-toggle v-model="data.coordinadorEdit" color="secondary"
-                                        label="Existencia de coordinador" left-label :true-value="1" :false-value="0" />
+                                        label="Existencia de coordinador" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.diagnosticoEdit" color="secondary"
-                                        label="Existencia de diagnostico" left-label :true-value="1" :false-value="0" />
+                                        label="Existencia de diagnostico" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.politicaEdit" color="secondary"
-                                        label="Existencia de politica" left-label />
+                                        label="Existencia de politica" left-label true-value="si" false-value="no"/>
                                     <q-toggle v-model="data.indicadoresEdit" color="secondary"
-                                        label="Existencia de indicadores" left-label :true-value="1" :false-value="0" />
+                                        label="Existencia de indicadores" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.planEdit" color="secondary"
-                                        label="Existencia de plan de accion" left-label />
+                                        label="Existencia de plan de accion" left-label true-value="si" false-value="no"/>
                                     <q-toggle v-model="data.legislacionEdit" color="secondary"
-                                        label="Existencia de legislacion" left-label :true-value="1" :false-value="0" />
+                                        label="Existencia de legislacion" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.capacitacionEdit" color="secondary"
-                                        label="Existencia de plan de capacitacion" left-label :true-value="1"
-                                        :false-value="0" />
+                                        label="Existencia de plan de capacitacion" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.accionesEdit" color="secondary"
-                                        label="Existencia de acciones PML" left-label :true-value="1"
-                                        :false-value="0" />
+                                        label="Existencia de acciones PML" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.programaEdit" color="secondary"
-                                        label="Existencia de programa de gestion ambiental" left-label :true-value="1"
-                                        :false-value="0" />
+                                        label="Existencia de programa de gestion ambiental" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.recursoEdit" color="secondary"
-                                        label="Existencia de recurso financiero" left-label :true-value="1"
-                                        :false-value="0" />
+                                        label="Existencia de recurso financiero" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.aprovechamientoEdit" color="secondary"
-                                        label="Aprovechamiento economico" left-label :true-value="1" :false-value="0" />
+                                        label="Aprovechamiento economico" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.sistemaEdit" color="secondary"
-                                        label="Existencia de sistema de tratamiento" left-label :true-value="1"
-                                        :false-value="0" />
+                                        label="Existencia de sistema de tratamiento" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.cargaEdit" color="secondary"
-                                        label="Disminucion de carga contaminante" left-label :true-value="1"
-                                        :false-value="0" />
+                                        label="Disminucion de carga contaminante" left-label true-value="si" false-value="no" />
                                 </div>
                                 <q-input outlined dense v-model="data.observacionesEdit" type="textarea"
                                     label="Observaciones" class="q-pa-xs" />
@@ -174,10 +168,10 @@ import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
-    sortBy: "desc",
-    descending: false,
-    page: 1,
-    rowsPerPage: 10,
+  sortBy: "desc",
+  descending: false,
+  page: 1,
+  rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -481,14 +475,6 @@ function Create() {
         },
     };
 
-    Object.keys(dataRest.data).forEach(function (key) {
-        if (dataRest.data[key] === "si") {
-            dataRest.data[key] = 1
-        } else if (dataRest.data[key] === "no") {
-            dataRest.data[key] = 0
-        }
-    })
-
     const authorization = {
         headers: {
             Authorization: `Bearer ${auth.jwt}`,
@@ -608,3 +594,4 @@ function getSelectedString() {
 }
 
 </script>
+

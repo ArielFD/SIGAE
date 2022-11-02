@@ -2,9 +2,9 @@
   <div>
     <q-card class="my-card q-ma-md bg-primary" bordered>
       <q-card-section>
-        <q-table class="my-sticky-header-table" :rows="data.rows" :columns="columns" row-key="name"
+        <q-table class="my-sticky-header-table" :rows="data.rows" :columns="columns" dense row-key="name"
           :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
-          v-model:pagination="pagination" :filter="filter">
+          v-model:pagination="pagination" :filter="filter" >
           <template v-slot:top>
             <div style="width: 100%" class="row justify-between">
               <div class="col-3 text-h6">Actas de Control</div>
@@ -369,7 +369,7 @@ const pagination = ref({
   sortBy: "desc",
   descending: false,
   page: 1,
-  rowsPerPage: 10,
+  rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -920,7 +920,7 @@ function getSelectedString() {
 
 </script>
 
-<style lang="sass">
+<!-- <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
   height: 600px
@@ -941,4 +941,4 @@ function getSelectedString() {
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
-</style>
+</style> -->

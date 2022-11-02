@@ -20,9 +20,6 @@
     "tipo_residual": {
       "type": "string"
     },
-    "cantidad": {
-      "type": "string"
-    },
     "disposicion": {
       "type": "text"
     },
@@ -36,6 +33,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::unidad.unidad"
+    },
+    "cantidad": {
+      "type": "string"
     }
   }
 }

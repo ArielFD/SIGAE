@@ -2,7 +2,7 @@
     <div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Carga contaminante" :rows="data.rows" :columns="columns"
+                <q-table class="my-sticky-header-table" title="Carga contaminante" dense :rows="data.rows" :columns="columns"
                     row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
                     v-model:selected="selected" v-model:pagination="pagination" />
             </q-card-section>
@@ -132,10 +132,10 @@ import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
-    sortBy: "desc",
-    descending: false,
-    page: 1,
-    rowsPerPage: 10,
+  sortBy: "desc",
+  descending: false,
+  page: 1,
+  rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -502,3 +502,4 @@ function getSelectedString() {
 }
 
 </script>
+

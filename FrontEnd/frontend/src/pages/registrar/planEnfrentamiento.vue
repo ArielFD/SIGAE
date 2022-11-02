@@ -2,7 +2,7 @@
     <div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" :rows="data.rows"
+                <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
                     v-model:selected="selected" v-model:pagination="pagination" />
             </q-card-section>
@@ -415,10 +415,10 @@ import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
-    sortBy: "desc",
-    descending: false,
-    page: 1,
-    rowsPerPage: 10,
+  sortBy: "desc",
+  descending: false,
+  page: 1,
+  rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -485,12 +485,12 @@ const options = ref(stringOptions)
 let data = reactive({
     rows: [],
 
-    desechos: "",
-    inversiones: "",
-    licencia: "",
+    desechos: "no",
+    inversiones: "no",
+    licencia: "no",
     observaciones: "",
-    permiso: "",
-    plan: "",
+    permiso: "no",
+    plan: "no",
     sistema: "no",
     trampa: "no",
     medidas: "",
@@ -799,7 +799,7 @@ function getSelectedString() {
 
 </script>
   
-<style lang="sass">
+<!-- <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
   height: 600px
@@ -820,4 +820,4 @@ function getSelectedString() {
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
-</style>
+</style> -->
