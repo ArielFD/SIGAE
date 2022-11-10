@@ -6,11 +6,19 @@
                     :columns="columns" row-key="name" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-between">
-                            <div class="col-3 text-h6">Desempeño por ministerio</div>
-                            <div class="col-4">
+                            <div class="col-3 text-h6">Desempeño Ambiental</div>
+                            <div class="col-2">
+                                <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
+                                    :options="data.opcions" label="Busqueda por:" />
+                            </div>
+                            <div class="col-3" v-if="data.opcion == 'OACE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelOrganismo" :options="optionsOrganismo" @filter="filterFnOrganismo"
-                                    label="Organismo" />
+                                    label="OACE" />
+                            </div>
+                            <div class="col-3" v-if="data.opcion == 'OSDE'">
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde" label="OSDE" />
                             </div>
                             <div class="col-3">
                                 <div class="row justify-center">
@@ -39,6 +47,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { exportFile, useQuasar } from 'quasar'
 
 const pagination = ref({
     sortBy: "desc",
@@ -177,68 +186,94 @@ const stringOptionsOrganismo = []
 const modelOrganismo = ref([])
 const optionsOrganismo = ref(stringOptionsOrganismo)
 
+const stringOptionsOsde = []
+const modelOsde = ref([])
+const optionsOsde = ref(stringOptionsOsde)
+
 let data = reactive({
     rows: [],
     organismos: [],
+    osdes: [],
     cantidad: 0,
     fecha_actual: new Date(),
+
+    opcion: "",
+    opcions: ["OACE", "OSDE"],
 
 });
 
 onMounted(() => {
     getYear(),
-    getOrganismos()
+        getOrganismos(),
+        getOSDE()
 });
 
 function wrapCsvValue(val, formatFn, row) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val, row)
-    : val
+    let formatted = formatFn !== void 0
+        ? formatFn(val, row)
+        : val
 
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
+    formatted = formatted === void 0 || formatted === null
+        ? ''
+        : String(formatted)
 
-  formatted = formatted.split('"').join('""')
-  /**
-   * Excel accepts \n and \r in strings, but some other CSV parsers do not
-   * Uncomment the next two lines to escape new lines
-   */
-  // .split('\n').join('\\n')
-  // .split('\r').join('\\r')
+    formatted = formatted.split('"').join('""')
+    /**
+     * Excel accepts \n and \r in strings, but some other CSV parsers do not
+     * Uncomment the next two lines to escape new lines
+     */
+    // .split('\n').join('\\n')
+    // .split('\r').join('\\r')
 
-  return `"${formatted}"`
+    return `"${formatted}"`
 }
 
 function exportTable() {
-  // naive encoding to csv format
-  const content = [columns.map(col => wrapCsvValue(col.label))].concat(
-    data.rows.map(row => columns.map(col => wrapCsvValue(
-      typeof col.field === 'function'
-        ? col.field(row)
-        : row[col.field === void 0 ? col.name : col.field],
-      col.format,
-      row
-    )).join(','))
-  ).join('\r\n')
+    // naive encoding to csv format
+    const content = [columns.map(col => wrapCsvValue(col.label))].concat(
+        data.rows.map(row => columns.map(col => wrapCsvValue(
+            typeof col.field === 'function'
+                ? col.field(row)
+                : row[col.field === void 0 ? col.name : col.field],
+            col.format,
+            row
+        )).join(','))
+    ).join('\r\n')
 
-  const status = exportFile(
-    'table-export.csv',
-    content,
-    'text/csv'
-  )
+    const status = exportFile(
+        'table-export.csv',
+        content,
+        'text/csv'
+    )
 
-  if (status !== true) {
-    $q.notify({
-      message: 'Browser denied file download...',
-      color: 'negative',
-      icon: 'warning'
-    })
-  }
+    if (status !== true) {
+        $q.notify({
+            message: 'Browser denied file download...',
+            color: 'negative',
+            icon: 'warning'
+        })
+    }
 }
 
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()
+}
+
+function filterFnOsde(val, update) {
+    if (val === '') {
+        update(() => {
+            optionsOsde.value = stringOptionsOsde
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
+    update(() => {
+        const needle = val.toLowerCase()
+        optionsOsde.value = stringOptionsOsde.filter(v => v.toLowerCase().indexOf(needle) > -1)
+    })
 }
 
 function filterFnOrganismo(val, update) {
@@ -258,7 +293,31 @@ function filterFnOrganismo(val, update) {
     })
 }
 
-
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/osdes`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.osdes.push({
+                        id: response.data.data[i].id,
+                        osde: response.data.data[i].attributes.nombre
+                    });
+                }
+                data.osdes.forEach(element => {
+                    stringOptionsOsde.push(element.osde)
+                });
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+}
 
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
@@ -291,7 +350,7 @@ async function getDesempeño(params) {
     let count = 1
     for (let index = 1; index < 10; index++) {
         await api
-            .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`, {
+            .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`, {
                 headers: {
                     Authorization: "Bearer " + auth.jwt,
                 },
@@ -300,7 +359,39 @@ async function getDesempeño(params) {
                 console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo == modelOrganismo.value && (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores) >= data.cantidad) {
+                        if (data.opcion == "OACE" && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo == modelOrganismo.value && (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores) == data.cantidad) {
+                            data.rows.push({
+                                name: count.toString(),
+                                id: response.data.data[i].id,
+                                entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+                                coordinador: response.data.data[i].attributes.exist_coordinador,
+                                diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                                politica: response.data.data[i].attributes.exist_politica,
+                                indicadores: response.data.data[i].attributes.exist_indicadores,
+                                plan: response.data.data[i].attributes.exist_plan_accion,
+                                legislacion: response.data.data[i].attributes.exist_legislacion,
+                                capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                                acciones: response.data.data[i].attributes.exist_accionespml,
+                                programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                                recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                                aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                                sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                                anno: response.data.data[i].attributes.anno,
+                                carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                                observaciones: response.data.data[i].attributes.observaciones,
+                                total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
+                            });
+                            Object.keys(data.rows[i]).forEach(function (key) {
+                                if (data.rows[i][key] === 1) {
+                                    data.rows[i][key] = "si"
+                                } else if (data.rows[i][key] === 0) {
+                                    data.rows[i][key] = "no"
+                                }
+                            })
+                            count++
+                        } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data[0].attributes.osde.data != null && response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre == modelOsde.value) {
+                            if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                            console.log("number",i);
                             data.rows.push({
                                 name: count.toString(),
                                 id: response.data.data[i].id,

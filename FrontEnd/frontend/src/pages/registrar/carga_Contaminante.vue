@@ -28,7 +28,7 @@
                                     <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
                                 </div>
                                 <div class="column items-start">
-                                    <q-input outlined dense v-model="data._DB05" type="number" label="DB05(mg/l)"
+                                    <q-input outlined dense v-model="data._DB05" type="number" label="DB0₅(mg/l)"
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data._DQ0" type="number" label="DQ0(mg/l)"
                                         class="col-2 q-pa-xs" />
@@ -40,15 +40,15 @@
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data._SSED" type="number" label="S.SED(mg/l)"
                                         class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PH" type="number" label="PH"
+                                    <q-input outlined dense v-model="data._PH" type="number" label="pH(U)"
                                         class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._TEMP" type="number" label="TEMP(C)"
+                                    <q-input outlined dense v-model="data._TEMP" type="number" label="TEMP(⁰C)"
                                         class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._COND" type="number" label="COND"
+                                    <q-input outlined dense v-model="data._COND" type="number" label="COND(µS/cm)"
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data.Hidrocarburos" type="number"
-                                        label="Hidrocarburos" class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.Flujo" type="number" label="Flujo(m3/s)"
+                                        label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
+                                    <q-input outlined dense v-model="data.Flujo" type="number" label="Flujo(m³/día)"
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data.Grasas" type="number"
                                         label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
@@ -84,7 +84,7 @@
                                     <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año" class="col-2" />
                                 </div>
                                 <div class="column items-start">
-                                    <q-input outlined dense v-model="data._DB05Edit" type="number" label="DB05(mg/l)"
+                                    <q-input outlined dense v-model="data._DB05Edit" type="number" label="DB0₅(mg/l)"
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data._DQ0Edit" type="number" label="DQ0(mg/l)"
                                         class="col-2 q-pa-xs" />
@@ -96,15 +96,15 @@
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data._SSEDEdit" type="number" label="S.SED(mg/l)"
                                         class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PHEdit" type="number" label="PH"
+                                    <q-input outlined dense v-model="data._PHEdit" type="number" label="pH(U)"
                                         class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._TEMPEdit" type="number" label="TEMP(C)"
+                                    <q-input outlined dense v-model="data._TEMPEdit" type="number" label="TEMP(⁰C)"
                                         class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._CONDEdit" type="number" label="COND"
+                                    <q-input outlined dense v-model="data._CONDEdit" type="number" label="COND(µS/cm)"
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data.HidrocarburosEdit" type="number"
-                                        label="Hidrocarburos" class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.FlujoEdit" type="number" label="Flujo(m3/s)"
+                                        label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
+                                    <q-input outlined dense v-model="data.FlujoEdit" type="number" label="Flujo(m³/día)"
                                         class="col-2 q-pa-xs" />
                                     <q-input outlined dense v-model="data.GrasasEdit" type="number"
                                         label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
@@ -168,7 +168,7 @@ const columns = [
     {
         name: "DB05",
         align: "center",
-        label: "DB05",
+        label: "DB0₅",
         field: "DB05",
         sortable: true,
     },
@@ -203,7 +203,7 @@ const columns = [
     {
         name: "PH",
         align: "center",
-        label: "PH",
+        label: "pH",
         field: "PH",
         sortable: true,
     },

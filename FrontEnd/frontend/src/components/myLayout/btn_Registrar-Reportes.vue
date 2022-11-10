@@ -37,6 +37,9 @@
           <q-item clickable :to="{ name: 'busqueda_Plan_de_Medidas' }" class="text-black">
             <q-item-section>Búsqueda Plan de Medidas</q-item-section>
           </q-item>
+          <q-item clickable :to="{ name: 'plan_enfrentamiento' }" class="text-black">
+            <q-item-section>Plan de enfrentamiento</q-item-section>
+          </q-item>
           <q-item clickable :to="{ name: 'desempeño_por_Ministerio' }" class="text-black">
             <q-item-section>Desempeño por Ministerio</q-item-section>
           </q-item>

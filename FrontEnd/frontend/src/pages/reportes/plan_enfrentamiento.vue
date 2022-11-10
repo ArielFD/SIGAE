@@ -4,7 +4,35 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
-                    v-model:selected="selected" v-model:pagination="pagination" />
+                    v-model:selected="selected" v-model:pagination="pagination" >
+                    <template v-slot:top>
+                        <div style="width: 100%" class="row justify-start">
+                            <div class="col-3 text-h6">Plan de enfrentamiento</div>
+                            <div class="col-2">
+                                <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
+                                    :options="data.opcions" label="Busqueda por:" />
+                            </div>
+                            <div class="col-4" v-if="data.opcion=='OACE'">
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                                    v-model="modelOrganismo" :options="optionsOrganismo" @filter="filterFnOrganismo"
+                                    label="OACE" />
+                            </div>
+                            <div class="col-4" v-if="data.opcion=='OSDE'">
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde"
+                                    label="OSDE" />
+                            </div>
+                            <div class="col-3">
+                                <div class="row justify-center">
+                                    <!-- <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                                        class="col-6 text-black q-pa-xs" /> -->
+                                    <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
+                                        @click="getEnfrentamiento()" />
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </q-table>
             </q-card-section>
 
             <q-card-actions class="justify-end">
@@ -24,7 +52,7 @@
                                 <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
                                     v-model="model" :options="options" @filter="filterFn" label="Entidad"
                                     style="max-width: 50%" />
-                                <q-input outlined dense v-model="data.fecha" type="date" hint="Fecha" />
+                                    <q-input outlined dense v-model="data.fecha" type="date" hint="Fecha" />
                             </div>
                             <div>
                                 <q-item>
@@ -41,7 +69,7 @@
                                     </q-item-section>
                                 </q-item>
                             </div>
-                            <div v-if="data.plan == 'si'">
+                            <div v-if="data.plan=='si'">
                                 <div>
                                     Acerca del plan:
                                     <q-item>
@@ -76,7 +104,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.permiso == 'si'">
+                            <div v-if="data.permiso=='si'">
                                 <div>
                                     Detalles:
                                     <q-item>
@@ -107,7 +135,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.licencia == 'si'">
+                            <div v-if="data.licencia=='si'">
                                 <div>
                                     Detalles:
                                     <q-item>
@@ -136,7 +164,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.desechos == 'si'">
+                            <div v-if="data.desechos=='si'">
                                 <div>
                                     <q-item>
                                         <q-item-section>
@@ -165,7 +193,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.inversiones == 'si'">
+                            <div v-if="data.inversiones=='si'">
                                 <div>
                                     Detalles:
                                     <q-item>
@@ -219,7 +247,7 @@
                                 <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
                                     v-model="data.entidadEdit" :options="options" @filter="filterFn" label="Entidad"
                                     style="max-width: 50%" />
-                                <q-input outlined dense v-model="data.fechaEdit" type="date" hint="Fecha" />
+                                    <q-input outlined dense v-model="data.fechaEdit" type="date" hint="Fecha" />
                             </div>
                             <div>
                                 <q-item>
@@ -236,7 +264,7 @@
                                     </q-item-section>
                                 </q-item>
                             </div>
-                            <div v-if="data.planEdit == 'si'">
+                            <div v-if="data.planEdit=='si'">
                                 <div>
                                     <q-item>
                                         <q-item-section avatar>Acerca del plan:</q-item-section>
@@ -274,7 +302,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.permisoEdit == 'si'">
+                            <div v-if="data.permisoEdit=='si'">
                                 <div>
                                     Detalles:
                                     <q-item>
@@ -305,7 +333,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.licenciaEdit == 'si'">
+                            <div v-if="data.licenciaEdit=='si'">
                                 <div>
                                     Detalles:
                                     <q-item>
@@ -335,7 +363,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.desechosEdit == 'si'">
+                            <div v-if="data.desechosEdit=='si'">
                                 <div>
                                     <q-item>
                                         <q-item-section>
@@ -364,7 +392,7 @@
                                 </q-item>
 
                             </div>
-                            <div v-if="data.inversionesEdit == 'si'">
+                            <div v-if="data.inversionesEdit=='si'">
                                 <div>
                                     Detalles:
                                     <q-item>
@@ -415,10 +443,10 @@ import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
-    sortBy: "desc",
-    descending: false,
-    page: 1,
-    rowsPerPage: 17,
+  sortBy: "desc",
+  descending: false,
+  page: 1,
+  rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -442,38 +470,45 @@ const columns = [
         sortable: true,
     },
     {
-        name: "fecha",
+        name: "oace",
         align: "center",
-        label: "Fecha",
-        field: "fecha",
+        label: "OACE",
+        field: "oace",
         sortable: true,
     },
     {
-        name: "plan",
+        name: "medidas",
         align: "center",
-        label: "Plan correctamente elaborado",
-        field: "plan",
+        label: "Total de Medidas",
+        field: "medidas",
         sortable: true,
     },
     {
-        name: "licencia",
+        name: "cumplidas",
         align: "center",
-        label: "Licencia ambiental actualizada",
-        field: "licencia",
+        label: "Total de Medidas Cumplidas",
+        field: "cumplidas",
         sortable: true,
     },
     {
-        name: "desechos",
+        name: "incumplidas",
         align: "center",
-        label: "Tiene plan de manejo de desechos peligrosos",
-        field: "desechos",
+        label: "Total de Medidas Incumplidas",
+        field: "incumplidas",
         sortable: true,
     },
+    // {
+    //     name: "sistTrat",
+    //     align: "center",
+    //     label: "Sistema u Organo de tratamiento",
+    //     field: "sistTrat",
+    //     sortable: true,
+    // },
     {
-        name: "inversiones",
+        name: "funcionaBien",
         align: "center",
-        label: "Inversiones en ejecucion o preparacion",
-        field: "inversiones",
+        label: "Funcioan Bien",
+        field: "funcionaBien",
         sortable: true,
     },
     {
@@ -482,73 +517,59 @@ const columns = [
         label: "Monitoreo",
         field: "monitoreo",
         sortable: true,
+    },
+    {
+        name: "inversiones",
+        align: "center",
+        label: "Inversiones",
+        field: "inversiones",
+        sortable: true,
+    },
+    {
+        name: "permiso",
+        align: "center",
+        label: "Permiso de Vertimiento",
+        field: "permiso",
+        sortable: true,
+    },
+    {
+        name: "nombreLicencia",
+        align: "center",
+        label: "Licencia Ambiental",
+        field: "nombreLicencia",
+        sortable: true,
+    },
+    {
+        name: "plan",
+        align: "center",
+        label: "Plan de Manejo",
+        field: "plan",
+        sortable: true,
     }
 ];
 
-const stringOptions = []
-const model = ref([])
-const options = ref(stringOptions)
+const stringOptionsOrganismo = []
+const modelOrganismo = ref([])
+const optionsOrganismo = ref(stringOptionsOrganismo)
+
+const stringOptionsOsde = []
+const modelOsde = ref([])
+const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
     rows: [],
 
-    desechos: "no",
-    inversiones: "no",
-    licencia: "no",
-    observaciones: "",
-    permiso: "no",
-    plan: "no",
-    sistema: "no",
-    trampa: "no",
-    medidas: "",
-    cumplidas: "",
-    evaluadas: "",
-    incumplidas: "",
-    nombrePermiso: "",
-    cuerpo: "",
-    nombreLicencia: "",
-    observacionesDesechos: "",
-    marcha: "",
-    descripcion: "",
-    fecha: "",
-
-    desechosEdit: "",
-    inversionesEdit: "",
-    licenciaEdit: "",
-    observacionesEdit: "",
-    permisoEdit: "",
-    planEdit: "",
-    sistemaEdit: "no",
-    trampaEdit: "no",
-    medidasEdit: "",
-    cumplidasEdit: "",
-    evaluadasEdit: "",
-    incumplidasEdit: "",
-    nombrePermisoEdit: "",
-    cuerpoEdit: "",
-    nombreLicenciaEdit: "",
-    observacionesDesechosEdit: "",
-    marchaEdit: "",
-    descripcionEdit: "",
-    fechaEdit: "",
-
-    categoriaEdit: "",
-    cardEdit: false,
-    cardCreate: false,
-
-    entidades: [],
-    tempEntidad: [],
-    entidadEdit: "",
-    identidadEdit: "",
-
-    monitoreo: false,
-    fecha_actual: new Date()
+    opcion: "",
+    opcions: ["OACE", "OSDE"],
+    
+    organismos: [],
+    osdes:[],
 });
 
-function filterFn(val, update) {
+function filterFnOsde(val, update) {
     if (val === '') {
         update(() => {
-            options.value = stringOptions
+            optionsOsde.value = stringOptionsOsde
 
             // here you have access to "ref" which
             // is the Vue reference of the QSelect
@@ -558,204 +579,36 @@ function filterFn(val, update) {
 
     update(() => {
         const needle = val.toLowerCase()
-        options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        optionsOsde.value = stringOptionsOsde.filter(v => v.toLowerCase().indexOf(needle) > -1)
+    })
+}
+
+function filterFnOrganismo(val, update) {
+    if (val === '') {
+        update(() => {
+            optionsOrganismo.value = stringOptionsOrganismo
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
+    update(() => {
+        const needle = val.toLowerCase()
+        optionsOrganismo.value = stringOptionsOrganismo.filter(v => v.toLowerCase().indexOf(needle) > -1)
     })
 }
 
 onMounted(() => {
-    getEnfrentamiento()
-    getEntidad()
-    getYear()
+    getOrganismos(),
+        getOSDE()
 });
 
-function getYear(params) {
-    data.fecha_actual = data.fecha_actual.getFullYear()
-}
-
-function editFields(params) {
-    (data.planEdit = selected.value[0].plan),
-        (data.sistemaEdit = selected.value[0].sistema),
-        (data.trampaEdit = selected.value[0].trampa),
-        (data.permisoEdit = selected.value[0].permiso),
-        (data.licenciaEdit = selected.value[0].licencia),
-        (data.desechosEdit = selected.value[0].desechos),
-        (data.inversionesEdit = selected.value[0].inversiones),
-        (data.observacionesEdit = selected.value[0].observaciones),
-        (data.medidasEdit = selected.value[0].medidas),
-        (data.cumplidasEdit = selected.value[0].cumplidas),
-        (data.evaluadasEdit = selected.value[0].evaluadas),
-        (data.nombrePermisoEdit = selected.value[0].nombrePermiso),
-        (data.cuerpoEdit = selected.value[0].cuerpoReceptor),
-        (data.nombreLicenciaEdit = selected.value[0].nombreLicencia),
-        (data.observacionesDesechosEdit = selected.value[0].observacionesDesechos),
-        (data.marchaEdit = selected.value[0].marchaAcorde),
-        (data.descripcionEdit = selected.value[0].descripcion),
-        (data.fechaEdit = selected.value[0].fecha),
-        (data.incumplidasEdit = selected.value[0].incumplidas),
-        (data.entidadEdit = selected.value[0].entidad),
-        (data.cardEdit = true);
-}
-
-function Edit(params) {
-    data.entidades.forEach(element => {
-        if (element.nombre == data.entidadEdit) data.identidadEdit = { id: element.id }
-    });
-    const dataRest = {
-        data: {
-            desechos: data.desechosEdit,
-            inversiones: data.inversionesEdit,
-            licencia: data.licenciaEdit,
-            observaciones: data.observacionesEdit,
-            permiso: data.permisoEdit,
-            plan: data.planEdit,
-            sistema: data.sistemaEdit,
-            trampa: data.trampaEdit,
-            medidas: data.medidasEdit,
-            cumplidas: data.cumplidasEdit,
-            evaluadas: data.evaluadasEdit,
-            incumplidas: data.incumplidasEdit,
-            entidad: data.identidadEdit,
-            nombrePermiso: data.nombrePermisoEdit,
-            cuerpoReceptor: data.cuerpoEdit,
-            nombreLicencia: data.nombreLicenciaEdit,
-            observacionesDesechos: data.observacionesDesechosEdit,
-            marchaAcorde: data.marchaEdit,
-            descripcion: data.descripcionEdit,
-            fecha: data.fechaEdit
-        },
-    };
-
-    console.log(dataRest);
-
-    Object.keys(dataRest.data).forEach(function (key) {
-        if (dataRest.data[key] === "si") {
-            dataRest.data[key] = true
-        } else if (dataRest.data[key] === "no") {
-            dataRest.data[key] = false
-        }
-    })
-
-    console.log(dataRest);
-
-    const authorization = {
-        headers: {
-            Authorization: `Bearer ${auth.jwt}`,
-        },
-    };
-
-    api
-        .put(`/plan-enfrentamientos/${selected.value[0].id}`, dataRest, authorization)
-        .then(function (response) {
-            //console.log(response);
-            getEnfrentamiento();
-        })
-        .catch(function (error) {
-            console.log(error.response);
-        });
-}
-
-function Create() {
-    data.entidades.forEach(element => {
-        if (element.nombre == model.value) data.tempEntidad = { id: element.id }
-    });
-    const dataRest = {
-        data: {
-            desechos: data.desechos,
-            inversiones: data.inversiones,
-            licencia: data.licencia,
-            observaciones: data.observaciones,
-            permiso: data.permiso,
-            plan: data.plan,
-            sistema: data.sistema,
-            trampa: data.trampa,
-            medidas: data.medidas,
-            cumplidas: data.cumplidas,
-            evaluadas: data.evaluadas,
-            incumplidas: data.incumplidas,
-            entidad: data.tempEntidad,
-            nombrePermiso: data.nombrePermiso,
-            cuerpoReceptor: data.cuerpo,
-            nombreLicencia: data.nombreLicencia,
-            observacionesDesechos: data.observacionesDesechos,
-            marchaAcorde: data.marcha,
-            descripcion: data.descripcion,
-            fecha: data.fecha
-        },
-    };
-
-    Object.keys(dataRest.data).forEach(function (key) {
-        if (dataRest.data[key] === "si") {
-            dataRest.data[key] = true
-        } else if (dataRest.data[key] === "no") {
-            dataRest.data[key] = false
-        }
-    })
-
-    const authorization = {
-        headers: {
-            Authorization: `Bearer ${auth.jwt}`,
-        },
-    };
-
-    api
-        .post("/plan-enfrentamientos", dataRest, authorization)
-        .then(function (response) {
-            //console.log(response);
-            getEnfrentamiento();
-        })
-        .catch(function (error) {
-            console.log(error.response);
-        });
-}
-
-function Delete(params) {
-    for (let index = 0; index < selected.value.length; index++) {
-        api
-            .delete(`/plan-enfrentamientos/${selected.value[index].id}`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                getEnfrentamiento()
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-
-    }
-    selected.value = []
-}
-
-function getEntidad(params) {
-    api
-        .get(`/entidads?filters[activo][$eq]=s`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
-            //console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                data.entidades.push({
-                    nombre: response.data.data[i].attributes.entidad,
-                    id: response.data.data[i].id
-                }
-                )
-            }
-            data.entidades.forEach(element => {
-                stringOptions.push(element.nombre)
-            });
-        }).catch(function (error) {
-            console.log(error.response);
-        });
-}
-
-async function getEnfrentamiento(params) {
-    data.rows = [];
-    let count = 1
+async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/plan-enfrentamientos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
                 headers: {
                     Authorization: "Bearer " + auth.jwt,
                 },
@@ -763,44 +616,13 @@ async function getEnfrentamiento(params) {
             .then(function (response) {
                 console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
-                    data.rows.push({
-                        name: count,
+                    data.organismos.push({
                         id: response.data.data[i].id,
-                        entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                        desechos: response.data.data[i].attributes.desechos,
-                        inversiones: response.data.data[i].attributes.inversiones,
-                        licencia: response.data.data[i].attributes.licencia,
-                        observaciones: response.data.data[i].attributes.observaciones,
-                        permiso: response.data.data[i].attributes.permiso,
-                        plan: response.data.data[i].attributes.plan,
-                        sistema: response.data.data[i].attributes.sistema,
-                        trampa: response.data.data[i].attributes.trampa,
-                        medidas: response.data.data[i].attributes.medidas,
-                        cumplidas: response.data.data[i].attributes.cumplidas,
-                        evaluadas: response.data.data[i].attributes.evaluadas,
-                        incumplidas: response.data.data[i].attributes.incumplidas,
-                        cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
-                        descripcion: response.data.data[i].attributes.descripcion,
-                        marchaAcorde: response.data.data[i].attributes.marchaAcorde,
-                        nombreLicencia: response.data.data[i].attributes.nombreLicencia,
-                        nombrePermiso: response.data.data[i].attributes.nombrePermiso,
-                        observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
-                        fecha: response.data.data[i].attributes.fecha,
-                        monitoreo: false,
-                        tratamiento: false,
-                        funcionamiento: ""
+                        organismo: response.data.data[i].attributes.organismo
                     });
-                    Object.keys(data.rows[i]).forEach(function (key) {
-                        if (data.rows[i][key] === true) {
-                            data.rows[i][key] = "si"
-                        } else if (data.rows[i][key] === false) {
-                            data.rows[i][key] = "no"
-                        }
-                    })
-                    count++
                 }
-                data.rows.forEach(element => {
-                    getContaminantes(element)
+                data.organismos.forEach(element => {
+                    stringOptionsOrganismo.push(element.organismo)
                 });
             })
             .catch(function (error) {
@@ -809,109 +631,128 @@ async function getEnfrentamiento(params) {
     }
 }
 
-async function getContaminantes(params) {
-    for (let index = 1; index < 3; index++) {
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
         await api
-            .get(`/cargacontaminantes?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc`, {
+            .get(`/osdes`, {
                 headers: {
                     Authorization: "Bearer " + auth.jwt,
                 },
             })
             .then(function (response) {
-                //console.log(response);
+                console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
-                            params.monitoreo = "si"
-                        } 
+                    data.osdes.push({
+                        id: response.data.data[i].id,
+                        osde: response.data.data[i].attributes.nombre
+                    });
+                }
+                data.osdes.forEach(element => {
+                    stringOptionsOsde.push(element.osde)
+                });
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
+
+async function getEnfrentamiento(params) {
+    data.rows = [];
+    let count = 1
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&pagination[page]=${index}&pagination[pageSize]=100`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    if (response.data.data[i].attributes.entidad.data != null) {
+                        if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value){
+                            if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                            data.rows.push({
+                                name: count,
+                                id: response.data.data[i].id,
+                                entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                                desechos: response.data.data[i].attributes.desechos,
+                                inversiones: response.data.data[i].attributes.inversiones,
+                                licencia: response.data.data[i].attributes.licencia,
+                                observaciones: response.data.data[i].attributes.observaciones,
+                                permiso: response.data.data[i].attributes.permiso,
+                                plan: response.data.data[i].attributes.plan,
+                                sistema: response.data.data[i].attributes.sistema,
+                                trampa: response.data.data[i].attributes.trampa,
+                                medidas: response.data.data[i].attributes.medidas,
+                                cumplidas: response.data.data[i].attributes.cumplidas,
+                                evaluadas: response.data.data[i].attributes.evaluadas,
+                                incumplidas: response.data.data[i].attributes.incumplidas,
+                                cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
+                                descripcion: response.data.data[i].attributes.descripcion,
+                                marchaAcorde: response.data.data[i].attributes.marchaAcorde,
+                                nombreLicencia: response.data.data[i].attributes.nombreLicencia,
+                                nombrePermiso: response.data.data[i].attributes.nombrePermiso,
+                                observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
+                                fecha: response.data.data[i].attributes.fecha,
+                                monitoreo:response.data.data[i].attributes.licencia,
+                                funcionaBien:response.data.data[i].attributes.permiso,
+                                Inversiones:response.data.data[i].attributes.licencia,
+                            });
+                            Object.keys(data.rows[i]).forEach(function (key) {
+                                if (data.rows[i][key] === true) {
+                                    data.rows[i][key] = "si"
+                                } else if (data.rows[i][key] === false) {
+                                    data.rows[i][key] = "no"
+                                }
+                            })
+                            count++
+                        }else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data!=null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                            if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                            data.rows.push({
+                                name: count,
+                                id: response.data.data[i].id,
+                                entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                                desechos: response.data.data[i].attributes.desechos,
+                                inversiones: response.data.data[i].attributes.inversiones,
+                                licencia: response.data.data[i].attributes.licencia,
+                                observaciones: response.data.data[i].attributes.observaciones,
+                                permiso: response.data.data[i].attributes.permiso,
+                                plan: response.data.data[i].attributes.plan,
+                                sistema: response.data.data[i].attributes.sistema,
+                                trampa: response.data.data[i].attributes.trampa,
+                                medidas: response.data.data[i].attributes.medidas,
+                                cumplidas: response.data.data[i].attributes.cumplidas,
+                                evaluadas: response.data.data[i].attributes.evaluadas,
+                                incumplidas: response.data.data[i].attributes.incumplidas,
+                                cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
+                                descripcion: response.data.data[i].attributes.descripcion,
+                                marchaAcorde: response.data.data[i].attributes.marchaAcorde,
+                                nombreLicencia: response.data.data[i].attributes.nombreLicencia,
+                                nombrePermiso: response.data.data[i].attributes.nombrePermiso,
+                                observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
+                                fecha: response.data.data[i].attributes.fecha,
+                                monitoreo:response.data.data[i].attributes.licencia,
+                                funcionaBien:response.data.data[i].attributes.permiso,
+                                Inversiones:response.data.data[i].attributes.licencia,
+                            });
+                            Object.keys(data.rows[i]).forEach(function (key) {
+                                if (data.rows[i][key] === true) {
+                                    data.rows[i][key] = "si"
+                                } else if (data.rows[i][key] === false) {
+                                    data.rows[i][key] = "no"
+                                }
+                            })
+                            count++
+                        }
                     }
-                    break;
                 }
             })
             .catch(function (error) {
                 console.log(error);
             });
     }
-}
-
-async function getTratamiento(params) {
-    for (let index = 1; index < 3; index++) {
-        await api
-            .get(`/sis-tratamientos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
-                            params.monitoreo = "si"
-                        } 
-                    }
-                    break;
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-}
-
-async function getFuncionamiento(params) {
-    for (let index = 1; index < 3; index++) {
-        await api
-            .get(`/trampa-grasas?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
-                            params.monitoreo = "si"
-                        } 
-                    }
-                    break;
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
-}
-
-function getSelectedString() {
-    return selected.value.length === 0
-        ? ""
-        : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
-        } selected of ${data.rows.length}`;
 }
 
 </script>
-  
-<!-- <style lang="sass">
-.my-sticky-header-table
-  /* height or max-height is important */
-  height: 600px
-
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #c1f4cd
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-</style> -->

@@ -45,6 +45,11 @@ const routes = [
         component: () => import("pages/reportes/busqueda_Plan_de_Medidas.vue"),
       },
       {
+        path: "reportes/plan_enfrentamiento",
+        name:"plan_enfrentamiento",
+        component: () => import("pages/reportes/plan_enfrentamiento.vue"),
+      },
+      {
         path: "reportes/desempeño_por_Ministerio",
         name:"desempeño_por_Ministerio",
         component: () => import("pages/reportes/desempeño_por_Ministerio.vue"),

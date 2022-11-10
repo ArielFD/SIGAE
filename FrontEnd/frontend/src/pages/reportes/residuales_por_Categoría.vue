@@ -7,21 +7,28 @@
                     v-model:selected="selected" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
-                            <div class="col-3 text-h6">Residuales</div>
+                            <div class="col-3 text-h6">Aprovechamiento de Residuales</div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Residuales por:" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='Categoria'">
+                            <div class="col-4" v-if="data.opcion == 'Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelCategoria" :options="optionsCategoria" @filter="filterFnCategoria"
                                     label="Categoria" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='Ministerio y Categoria'">
+                            <div class="col-4" v-if="data.opcion == 'OACE y Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelOrganismo" :options="optionsOrganismo" @filter="filterFnOrganismo"
-                                    label="Minsiterio" />
-                                    <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                                    label="OACE" />
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                                    v-model="modelCategoria" :options="optionsCategoria" @filter="filterFnCategoria"
+                                    label="Categoria" />
+                            </div>
+                            <div class="col-4" v-if="data.opcion == 'OSDE y Categoria'">
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde" label="OSDE" />
+                                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelCategoria" :options="optionsCategoria" @filter="filterFnCategoria"
                                     label="Categoria" />
                             </div>
@@ -70,7 +77,7 @@ const columns = [
     {
         name: "entidad",
         align: "center",
-        label: "Categoria",
+        label: "Entidad",
         field: "entidad",
         sortable: true,
     },
@@ -140,13 +147,18 @@ const stringOptionsCategoria = []
 const modelCategoria = ref([])
 const optionsCategoria = ref(stringOptionsCategoria)
 
+const stringOptionsOsde = []
+const modelOsde = ref([])
+const optionsOsde = ref(stringOptionsOsde)
+
 let data = reactive({
     rows: [],
     opcion: "",
-    opcions: ["Categoria", "Ministerio y Categoria"],
+    opcions: ["Categoria", "OACE y Categoria", "OSDE y Categoria"],
 
     categorias: [],
     organismos: [],
+    osdes: [],
 
     fecha_actual: new Date(),
 
@@ -154,6 +166,23 @@ let data = reactive({
 
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()
+}
+
+function filterFnOsde(val, update) {
+    if (val === '') {
+        update(() => {
+            optionsOsde.value = stringOptionsOsde
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
+    update(() => {
+        const needle = val.toLowerCase()
+        optionsOsde.value = stringOptionsOsde.filter(v => v.toLowerCase().indexOf(needle) > -1)
+    })
 }
 
 function filterFnCategoria(val, update) {
@@ -193,9 +222,35 @@ function filterFnOrganismo(val, update) {
 onMounted(() => {
     getYear(),
         getCategoria(),
-        getOrganismos()
+        getOrganismos(),
+        getOSDE()
 });
 
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/osdes`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.osdes.push({
+                        id: response.data.data[i].id,
+                        osde: response.data.data[i].attributes.nombre
+                    });
+                }
+                data.osdes.forEach(element => {
+                    stringOptionsOsde.push(element.osde)
+                });
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
 
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
@@ -250,7 +305,7 @@ async function getActacontrol(params) {
     data.rows = [];
     let count = 1
     await api
-        .get(`/actacontrols?populate[0]=entidad.organismo&populate[1]=residuals.categorias&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+        .get(`/actacontrols?populate[0]=entidad.organismo&populate[1]=residuals.categorias&populate[2]=entidad.osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
@@ -259,57 +314,74 @@ async function getActacontrol(params) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
-                    if (data.opcion == 'Categoria' && response.data.data[i].attributes.residuals.data.length > 0 && response.data.data[i].attributes.residuals.data[0].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[0].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        data.rows.push({
-                            name: count,
-                            id: response.data.data[i].id,
-                            cantidadGenerada: response.data.data[i].attributes.residuals.data[0].attributes.cantidad,
-                            unidad_medida: response.data.data[i].attributes.residuals.data[0].attributes.disposicion,
-                            disposicion: response.data.data[i].attributes.residuals.data[0].attributes.disposicion,
-                            aprovechamiento: response.data.data[i].attributes.residuals.data[0].attributes.aprovechamiento_cant,
-                            fecha: response.data.data[i].attributes.residuals.data[0].attributes.fecha_residual,
-                            tipo_residual: response.data.data[i].attributes.residuals.data[0].attributes.tipo_residual,
-                            categoria: response.data.data[i].attributes.residuals.data[0].attributes.categorias.data[0].attributes.categoria,
-                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
-                        });
-                        count++
-                    } else if (data.opcion == 'Ministerio y Categoria'&& response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value && response.data.data[i].attributes.residuals.data.length > 0 && response.data.data[i].attributes.residuals.data[0].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[0].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        data.rows.push({
-                            name: count,
-                            id: response.data.data[i].id,
-                            cantidadGenerada: response.data.data[i].attributes.residuals.data[0].attributes.cantidad,
-                            unidad_medida: response.data.data[i].attributes.residuals.data[0].attributes.disposicion,
-                            disposicion: response.data.data[i].attributes.residuals.data[0].attributes.disposicion,
-                            aprovechamiento: response.data.data[i].attributes.residuals.data[0].attributes.aprovechamiento_cant,
-                            fecha: response.data.data[i].attributes.residuals.data[0].attributes.fecha_residual,
-                            tipo_residual: response.data.data[i].attributes.residuals.data[0].attributes.tipo_residual,
-                            categoria: response.data.data[i].attributes.residuals.data[0].attributes.categorias.data[0].attributes.categoria,
-                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
-                        });
-                        count++
+                    if (data.opcion == 'Categoria' && response.data.data[i].attributes.residuals.data.length > 0) {
+                        for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[0].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+                                if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                                data.rows.push({
+                                    name: count,
+                                    id: response.data.data[i].id,
+                                    cantidadGenerada: response.data.data[i].attributes.residuals.data[index].attributes.cantidad,
+                                    unidad_medida: response.data.data[i].attributes.residuals.data[index].attributes.disposicion,
+                                    disposicion: response.data.data[i].attributes.residuals.data[index].attributes.disposicion,
+                                    aprovechamiento: response.data.data[i].attributes.residuals.data[index].attributes.aprovechamiento_cant,
+                                    fecha: response.data.data[i].attributes.residuals.data[index].attributes.fecha_residual,
+                                    tipo_residual: response.data.data[i].attributes.residuals.data[index].attributes.tipo_residual,
+                                    categoria: response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria,
+                                    entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                                    organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
+                                });
+                                count++
+                            }
+                        }
+                    } else if (data.opcion == 'OACE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
+                        console.log("Paso 1");
+                        for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+                            console.log("Paso 2");
+                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[0].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+                                console.log("Paso 3");
+                                if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                                data.rows.push({
+                                    name: count,
+                                    id: response.data.data[i].id,
+                                    cantidadGenerada: response.data.data[i].attributes.residuals.data[index].attributes.cantidad,
+                                    unidad_medida: response.data.data[i].attributes.residuals.data[index].attributes.disposicion,
+                                    disposicion: response.data.data[i].attributes.residuals.data[index].attributes.disposicion,
+                                    aprovechamiento: response.data.data[i].attributes.residuals.data[index].attributes.aprovechamiento_cant,
+                                    fecha: response.data.data[i].attributes.residuals.data[index].attributes.fecha_residual,
+                                    tipo_residual: response.data.data[i].attributes.residuals.data[index].attributes.tipo_residual,
+                                    categoria: response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria,
+                                    entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                                    organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
+                                });
+                                count++
+                            }
+
+                        }
+                    } else if (data.opcion == 'OSDE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                        for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+                                if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                                data.rows.push({
+                                    name: count,
+                                    id: response.data.data[i].id,
+                                    cantidadGenerada: response.data.data[i].attributes.residuals.data[index].attributes.cantidad,
+                                    unidad_medida: response.data.data[i].attributes.residuals.data[index].attributes.disposicion,
+                                    disposicion: response.data.data[i].attributes.residuals.data[index].attributes.disposicion,
+                                    aprovechamiento: response.data.data[i].attributes.residuals.data[index].attributes.aprovechamiento_cant,
+                                    fecha: response.data.data[i].attributes.residuals.data[index].attributes.fecha_residual,
+                                    tipo_residual: response.data.data[i].attributes.residuals.data[index].attributes.tipo_residual,
+                                    categoria: response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria,
+                                    entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                                    organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
+                                });
+                                count++
+                            }
+
+                        }
                     }
                 }
             }
-            let cantidadGenerada = 0
-            data.rows.forEach(element => {
-                cantidadGenerada += element.cantidadGenerada
-            });
-            data.rows.push({
-                name: "Total",
-                cantidadGenerada: cantidadGenerada,
-                unidad_medida: "",
-                disposicion: "",
-                aprovechamiento: "",
-                fecha: "",
-                tipo_residual: "",
-                categoria: "",
-                entidad: "",
-                organismo: ""
-            });
         })
         .catch(function (error) {
             console.log(error);

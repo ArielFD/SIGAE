@@ -860,7 +860,7 @@ async function getActacontrol(params) {
       },
     })
     .then(function (response) {
-      //console.log(response);
+      console.log(response);
       for (let i = 0; i < response.data.data.length; i++) {
         let residuales = "no"
         const element = [];

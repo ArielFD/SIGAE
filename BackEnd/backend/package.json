@@ -14,7 +14,9 @@
     "@strapi/plugin-users-permissions": "4.3.8",
     "@strapi/provider-email-nodemailer": "^4.3.9",
     "@strapi/strapi": "4.3.8",
+    "ip": "^1.1.8",
     "knex": "^2.3.0",
+    "os": "^0.1.2",
     "pg": "^8.6.0",
     "pg-native": "^3.0.1",
     "strapi-plugin-import-export-entries": "^1.14.1"

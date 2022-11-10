@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div id="content">
+    <button @click="Import">Importar</button>
     <q-card class="my-card q-ma-md bg-primary" bordered>
       <q-card-section>
         <q-table class="my-sticky-header-table" title="Datos de las Entidades" dense :rows="data.rows"
@@ -153,7 +154,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { exportFile, useQuasar } from 'quasar'
+import { jsPDF } from "jspdf";
 
+const doc = new jsPDF();
 const pagination = ref({
   sortBy: "desc",
   descending: false,
@@ -244,6 +247,13 @@ const columns = [
     label: "Coordinador",
     field: "coordinador",
     sortable: true,
+  },
+  {
+    name: "PIB",
+    align: "center",
+    label: "PIB",
+    field: "PIB",
+    sortable: true,
   }];
 
 let data = reactive({
@@ -292,6 +302,8 @@ let data = reactive({
   cardCambiar: false,
   cardEdit: false,
   cardCreate: false,
+
+  cargaContaminante: []
 });
 
 onMounted(() => {
@@ -300,7 +312,39 @@ onMounted(() => {
   getOrganismos()
   getPrioridad()
   getSalida()
+  //getContaminantes()
+
 });
+
+//=========================Para importar PIB desde carga contaminante=================================
+// function Import(params) {
+//   data.rows.forEach(element => {
+//     data.cargaContaminante.forEach(elementCarga => {
+//       if (elementCarga.entidad == element.entidad) {
+//         const dataRest = {
+//           data: {
+//             PIB: elementCarga.PIB
+//           },
+//         };
+
+//         const authorization = {
+//           headers: {
+//             Authorization: `Bearer ${auth.jwt}`,
+//           },
+//         };
+
+//         api
+//           .put(`/entidads/${element.id}`, dataRest, authorization)
+//           .then(function (response) {
+//             //console.log(response);
+//           })
+//           .catch(function (error) {
+//             console.log(error.response);
+//           });
+//       }
+//     });
+//   });
+// }
 
 function wrapCsvValue(val, formatFn, row) {
   let formatted = formatFn !== void 0
@@ -335,10 +379,21 @@ function exportTable() {
   ).join('\r\n')
 
   const status = exportFile(
-    'table-export.csv',
+    'table-export.xls',
     content,
     'text/csv'
   )
+
+  var elementHTML = document.querySelector("#content")
+  doc.html(elementHTML, {
+    callback: function (doc) {
+      doc.save("sample.pdf")
+    },
+    x: 5,
+    y: 5,
+    width: 170,
+    windowWidth: 2000
+  })
 
   if (status !== true) {
     $q.notify({
@@ -410,6 +465,7 @@ function cambiarNombre(params) {
   data.objOsde.forEach(element => {
     if (element.osde == data.osdeEdit) idOsde = { id: element.id }
   })
+  if (selected.value[0].referencia == "-") selected.value[0].referencia = ""
   const dataCambiar = {
     data: {
       prioridad: idPrioridad,
@@ -426,7 +482,7 @@ function cambiarNombre(params) {
       objeto_social: data.objetoEdit,
       PIB: data.PIBEdit,
       activo: "s",
-      referencia: `<${selected.value[0].id}>`
+      referencia: `${selected.value[0].referencia}<${selected.value[0].id}>`
     },
   };
 
@@ -814,6 +870,7 @@ async function getEntidades(params) {
             prioridad: response.data.data[i].attributes.prioridad.data.attributes.prioridad,
             salida: response.data.data[i].attributes.salida.data.attributes.salida,
             osde: response.data.data[i].attributes.osde.data.attributes.nombre,
+            referencia: response.data.data[i].attributes.referencia,
             PIB: response.data.data[i].attributes.PIB,
           });
           count++
@@ -824,6 +881,36 @@ async function getEntidades(params) {
       });
   }
 }
+
+// async function getContaminantes(params) {
+//   data.rows = [];
+//   let count = 1
+//   for (let index = 1; index < 3; index++) {
+//     await api
+//       .get(`/cargacontaminantes?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc`, {
+//         headers: {
+//           Authorization: "Bearer " + auth.jwt,
+//         },
+//       })
+//       .then(function (response) {
+//         //console.log(response);
+//         for (let i = 0; i < response.data.data.length; i++) {
+//           if (response.data.data[i].attributes.entidad.data.length > 0) {
+//             data.cargaContaminante.push({
+//               name: count,
+//               id: response.data.data[i].id,
+//               entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+//               PIB: response.data.data[i].attributes.PIB
+//             });
+//           }
+//           count++
+//         }
+//       })
+//       .catch(function (error) {
+//         console.log(error);
+//       });
+//   }
+// }
 
 function getSelectedString() {
   return selected.value.length === 0

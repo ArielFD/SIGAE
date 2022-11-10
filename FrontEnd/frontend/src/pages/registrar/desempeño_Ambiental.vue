@@ -2,8 +2,8 @@
     <div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows" :columns="columns"
-                    row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
+                <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows"
+                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
                     v-model:selected="selected" v-model:pagination="pagination" :filter="filter">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-between">
@@ -34,7 +34,7 @@
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
-                                <q-item-label><b>Nuevo: "Desempeño Ambiental"</b></q-item-label>
+                                <q-item-label><b>Nuevo: "Desempeño Ambiental" {{ data.tempEntidad }}</b></q-item-label>
                             </q-item-section>
                         </q-item>
 
@@ -48,7 +48,112 @@
                                         label="Entidad" />
                                     <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
                                 </div>
-                                <div class="column items-start">
+                                <div class="column items-start" v-if="data.rowsAnt.length > 0">
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.coordinador" color="secondary"
+                                            label="Existencia de coordinador" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].coordinador" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.diagnostico" color="secondary"
+                                            label="Existencia de diagnostico" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].diagnostico" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.politica" color="secondary"
+                                            label="Existencia de politica" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].politica" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.indicadores" color="secondary"
+                                            label="Existencia de indicadores" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].indicadores" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.plan" color="secondary"
+                                            label="Existencia de plan de accion" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].plan" color="secondary" disable
+                                            label="Ultimo registro" left-label :true-value="1" :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.legislacion" color="secondary"
+                                            label="Existencia de legislacion" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].legislacion" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.capacitacion" color="secondary"
+                                            label="Existencia de plan de capacitacion" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].capacitacion" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.acciones" color="secondary"
+                                            label="Existencia de acciones PML" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].acciones" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.programa" color="secondary"
+                                            label="Existencia de programa de gestion ambiental" left-label
+                                            :true-value="1" :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].programa" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.recurso" color="secondary"
+                                            label="Existencia de recurso financiero" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].recurso" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.aprovechamiento" color="secondary"
+                                            label="Aprovechamiento economico" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].aprovechamiento"
+                                            color="secondary" disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.sistema" color="secondary"
+                                            label="Existencia de sistema de tratamiento" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].sistema" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                    <div class="row justify-between">
+                                        <q-toggle class="col-6" v-model="data.carga" color="secondary"
+                                            label="Disminucion de carga contaminante" left-label :true-value="1"
+                                            :false-value="0" />
+                                        <q-toggle class="col-6" v-model="data.rowsAnt[0].carga" color="secondary"
+                                            disable label="Ultimo registro" left-label :true-value="1"
+                                            :false-value="0" />
+                                    </div>
+                                </div>
+                                <div class="column items-start" v-else>
                                     <q-toggle v-model="data.coordinador" color="secondary"
                                         label="Existencia de coordinador" left-label :true-value="1" :false-value="0" />
                                     <q-toggle v-model="data.diagnostico" color="secondary"
@@ -121,27 +226,34 @@
                                     <q-toggle v-model="data.diagnosticoEdit" color="secondary"
                                         label="Existencia de diagnostico" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.politicaEdit" color="secondary"
-                                        label="Existencia de politica" left-label true-value="si" false-value="no"/>
+                                        label="Existencia de politica" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.indicadoresEdit" color="secondary"
                                         label="Existencia de indicadores" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.planEdit" color="secondary"
-                                        label="Existencia de plan de accion" left-label true-value="si" false-value="no"/>
+                                        label="Existencia de plan de accion" left-label true-value="si"
+                                        false-value="no" />
                                     <q-toggle v-model="data.legislacionEdit" color="secondary"
                                         label="Existencia de legislacion" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.capacitacionEdit" color="secondary"
-                                        label="Existencia de plan de capacitacion" left-label true-value="si" false-value="no" />
+                                        label="Existencia de plan de capacitacion" left-label true-value="si"
+                                        false-value="no" />
                                     <q-toggle v-model="data.accionesEdit" color="secondary"
-                                        label="Existencia de acciones PML" left-label true-value="si" false-value="no" />
+                                        label="Existencia de acciones PML" left-label true-value="si"
+                                        false-value="no" />
                                     <q-toggle v-model="data.programaEdit" color="secondary"
-                                        label="Existencia de programa de gestion ambiental" left-label true-value="si" false-value="no" />
+                                        label="Existencia de programa de gestion ambiental" left-label true-value="si"
+                                        false-value="no" />
                                     <q-toggle v-model="data.recursoEdit" color="secondary"
-                                        label="Existencia de recurso financiero" left-label true-value="si" false-value="no" />
+                                        label="Existencia de recurso financiero" left-label true-value="si"
+                                        false-value="no" />
                                     <q-toggle v-model="data.aprovechamientoEdit" color="secondary"
                                         label="Aprovechamiento economico" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.sistemaEdit" color="secondary"
-                                        label="Existencia de sistema de tratamiento" left-label true-value="si" false-value="no" />
+                                        label="Existencia de sistema de tratamiento" left-label true-value="si"
+                                        false-value="no" />
                                     <q-toggle v-model="data.cargaEdit" color="secondary"
-                                        label="Disminucion de carga contaminante" left-label true-value="si" false-value="no" />
+                                        label="Disminucion de carga contaminante" left-label true-value="si"
+                                        false-value="no" />
                                 </div>
                                 <q-input outlined dense v-model="data.observacionesEdit" type="textarea"
                                     label="Observaciones" class="q-pa-xs" />
@@ -162,16 +274,16 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
-  sortBy: "desc",
-  descending: false,
-  page: 1,
-  rowsPerPage: 17,
+    sortBy: "desc",
+    descending: false,
+    page: 1,
+    rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -307,6 +419,7 @@ const options = ref(stringOptions)
 
 let data = reactive({
     rows: [],
+    rowsAnt: [],
     coordinador: 1,
     diagnostico: 1,
     politica: 1,
@@ -341,6 +454,7 @@ let data = reactive({
     entidadEdit: "",
 
     fecha_actual: new Date(),
+    fecha_annoAnt: new Date(),
 
     entidades: [],
     tempEntidad: "",
@@ -373,8 +487,24 @@ onMounted(() => {
     getEntidad()
 });
 
+watch(() => model.value, (value) => {
+    console.log(value);
+    // data.rowsAnt.forEach(element => {
+    //     console.log(value);
+    //     console.log(element.entidad);
+    //     //if(element.entidad==value) 
+    // });
+    let temp = ""
+    data.entidades.forEach(element => {
+        if (element.nombre == model.value) temp = element.id
+    });
+    console.log(temp);
+    getDesempeñoID(temp)
+})
+
 function getYear(params) {
-  data.fecha_actual = data.fecha_actual.getFullYear()
+    data.fecha_actual = data.fecha_actual.getFullYear()
+    data.fecha_annoAnt = data.fecha_annoAnt.getFullYear()
 }
 
 function editFields(params) {
@@ -567,15 +697,17 @@ async function getDesempeño(params) {
                             anno: response.data.data[i].attributes.anno,
                             carga: response.data.data[i].attributes.disminucion_carga_contaminante,
                             observaciones: response.data.data[i].attributes.observaciones,
-                            total:(response.data.data[i].attributes.disminucion_carga_contaminante+response.data.data[i].attributes.exist_sistem_tratamiento+response.data.data[i].attributes.aprovechamiento_economico+response.data.data[i].attributes.exist_recurso_financiero+response.data.data[i].attributes.exist_program_gestionambiental+response.data.data[i].attributes.exist_accionespml+response.data.data[i].attributes.exist_plan_capacitacion+response.data.data[i].attributes.exist_legislacion+response.data.data[i].attributes.exist_plan_accion+response.data.data[i].attributes.exist_coordinador+response.data.data[i].attributes.exist_diagnostico+response.data.data[i].attributes.exist_politica+response.data.data[i].attributes.exist_indicadores).toString()
+                            total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
                         });
                         Object.keys(data.rows[i]).forEach(function (key) {
+                            if (data.rows[i][key] != null || data.rows[i][key] != undefined) {
                                 if (data.rows[i][key] === 1) {
                                     data.rows[i][key] = "si"
                                 } else if (data.rows[i][key] === 0) {
                                     data.rows[i][key] = "no"
                                 }
-                            })
+                            }
+                        })
                     }
                     count++
                 }
@@ -584,6 +716,68 @@ async function getDesempeño(params) {
                 console.log(error);
             });
     }
+}
+
+async function getDesempeñoID(params) {
+    data.rowsAnt = [];
+    let count = 1
+    let encontrado = true
+    let annos = 0
+    do {
+        for (let index = 1; index < 10; index++) {
+            await api
+                .get(`/desempenoambientals?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual - annos}`, {
+                    headers: {
+                        Authorization: "Bearer " + auth.jwt,
+                    },
+                })
+                .then(function (response) {
+                    console.log(response);
+                    for (let i = 0; i < response.data.data.length; i++) {
+                        if (response.data.data[i].attributes.entidad.data.length > 0 && response.data.data[i].attributes.entidad.data[0].id == params) {
+                            encontrado = false
+                            data.rowsAnt.push({
+                                name: count.toString(),
+                                id: response.data.data[i].id,
+                                entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+                                coordinador: response.data.data[i].attributes.exist_coordinador,
+                                diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                                politica: response.data.data[i].attributes.exist_politica,
+                                indicadores: response.data.data[i].attributes.exist_indicadores,
+                                plan: response.data.data[i].attributes.exist_plan_accion,
+                                legislacion: response.data.data[i].attributes.exist_legislacion,
+                                capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                                acciones: response.data.data[i].attributes.exist_accionespml,
+                                programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                                recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                                aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                                sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                                anno: response.data.data[i].attributes.anno,
+                                carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                                observaciones: response.data.data[i].attributes.observaciones,
+                                total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
+                            });
+                            // Object.keys(data.rowsAnt[i]).forEach(function (key) {
+                            //     if (data.rowsAnt[i][key] != null || data.rowsAnt[i][key] != undefined) {
+                            //         if (data.rowsAnt[i][key] === 1) {
+                            //             data.rowsAnt[i][key] = "si"
+                            //         } else if (data.rowsAnt[i][key] === 0) {
+                            //             data.rowsAnt[i][key] = "no"
+                            //         }
+                            //     }
+                            // })
+                        }
+                        count++
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+        annos++
+        if (annos == 5) break;
+        console.log(annos);
+    } while (encontrado);
 }
 
 function getSelectedString() {

@@ -36,6 +36,12 @@
     },
     "cantidad": {
       "type": "string"
+    },
+    "actacontrol": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::actacontrol.actacontrol",
+      "inversedBy": "residuals"
     }
   }
 }

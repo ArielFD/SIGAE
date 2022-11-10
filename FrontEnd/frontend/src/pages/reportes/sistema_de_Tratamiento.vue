@@ -36,6 +36,7 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
+
 const pagination = ref({
     sortBy: "desc",
     descending: false,
@@ -62,8 +63,6 @@ const columns = [
         align: "center",
         required: true,
         label: "Nombre de la entidad",
-        field: (row) => row.entidad,
-        format: (val) => `${val}`,
         field: "entidad",
         sortable: true,
     },
@@ -84,7 +83,7 @@ const columns = [
 ];
 
 const stringOptionsOrganismo = []
-const modelOrganismo = ref(["MINAL"])
+const modelOrganismo = ref([])
 const optionsOrganismo = ref(stringOptionsOrganismo)
 
 let data = reactive({

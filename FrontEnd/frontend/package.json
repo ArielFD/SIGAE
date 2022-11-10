@@ -13,11 +13,18 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
+    "chart.js": "^3.9.1",
     "core-js": "^3.6.5",
-    "native-base": "GeekyAnts/NativeBase#master",
+    "downloadjs": "^1.4.7",
+    "html-to-image": "^1.10.8",
+    "ip": "^1.1.8",
+    "ip-address": "^8.1.0",
+    "jspdf": "^2.5.1",
+    "os": "^0.1.2",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
+    "vue-chartjs": "^4.1.2",
     "vue-router": "^4.0.0"
   },
   "devDependencies": {

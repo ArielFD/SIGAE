@@ -6,22 +6,9 @@
         <br />
       </h6>
       <q-separator></q-separator>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae harum
-      repellendus nesciunt consectetur laborum exercitationem placeat, odio ipsa
-      beatae tempora deserunt numquam modi minima impedit omnis sint hic dolorum
-      ex? Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae
-      harum repellendus nesciunt consectetur laborum exercitationem placeat,
-      odio ipsa beatae tempora deserunt numquam modi minima impedit omnis sint
-      hic dolorum ex? Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Molestiae harum repellendus nesciunt consectetur laborum exercitationem
-      placeat, odio ipsa beatae tempora deserunt numquam modi minima impedit
-      omnis sint hic dolorum ex? Lorem ipsum dolor sit amet consectetur
-      adipisicing elit. Molestiae harum repellendus nesciunt consectetur laborum
-      exercitationem placeat, odio ipsa beatae tempora deserunt numquam modi
-      minima impedit omnis sint hic dolorum ex? Lorem ipsum dolor sit amet
-      consectetur adipisicing elit. Molestiae harum repellendus nesciunt
-      consectetur laborum exercitationem placeat, odio ipsa beatae tempora
-      deserunt numquam modi minima impedit omnis sint hic dolorum ex?
+      <p style="line-height: 22px;">Es un sistema desarrollado para el Grupo de Trabajo Estatal Bah&iacute;a de La Habana, el cual posee dentro de su estructura organizacional la Direcci&oacute;n de Gesti&oacute;n Ambiental, encaminado en la prevenci&oacute;n, minimizaci&oacute;n y eliminaci&oacute;n de los impactos negativos de las fuentes contaminantes que se ubican en la Cuenca Hidrogr&aacute;fica Superficial de la Bah&iacute;a de La Habana y que vierten sus residuales hacia la Bah&iacute;a. SIGAE, posee como objetivo fundamental gestionar de manera eficiente 
+toda la informaci&oacute;n obtenida a partir del proceso de control de las fuentes contaminantes, contribuyendo 
+as&iacute; a elevar el nivel de eficiencia en la ejecuci&oacute;n de dicho proceso.</p> 
     </div>
     <q-img
       src="~assets/Layout_/GTE-BH.jpg"

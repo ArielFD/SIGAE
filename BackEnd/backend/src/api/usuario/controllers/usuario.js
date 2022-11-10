@@ -4,6 +4,14 @@
  * usuario controller
  */
 
+// var ip=require('ip')
+  // console.log(ip.address());
+  //console.log(local);
+
+  // var os=require('os')
+  // var networkInterfaces=os.networkInterfaces()
+  // console.log(networkInterfaces);
+
 const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('api::usuario.usuario'

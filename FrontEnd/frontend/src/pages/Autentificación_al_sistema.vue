@@ -7,49 +7,24 @@
 
       <q-card-section>
         <p class="text text-center"><b>Logueo</b></p>
-        <q-input
-          outlined
-          v-model="auth.email"
-          class="input q-pb-md"
-          label="Usuario"
-          dense
-          color="secondary"
-        />
-        <q-input
-          outlined
-          dense
-          v-model="auth.password"
-          label="Contraseña"
-          class="input"
-          :type="auth.isPwd ? 'password' : 'text'"
-          color="secondary"
-        >
+        <q-input outlined v-model="auth.email" class="input q-pb-md" label="Usuario" dense color="secondary" />
+        <q-input outlined dense v-model="auth.password" label="Contraseña" class="input"
+          :type="auth.isPwd ? 'password' : 'text'" color="secondary">
           <template v-slot:append>
-            <q-icon
-              :name="auth.isPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="auth.isPwd = !auth.isPwd"
-            />
+            <q-icon :name="auth.isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+              @click="auth.isPwd = !auth.isPwd" />
           </template>
         </q-input>
         <div>
-          <q-checkbox
-            v-model="auth.rememberMe"
-            label="Recordarme"
-            color="secondary"
-          />
+          <q-checkbox v-model="auth.rememberMe" label="Recordarme" color="secondary" />
         </div>
       </q-card-section>
 
       <q-separator dark />
 
       <q-card-actions class="justify-end">
-        <q-btn no-caps class="text-white bg-secondary" @click="Login"
-          >Confirmar</q-btn
-        >
-        <q-btn no-caps class="text-white bg-secondary" @click="clear"
-          >Limpiar Campos</q-btn
-        >
+        <q-btn no-caps class="text-white bg-secondary" @click="Login">Confirmar</q-btn>
+        <q-btn no-caps class="text-white bg-secondary" @click="clear">Limpiar Campos</q-btn>
       </q-card-actions>
     </q-card>
   </div>
@@ -71,7 +46,7 @@ const route = useRoute();
 const $q = useQuasar();
 
 let data = reactive({
-  ip:""
+  ip: ""
 });
 
 onMounted(() => {
@@ -88,16 +63,23 @@ onMounted(() => {
         localStorage.getItem("userData")
       ).rememberMe);
   }
+  // var ip=require('ip')
+  // console.log(ip.address());
+  //console.log(local);
 
-  auth.getLocalIP().then((ipAddr)=>{
+  // var os=require('os')
+  // var networkInterfaces=os.networkInterfaces()
+  // console.log(networkInterfaces);
+  
+  auth.getLocalIP().then((ipAddr) => {
     console.log(ipAddr);
-    auth.ip=ipAddr
+    auth.ip = ipAddr
   });
 });
 
 async function Login() {
   await api
-    .post("/auth/local", {
+  .post("/auth/local", {
       identifier: auth.email,
       password: auth.password,
     })
@@ -113,13 +95,13 @@ async function Login() {
       localStorage.setItem("userData", JSON.stringify(auth.user));
       localStorage.setItem("fallo", "0");
 
-      auth.postTraza("Login","Satisfactorio")
+      auth.postTraza("Login", "Satisfactorio")
 
       router.push("/Interfaz_principal");
     })
     .catch(function (error) {
       console.log(error);
-      auth.postTraza("Login","Fallo en la Operacion")
+      auth.postTraza("Login", "Fallo en la Operacion")
       let temp = parseInt(localStorage.getItem("fallo"));
       temp++;
       localStorage.setItem("fallo", temp);

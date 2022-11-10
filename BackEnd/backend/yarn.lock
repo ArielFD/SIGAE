@@ -5687,6 +5687,11 @@
   dependencies:
     "loose-envify" "^1.0.0"
 
+"ip@^1.1.8":
+  "integrity" "sha512-PuExPYUiu6qMBQb4l06ecm6T6ujzhmh+MeJcW9wa89PoAz5pvd4zPgN5WJV104mb6S2T1AwNIAaB70JNrLQWhg=="
+  "resolved" "https://registry.npmjs.org/ip/-/ip-1.1.8.tgz"
+  "version" "1.1.8"
+
 "ipaddr.js@^2.0.1":
   "integrity" "sha512-1qTgH9NG+IIJ4yfKs2e6Pp1bZg8wbDbKHT21HrLIeYBTRLgMYKnMTPAuI3Lcs61nfx5h1xlXnbJtH1kX5/d/ng=="
   "resolved" "https://registry.npmjs.org/ipaddr.js/-/ipaddr.js-2.0.1.tgz"
@@ -7490,6 +7495,11 @@
   "integrity" "sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g=="
   "resolved" "https://registry.npmjs.org/os-tmpdir/-/os-tmpdir-1.0.2.tgz"
   "version" "1.0.2"
+
+"os@^0.1.2":
+  "integrity" "sha512-ZoXJkvAnljwvc56MbvhtKVWmSkzV712k42Is2mA0+0KTSRakq5XXuXpjZjgAt9ctzl51ojhQWakQQpmOvXWfjQ=="
+  "resolved" "https://registry.npmjs.org/os/-/os-0.1.2.tgz"
+  "version" "0.1.2"
 
 "p-cancelable@^2.0.0":
   "integrity" "sha512-BZOr3nRQHOntUjTrH8+Lh54smKHoHyur8We1V8DSMVrl5A2malOOwuJRnKRDjSnkoeBh4at6BwEnb5I7Jl31wg=="
