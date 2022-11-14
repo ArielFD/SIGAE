@@ -336,7 +336,7 @@ onMounted(() => {
 //         api
 //           .put(`/entidads/${element.id}`, dataRest, authorization)
 //           .then(function (response) {
-//             //console.log(response);
+//             ////console.log(response);
 //           })
 //           .catch(function (error) {
 //             console.log(error.response);
@@ -438,7 +438,7 @@ function cambiarNombre(params) {
   api
     .put(`/entidads/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      //console.log(response);
+      ////console.log(response);
       getEntidades();
     })
     .catch(function (error) {
@@ -489,7 +489,7 @@ function cambiarNombre(params) {
   api
     .post(`/entidads`, dataCambiar, authorization)
     .then(function (response) {
-      //console.log(response);
+      ////console.log(response);
     })
     .catch(function (error) {
       console.log(error);
@@ -561,7 +561,7 @@ function Edit(params) {
   api
     .put(`/entidads/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      //console.log(response);
+      ////console.log(response);
       getEntidades();
     })
     .catch(function (error) {
@@ -618,7 +618,7 @@ function Create() {
   api
     .post("/entidads", dataRest, authorization)
     .then(function (response) {
-      //console.log(response);
+      ////console.log(response);
       getEntidades();
     })
     .catch(function (error) {
@@ -639,7 +639,7 @@ watch(() => data.organismo, (value) => {
           },
         })
         .then(function (response) {
-          console.log(response);
+          //console.log(response);
           for (let i = 0; i < response.data.data.attributes.osdes.data.length; i++) {
             data.objOsde.push({
               id: response.data.data.attributes.osdes.data[i].id,
@@ -669,7 +669,7 @@ watch(() => data.organismoEdit, (value) => {
           },
         })
         .then(function (response) {
-          console.log(response);
+          //console.log(response);
           for (let i = 0; i < response.data.data.attributes.osdes.data.length; i++) {
             data.objOsde.push({
               id: response.data.data.attributes.osdes.data[i].id,
@@ -717,7 +717,7 @@ async function getMunicipios(params) {
         },
       })
       .then(function (response) {
-        //console.log(response);
+        ////console.log(response);
         for (let i = 0; i < response.data.data.length; i++) {
           data.objMunicipio.push({
             id: response.data.data[i].id,
@@ -743,7 +743,7 @@ async function getOrganismos(params) {
         },
       })
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         for (let i = 0; i < response.data.data.length; i++) {
           data.objOrganismo.push({
             id: response.data.data[i].id,
@@ -769,7 +769,7 @@ async function getPrioridad(params) {
         },
       })
       .then(function (response) {
-        //console.log(response);
+        ////console.log(response);
         for (let i = 0; i < response.data.data.length; i++) {
           data.objPrioridad.push({
             id: response.data.data[i].id,
@@ -795,7 +795,7 @@ async function getSalida(params) {
         },
       })
       .then(function (response) {
-        //console.log(response);
+        ////console.log(response);
         for (let i = 0; i < response.data.data.length; i++) {
           data.objSalida.push({
             id: response.data.data[i].id,
@@ -821,7 +821,7 @@ async function getOSDE(params) {
         },
       })
       .then(function (response) {
-        //console.log(response);
+        ////console.log(response);
         for (let i = 0; i < response.data.data.length; i++) {
           data.objOsde.push({
             id: response.data.data[i].id,
@@ -848,7 +848,7 @@ async function getEntidades(params) {
         },
       })
       .then(function (response) {
-        console.log(response);
+        //console.log(response);
         for (let i = 0; i < response.data.data.length; i++) {
           if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
           if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
@@ -893,7 +893,7 @@ async function getEntidades(params) {
 //         },
 //       })
 //       .then(function (response) {
-//         //console.log(response);
+//         ////console.log(response);
 //         for (let i = 0; i < response.data.data.length; i++) {
 //           if (response.data.data[i].attributes.entidad.data.length > 0) {
 //             data.cargaContaminante.push({

@@ -646,7 +646,7 @@ function Edit(params) {
     api
         .put(`/plan-enfrentamientos/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             getEnfrentamiento();
         })
         .catch(function (error) {
@@ -700,7 +700,7 @@ function Create() {
     api
         .post("/plan-enfrentamientos", dataRest, authorization)
         .then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             getEnfrentamiento();
         })
         .catch(function (error) {
@@ -734,7 +734,7 @@ function getEntidad(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -761,7 +761,7 @@ async function getEnfrentamiento(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.rows.push({
                         name: count,
@@ -804,7 +804,7 @@ async function getEnfrentamiento(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -818,7 +818,7 @@ async function getContaminantes(params) {
                 },
             })
             .then(function (response) {
-                //console.log(response);
+                ////console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
@@ -843,7 +843,7 @@ async function getTratamiento(params) {
                 },
             })
             .then(function (response) {
-                //console.log(response);
+                ////console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
@@ -868,7 +868,7 @@ async function getFuncionamiento(params) {
                 },
             })
             .then(function (response) {
-                //console.log(response);
+                ////console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {

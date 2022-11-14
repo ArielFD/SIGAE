@@ -302,7 +302,7 @@ async function getOSDE(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.osdes.push({
                         id: response.data.data[i].id,
@@ -328,7 +328,7 @@ async function getOrganismos(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.organismos.push({
                         id: response.data.data[i].id,
@@ -356,7 +356,7 @@ async function getDesempeño(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (data.opcion == "OACE" && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo == modelOrganismo.value && (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores) == data.cantidad) {

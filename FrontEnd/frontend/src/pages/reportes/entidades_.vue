@@ -263,7 +263,7 @@ function cerradas(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
                     if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
@@ -300,7 +300,7 @@ async function historial(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
                     if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
@@ -330,7 +330,7 @@ async function historial(params) {
                                     Authorization: "Bearer " + auth.jwt,
                                 },
                             }).then(function (response) {
-                                console.log(response);
+                                //console.log(response);
                                 if (index == 0) element.nombresAnterior = element.nombresAnterior.concat(response.data.data.attributes.entidad)
                                 else element.nombresAnterior = element.nombresAnterior.concat(", " + response.data.data.attributes.entidad)
                             }).catch(function (error) {
@@ -357,7 +357,7 @@ async function noVisitadas(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                 if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }
@@ -382,7 +382,7 @@ async function noVisitadas(params) {
                     },
                 })
                 .then(function (response) {
-                    console.log(response);
+                    //console.log(response);
                     for (let i = 0; i < response.data.data.length; i++) {
                         if (response.data.data[i].attributes.entidad.data != null) temp.push(response.data.data[i].attributes.entidad.data.attributes.entidad)
                         data.rows.forEach((element, indexF) => {
@@ -415,7 +415,7 @@ async function ministerio(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                 if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }

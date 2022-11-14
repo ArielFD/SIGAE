@@ -596,7 +596,7 @@ watch(() => model.value, (value) => {
             Authorization: "Bearer " + auth.jwt,
           },
         }).then(function (response) {
-          console.log(response);
+          //console.log(response);
           for (let i = 0; i < response.data.data.length; i++) {
             if (response.data.data[i].attributes.entidad.data.id == element.id) {
               data.medidas_corto = response.data.data[i].attributes.medidas_corto
@@ -748,7 +748,7 @@ function Edit(params) {
   api
     .put(`/actacontrols/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
-      //console.log(response);
+      ////console.log(response);
       getActacontrol();
     })
     .catch(function (error) {
@@ -800,7 +800,7 @@ function Create() {
   api
     .post("/actacontrols", dataRest, authorization)
     .then(function (response) {
-      //console.log(response);
+      ////console.log(response);
       getActacontrol();
     })
     .catch(function (error) {
@@ -834,7 +834,7 @@ function getEntidad(params) {
         Authorization: "Bearer " + auth.jwt,
       },
     }).then(function (response) {
-      //console.log(response);
+      ////console.log(response);
       for (let i = 0; i < response.data.data.length; i++) {
         data.entidades.push({
           nombre: response.data.data[i].attributes.entidad,
@@ -860,7 +860,7 @@ async function getActacontrol(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      //console.log(response);
       for (let i = 0; i < response.data.data.length; i++) {
         let residuales = "no"
         const element = [];

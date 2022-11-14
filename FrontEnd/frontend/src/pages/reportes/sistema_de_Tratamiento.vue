@@ -133,7 +133,7 @@ async function getActacontrol(params) {
             },
         })
         .then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -162,7 +162,7 @@ async function getOrganismos(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.organismos.push({
                         id: response.data.data[i].id,
@@ -193,7 +193,7 @@ async function getSistema(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.actacontrol.data.attributes.entidad.data != null) {
                         if (response.data.data[i].attributes.actacontrol.data.attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.actacontrol.data.attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {

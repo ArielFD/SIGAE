@@ -361,7 +361,7 @@ function Edit(params) {
     api
         .put(`/cargacontaminantes/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             getContaminantes();
         })
         .catch(function (error) {
@@ -401,7 +401,7 @@ function Create() {
     api
         .post("/cargacontaminantes", dataRest, authorization)
         .then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             getContaminantes();
         })
         .catch(function (error) {
@@ -435,7 +435,7 @@ function getEntidad(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -462,7 +462,7 @@ async function getContaminantes(params) {
                 },
             })
             .then(function (response) {
-                //console.log(response);
+                ////console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if(response.data.data[i].attributes.entidad.data.length>0){
                     data.rows.push({

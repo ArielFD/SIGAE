@@ -572,7 +572,7 @@ function Edit(params) {
     api
         .put(`/desempenoambientals/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             getDesempeño();
         })
         .catch(function (error) {
@@ -614,7 +614,7 @@ function Create() {
     api
         .post("/desempenoambientals", dataRest, authorization)
         .then(function (response) {
-            //////console.log(response);
+            ////////console.log(response);
             getDesempeño();
         })
         .catch(function (error) {
@@ -648,7 +648,7 @@ function getEntidad(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            //////console.log(response);
+            ////////console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -675,7 +675,7 @@ async function getDesempeño(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         data.rows.push({
@@ -732,7 +732,7 @@ async function getDesempeñoID(params) {
                     },
                 })
                 .then(function (response) {
-                    console.log(response);
+                    //console.log(response);
                     for (let i = 0; i < response.data.data.length; i++) {
                         if (response.data.data[i].attributes.entidad.data.length > 0 && response.data.data[i].attributes.entidad.data[0].id == params) {
                             encontrado = false

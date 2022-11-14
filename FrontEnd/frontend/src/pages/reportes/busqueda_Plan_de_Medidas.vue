@@ -3,7 +3,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString"
+                    :columns="columns" row-key="name" 
                     v-model:selected="selected" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
@@ -266,7 +266,7 @@ async function getOrganismos(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.organismos.push({
                         id: response.data.data[i].id,
@@ -292,7 +292,7 @@ async function getOSDE(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.osdes.push({
                         id: response.data.data[i].id,
@@ -316,7 +316,7 @@ function getEntidad(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            //console.log(response);
+            ////console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
                     nombre: response.data.data[i].attributes.entidad,
@@ -342,7 +342,7 @@ async function getActacontrol(params) {
             },
         })
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 //Unidad de Camiones # 1
                 if (response.data.data[i].attributes.entidad.data != null) {

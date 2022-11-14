@@ -41,7 +41,7 @@
             <q-item-section>Plan de enfrentamiento</q-item-section>
           </q-item>
           <q-item clickable :to="{ name: 'desempeño_por_Ministerio' }" class="text-black">
-            <q-item-section>Desempeño por Ministerio</q-item-section>
+            <q-item-section>Desempeño Ambiental</q-item-section>
           </q-item>
           <q-item clickable :to="{ name: 'residuales_por_Categoría' }" class="text-black">
             <q-item-section>Residuales por Categoría</q-item-section>
@@ -54,6 +54,9 @@
           </q-item>
           <q-item clickable :to="{ name: 'entidades' }" class="text-black">
             <q-item-section>Entidades</q-item-section>
+          </q-item>
+          <q-item clickable :to="{ name: 'geolocOpenLayer' }" class="text-black">
+            <q-item-section>Geo</q-item-section>
           </q-item>
         </q-list>
       </q-menu>

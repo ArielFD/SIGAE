@@ -1,19 +1,9 @@
-BackUp and Restore Database in PostgreSQL
+BackUp and Restore Database in PostgreSQL !!!Levantar un terminar integrado en la carpeta database y ejecutar los comandos!!!!
 ##################################################################################
-sudo -u postgres pg_dump -Fc SIGAE > ./database/backup_test.sql
-sudo -u postgres dropdb SIGAE
-sudo -u postgres createdb -O postgres SIGAE
-sudo -u postgres pg_restore -d SIGAE < ./database/backup_test.sql
+sudo -u postgres pg_dump -Fc SIGAE > backup_SIGAEv2.sql ###Para hacer backup
+sudo -u postgres dropdb SIGAE   ###Para hacer restore. Eliminar base de datos con nombre SIGAE para evitar conflicto con alguna base existente
+sudo -u postgres createdb -O postgres SIGAE     ###Crear DB con nombre SIGAE
+sudo -u postgres pg_restore -d SIGAE < .backup_SIGAEv2.sql  ###Cargar la salva que se realizo con el backup
 #########################################################################################################
 #########################################################################################################
-This is the combo I'm using to backup, drop, create and restore my database (on macOS and Linux):
 
-sudo -u postgres pg_dump -Fc mydb > ./mydb.sql
-sudo -u postgres dropdb mydb
-sudo -u postgres createdb -O db_user mydb
-sudo -u postgres pg_restore -d mydb < ./mydb.sql
-Misc
--Fc will compress the database (Format custom)
-List PostgreSQL users: sudo -u postgres psql -c "\du+"
-You may want to add hostname and date to ./mydb.sql, then change it by:
-./`hostname`_mydb_`date +"%Y%m%d_%H%M"`.sql

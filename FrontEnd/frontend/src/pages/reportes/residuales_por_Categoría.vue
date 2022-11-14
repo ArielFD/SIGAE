@@ -3,8 +3,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString"
-                    v-model:selected="selected" v-model:pagination="pagination">
+                    :columns="columns" row-key="name" v-model:selected="selected" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
                             <div class="col-3 text-h6">Aprovechamiento de Residuales</div>
@@ -235,7 +234,7 @@ async function getOSDE(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.osdes.push({
                         id: response.data.data[i].id,
@@ -261,7 +260,7 @@ async function getOrganismos(params) {
                 },
             })
             .then(function (response) {
-                console.log(response);
+                //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     data.organismos.push({
                         id: response.data.data[i].id,
@@ -285,7 +284,7 @@ function getCategoria(params) {
                 Authorization: "Bearer " + auth.jwt,
             },
         }).then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.categorias.push({
                     categoria: response.data.data[i].attributes.categoria,
@@ -311,12 +310,13 @@ async function getActacontrol(params) {
             },
         })
         .then(function (response) {
-            console.log(response);
+            //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (data.opcion == 'Categoria' && response.data.data[i].attributes.residuals.data.length > 0) {
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[0].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                                 data.rows.push({
                                     name: count,
@@ -332,6 +332,7 @@ async function getActacontrol(params) {
                                     organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                                 });
                                 count++
+
                             }
                         }
                     } else if (data.opcion == 'OACE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div id="my-node">
     <button @click="img">Click</button>
     <Bar :chart-options="chartOptions" :chart-data="chartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
@@ -32,11 +32,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 400
+      default: 200
     },
     height: {
       type: Number,
-      default: 400
+      default: 200
     },
     cssClasses: {
       default: '',
@@ -65,17 +65,17 @@ export default {
     return {
       img,
       chartData: {
-        labels: ['January', 'February', 'March'],
+        labels: ['January', 'February', 'March',"a","b","c","d","e","f"],
         datasets: [
           {
             label: 'Data One',
             backgroundColor: 'red',
-            data: [40, 20, 12]
+            data: [40, 20, 12, 50, 10, 22,50, 10, 22]
           },
           {
             label: 'Data two',
             backgroundColor: 'blue',
-            data: [50, 10, 22]
+            data: [50, 10, 22, 50, 10, 22,50, 10, 22]
           }
         ]
       },
@@ -87,4 +87,38 @@ export default {
 
 
 }
+</script> -->
+
+<template>
+  <div id="app" ref="document">
+    <div id="element-to-convert">
+      <center>
+        <img width="400" src="../../../src/assets/quasar-logo-vertical.svg" />
+      </center>
+    </div>
+    <button @click="exportToPDF">Export to PDF</button>
+  </div>
+</template>
+
+<script>
+import html2pdf from "html2pdf.js";
+
+export default {
+  name: "app",
+  methods: {
+    exportToPDF() {
+      html2pdf(document.getElementById("element-to-convert"), {
+				margin: 1,
+  			filename: "i-was-html.pdf",
+			});
+    },
+  },
+};
 </script>
+
+<style>
+#app {
+  margin-top: 60px;
+  text-align: center;
+}
+</style>
