@@ -77,7 +77,7 @@ onMounted(() => {
     map.on('click', function (event) {
         if (popover) {
             popover.dispose();
-            //popover = undefined;
+            popover = undefined;
         }
         const feature = map.getFeaturesAtPixel(event.pixel)[0];
         if (!feature) {
