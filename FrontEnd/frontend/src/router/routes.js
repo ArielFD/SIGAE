@@ -41,11 +41,6 @@ const routes = [
       //############################Reportes############################
       
       {
-        path: "reportes/geolocOpenLayer",
-        name:"geolocOpenLayer",
-        component: () => import("pages/reportes/geolocOpenLayer.vue"),
-      },
-      {
         path: "reportes/busqueda_Plan_de_Medidas",
         name:"busqueda_Plan_de_Medidas",
         component: () => import("pages/reportes/busqueda_Plan_de_Medidas.vue"),

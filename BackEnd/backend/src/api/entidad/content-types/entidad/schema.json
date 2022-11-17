@@ -72,6 +72,12 @@
     },
     "PIB": {
       "type": "string"
+    },
+    "longitud": {
+      "type": "float"
+    },
+    "latitud": {
+      "type": "float"
     }
   }
 }

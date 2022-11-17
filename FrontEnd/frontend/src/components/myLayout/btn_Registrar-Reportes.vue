@@ -55,9 +55,6 @@
           <q-item clickable :to="{ name: 'entidades' }" class="text-black">
             <q-item-section>Entidades</q-item-section>
           </q-item>
-          <q-item clickable :to="{ name: 'geolocOpenLayer' }" class="text-black">
-            <q-item-section>Geo</q-item-section>
-          </q-item>
         </q-list>
       </q-menu>
     </q-btn>

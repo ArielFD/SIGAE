@@ -270,7 +270,7 @@ async function getEnfrentamiento(params) {
                 },
             })
             .then(function (response) {
-                //console.log(response);
+                console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data != null) {
                         if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value){

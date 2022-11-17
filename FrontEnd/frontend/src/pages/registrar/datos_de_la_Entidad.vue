@@ -1,7 +1,7 @@
 <template>
   <div id="content">
-    <button @click="Import">Importar</button>
-    <q-card class="my-card q-ma-md bg-primary" bordered>
+    <!-- <button @click="Import">Importar</button> -->
+    <q-card class="my-card q-ma-md bg-primary" id="card" bordered>
       <q-card-section>
         <q-table class="my-sticky-header-table" title="Datos de las Entidades" dense :rows="data.rows"
           :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
@@ -84,6 +84,7 @@
                   label="OSDE" />
                 <q-input outlined dense v-model="data.PIB" type="text" label="PIB" class="q-pa-xs" />
                 <q-input outlined dense v-model="data.objeto" type="textarea" hint="Objeto social" class="q-pa-xs" />
+                <geo @addLatLon='addLatLon' :LatLon="data.latlon"></geo>
               </div>
             </q-card-section>
 
@@ -132,6 +133,7 @@
                 <q-input outlined dense v-model="data.PIBEdit" type="text" label="PIB" class="q-pa-xs" />
                 <q-input outlined dense v-model="data.objetoEdit" type="textarea" hint="Objeto social"
                   class="q-pa-xs" />
+                <geo @addLatLon='addLatLon' :LatLon="data.latlonEdit"></geo>
               </div>
             </q-card-section>
 
@@ -149,6 +151,7 @@
 </template>
 
 <script setup>
+import geo from "components/geolocOpenLayer.vue"
 import { onMounted, reactive, ref, watch } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
@@ -161,7 +164,7 @@ const pagination = ref({
   sortBy: "desc",
   descending: false,
   page: 1,
-  rowsPerPage: 17,
+  rowsPerPage: 100,
 });
 const $q = useQuasar();
 const auth = useAuthStore();
@@ -282,6 +285,7 @@ let data = reactive({
   coordinador: "",
   PIB: "",
   fuentes: ["Directa", "Indirecta"],
+  latlon: [-82.374751, 23.117113],
 
   entidadEdit: "",
   organismoEdit: "",
@@ -296,6 +300,7 @@ let data = reactive({
   prioridadEdit: "",
   osdeEdit: "",
   PIBEdit: "",
+  latlonEdit: [0, 0],
 
   organismoTemp: "",
 
@@ -346,6 +351,13 @@ onMounted(() => {
 //   });
 // }
 
+function addLatLon(params) {
+  data.latlon[0] = params[0]
+  data.latlon[1] = params[1]
+  data.latlonEdit[0] = params[0]
+  data.latlonEdit[1] = params[1]
+}
+
 function wrapCsvValue(val, formatFn, row) {
   let formatted = formatFn !== void 0
     ? formatFn(val, row)
@@ -385,12 +397,14 @@ function exportTable() {
   )
 
   var elementHTML = document.querySelector("#content")
+  doc.text(["Empresa de control Ambiental", "Bahia de la Habana"], 100, 10, { align: 'center' })
+  doc.text(["_______________________________", "Firma del Director"], 100, 280, { align: 'center' })
   doc.html(elementHTML, {
     callback: function (doc) {
       doc.save("sample.pdf")
     },
-    x: 5,
-    y: 5,
+    x: 20,
+    y: 20,
     width: 170,
     windowWidth: 2000
   })
@@ -418,6 +432,8 @@ function editNombre(params) {
     (data.salidaEdit = selected.value[0].salida),
     (data.osdeEdit = selected.value[0].osde),
     (data.PIBEdit = selected.value[0].PIB),
+    (data.latlonEdit[0] = selected.value[0].longitud),
+    (data.latlonEdit[1] = selected.value[0].latitud),
     (data.cardCambiar = true);
 }
 
@@ -482,6 +498,9 @@ function cambiarNombre(params) {
       objeto_social: data.objetoEdit,
       PIB: data.PIBEdit,
       activo: "s",
+      longitud: data.latlonEdit[0],
+      latitud: data.latlonEdit[1],
+
       referencia: `${selected.value[0].referencia}<${selected.value[0].id}>`
     },
   };
@@ -510,6 +529,8 @@ function editFields(params) {
     (data.salidaEdit = selected.value[0].salida),
     (data.osdeEdit = selected.value[0].osde),
     (data.PIBEdit = selected.value[0].PIB),
+    (data.latlonEdit[0] = selected.value[0].longitud),
+    (data.latlonEdit[1] = selected.value[0].latitud),
     (data.cardEdit = true);
 }
 
@@ -548,7 +569,9 @@ function Edit(params) {
       cant_trabajadores: data.trabajadoresEdit,
       tipo_fuente: data.fuenteEdit,
       objeto_social: data.objetoEdit,
-      PIB: data.PIBEdit
+      PIB: data.PIBEdit,
+      latitud: data.latlonEdit[1],
+      longitud: data.latlonEdit[0],
     },
   };
 
@@ -605,7 +628,9 @@ function Create() {
       tipo_fuente: data.fuente,
       objeto_social: data.objeto,
       PIB: data.PIB,
-      activo: "s"
+      activo: "s",
+      longitud: data.latlon[0],
+      latitud: data.latlon[1]
     },
   };
 
@@ -622,7 +647,7 @@ function Create() {
       getEntidades();
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -872,6 +897,8 @@ async function getEntidades(params) {
             osde: response.data.data[i].attributes.osde.data.attributes.nombre,
             referencia: response.data.data[i].attributes.referencia,
             PIB: response.data.data[i].attributes.PIB,
+            latitud: response.data.data[i].attributes.latitud,
+            longitud: response.data.data[i].attributes.longitud
           });
           count++
         }

@@ -97,8 +97,8 @@ let data = reactive({
 
 onMounted(() => {
     getYear(),
-        getOrganismos(),
-        getActacontrol()
+        getOrganismos()
+        // getActacontrol()
 });
 
 function getYear(params) {
