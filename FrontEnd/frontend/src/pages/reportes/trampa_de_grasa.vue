@@ -6,7 +6,7 @@
                     :columns="columns" row-key="name" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-between">
-                            <div class="col-3 text-h6">Sistema de tratamiento</div>
+                            <div class="col-3 text-h6">Trampa de grasa</div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Busqueda por:" />
@@ -96,11 +96,18 @@ const columns = [
         field: "osde",
         sortable: true,
     },
+    // {
+    //     name: "anno",
+    //     align: "center",
+    //     label: "Año",
+    //     field: "anno",
+    //     sortable: true,
+    // },
     {
-        name: "sistema",
+        name: "trampa",
         align: "center",
-        label: "Sistema de tratamiento",
-        field: "sistema",
+        label: "Trampa de grasa",
+        field: "trampa",
         sortable: true,
     }
 ];
@@ -197,7 +204,7 @@ async function getActacontrol(params) {
     data.rows = [];
     let count = 1
     await api
-        .get(`/actacontrols?populate[0]=sis_tratamiento&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+        .get(`/actacontrols?populate[0]=trampa_grasa&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
@@ -206,7 +213,7 @@ async function getActacontrol(params) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 let sistemaTemp="No"
-                if(response.data.data[i].attributes.sis_tratamiento.data!=null) sistemaTemp="Si"
+                if(response.data.data[i].attributes.trampa_grasa.data!=null) sistemaTemp="Si"
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                     if(response.data.data[i].attributes.entidad.data.attributes.osde.data==null) response.data.data[i].attributes.entidad.data.attributes.osde.data ={attributes: { nombre: "-" }}
@@ -214,7 +221,7 @@ async function getActacontrol(params) {
                     if(data.opcion=="OACE" && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo==modelOrganismo.value){
                         data.rows.push({
                             name:count,
-                            sistema: sistemaTemp,
+                            trampa: sistemaTemp,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
@@ -224,7 +231,7 @@ async function getActacontrol(params) {
                     else if(data.opcion=="OSDE" && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre==modelOsde.value){
                         data.rows.push({
                             name:count,
-                            sistema: sistemaTemp,
+                            trampa: sistemaTemp,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
@@ -234,7 +241,7 @@ async function getActacontrol(params) {
                     else if(data.opcion=="Prioridad" && response.data.data[i].attributes.entidad.data.attributes.prioridad.data.attributes.prioridad==modelPrioridad.value){
                         data.rows.push({
                             name:count,
-                            sistema: sistemaTemp,
+                            trampa: sistemaTemp,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre

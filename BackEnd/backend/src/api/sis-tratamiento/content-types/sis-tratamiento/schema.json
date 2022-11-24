@@ -4,7 +4,8 @@
   "info": {
     "singularName": "sis-tratamiento",
     "pluralName": "sis-tratamientos",
-    "displayName": "sis_tratamiento"
+    "displayName": "sis_tratamiento",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -14,7 +15,8 @@
     "actacontrol": {
       "type": "relation",
       "relation": "oneToOne",
-      "target": "api::actacontrol.actacontrol"
+      "target": "api::actacontrol.actacontrol",
+      "inversedBy": "sis_tratamiento"
     },
     "eficiencia": {
       "type": "string"

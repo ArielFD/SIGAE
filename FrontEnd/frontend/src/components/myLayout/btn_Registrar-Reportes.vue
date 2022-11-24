@@ -49,8 +49,8 @@
           <q-item clickable :to="{ name: 'sistema_de_Tratamiento' }" class="text-black">
             <q-item-section>Sistema de Tratamiento</q-item-section>
           </q-item>
-          <q-item clickable :to="{ name: 'histogramas' }" class="text-black">
-            <q-item-section>Histogramas</q-item-section>
+          <q-item clickable :to="{ name: 'trampa_de_grasa' }" class="text-black">
+            <q-item-section>Trampa de Grasa</q-item-section>
           </q-item>
           <q-item clickable :to="{ name: 'entidades' }" class="text-black">
             <q-item-section>Entidades</q-item-section>

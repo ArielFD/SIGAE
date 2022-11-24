@@ -66,9 +66,9 @@ const routes = [
         component: () => import("pages/reportes/sistema_de_Tratamiento.vue"),
       },
       {
-        path: "reportes/histogramas",
-        name:"histogramas",
-        component: () => import("pages/reportes/histogramas_.vue"),
+        path: "reportes/trampa_de_grasa",
+        name:"trampa_de_grasa",
+        component: () => import("pages/reportes/trampa_de_grasa.vue"),
       },
       {
         path: "reportes/entidades",

@@ -65,35 +65,23 @@
       "relation": "oneToOne",
       "target": "api::entidad.entidad"
     },
-    "sistema_de_tratamiento": {
-      "type": "string"
-    },
-    "idoneidad": {
-      "type": "string"
-    },
-    "estado_tecnico": {
-      "type": "string"
-    },
-    "eficiencia": {
-      "type": "string"
-    },
-    "trampa_de_grasa": {
-      "type": "string"
-    },
-    "estadoGrasaBien": {
-      "type": "integer"
-    },
-    "estadoGrasaRegular": {
-      "type": "integer"
-    },
-    "estadoGrasaMal": {
-      "type": "integer"
-    },
     "residuals": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::residual.residual",
       "mappedBy": "actacontrol"
+    },
+    "sis_tratamiento": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::sis-tratamiento.sis-tratamiento",
+      "inversedBy": "actacontrol"
+    },
+    "trampa_grasa": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::trampa-grasa.trampa-grasa",
+      "inversedBy": "actacontrol"
     }
   }
 }

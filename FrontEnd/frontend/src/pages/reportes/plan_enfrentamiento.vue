@@ -3,8 +3,8 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
-                    :columns="columns" row-key="name"  selection="multiple"
-                    v-model:selected="selected" v-model:pagination="pagination" >
+                    :columns="columns" row-key="name" selection="multiple" v-model:selected="selected"
+                    v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
                             <div class="col-3 text-h6">Plan de enfrentamiento</div>
@@ -12,15 +12,14 @@
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Busqueda por:" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='OACE'">
+                            <div class="col-4" v-if="data.opcion == 'OACE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelOrganismo" :options="optionsOrganismo" @filter="filterFnOrganismo"
                                     label="OACE" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='OSDE'">
+                            <div class="col-4" v-if="data.opcion == 'OSDE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
-                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde"
-                                    label="OSDE" />
+                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde" label="OSDE" />
                             </div>
                             <div class="col-3">
                                 <div class="row justify-center">
@@ -35,20 +34,22 @@
                 </q-table>
             </q-card-section>
         </q-card>
+        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" ></histograma>
     </div>
 </template>
   
 <script setup>
+import histograma from "./histogramas_planEnfrentamiento.vue"
 import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
-  sortBy: "desc",
-  descending: false,
-  page: 1,
-  rowsPerPage: 17,
+    sortBy: "desc",
+    descending: false,
+    page: 1,
+    rowsPerPage: 17,
 });
 
 const auth = useAuthStore();
@@ -76,6 +77,13 @@ const columns = [
         align: "center",
         label: "OACE",
         field: "oace",
+        sortable: true,
+    },
+    {
+        name: "osde",
+        align: "center",
+        label: "OSDE",
+        field: "osde",
         sortable: true,
     },
     {
@@ -159,13 +167,19 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
+    temp: false,
     rows: [],
-
+    rows1: [],
+    rows2: [],
     opcion: "",
     opcions: ["OACE", "OSDE"],
-    
+
     organismos: [],
-    osdes:[],
+    osdes: [],
+
+    histogramOptions: {
+        year1: [],
+    },
 });
 
 function filterFnOsde(val, update) {
@@ -262,99 +276,104 @@ async function getOSDE(params) {
 async function getEnfrentamiento(params) {
     data.rows = [];
     let count = 1
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data != null) {
-                        if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value){
-                            if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            data.rows.push({
-                                name: count,
-                                id: response.data.data[i].id,
-                                entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                                desechos: response.data.data[i].attributes.desechos,
-                                inversiones: response.data.data[i].attributes.inversiones,
-                                licencia: response.data.data[i].attributes.licencia,
-                                observaciones: response.data.data[i].attributes.observaciones,
-                                permiso: response.data.data[i].attributes.permiso,
-                                plan: response.data.data[i].attributes.plan,
-                                sistema: response.data.data[i].attributes.sistema,
-                                trampa: response.data.data[i].attributes.trampa,
-                                medidas: response.data.data[i].attributes.medidas,
-                                cumplidas: response.data.data[i].attributes.cumplidas,
-                                evaluadas: response.data.data[i].attributes.evaluadas,
-                                incumplidas: response.data.data[i].attributes.incumplidas,
-                                cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
-                                descripcion: response.data.data[i].attributes.descripcion,
-                                marchaAcorde: response.data.data[i].attributes.marchaAcorde,
-                                nombreLicencia: response.data.data[i].attributes.nombreLicencia,
-                                nombrePermiso: response.data.data[i].attributes.nombrePermiso,
-                                observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
-                                fecha: response.data.data[i].attributes.fecha,
-                                monitoreo:response.data.data[i].attributes.licencia,
-                                funcionaBien:response.data.data[i].attributes.permiso,
-                                Inversiones:response.data.data[i].attributes.licencia,
-                            });
-                            Object.keys(data.rows[i]).forEach(function (key) {
-                                if (data.rows[i][key] === true) {
-                                    data.rows[i][key] = "si"
-                                } else if (data.rows[i][key] === false) {
-                                    data.rows[i][key] = "no"
-                                }
-                            })
-                            count++
-                        }else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data!=null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
-                            if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            data.rows.push({
-                                name: count,
-                                id: response.data.data[i].id,
-                                entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                                desechos: response.data.data[i].attributes.desechos,
-                                inversiones: response.data.data[i].attributes.inversiones,
-                                licencia: response.data.data[i].attributes.licencia,
-                                observaciones: response.data.data[i].attributes.observaciones,
-                                permiso: response.data.data[i].attributes.permiso,
-                                plan: response.data.data[i].attributes.plan,
-                                sistema: response.data.data[i].attributes.sistema,
-                                trampa: response.data.data[i].attributes.trampa,
-                                medidas: response.data.data[i].attributes.medidas,
-                                cumplidas: response.data.data[i].attributes.cumplidas,
-                                evaluadas: response.data.data[i].attributes.evaluadas,
-                                incumplidas: response.data.data[i].attributes.incumplidas,
-                                cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
-                                descripcion: response.data.data[i].attributes.descripcion,
-                                marchaAcorde: response.data.data[i].attributes.marchaAcorde,
-                                nombreLicencia: response.data.data[i].attributes.nombreLicencia,
-                                nombrePermiso: response.data.data[i].attributes.nombrePermiso,
-                                observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
-                                fecha: response.data.data[i].attributes.fecha,
-                                monitoreo:response.data.data[i].attributes.licencia,
-                                funcionaBien:response.data.data[i].attributes.permiso,
-                                Inversiones:response.data.data[i].attributes.licencia,
-                            });
-                            Object.keys(data.rows[i]).forEach(function (key) {
-                                if (data.rows[i][key] === true) {
-                                    data.rows[i][key] = "si"
-                                } else if (data.rows[i][key] === false) {
-                                    data.rows[i][key] = "no"
-                                }
-                            })
-                            count++
-                        }
+    await api
+        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].attributes.entidad.data != null) {
+                    if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows.push({
+                            name: count,
+                            id: response.data.data[i].id,
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                            desechos: response.data.data[i].attributes.desechos,
+                            inversiones: response.data.data[i].attributes.inversiones,
+                            licencia: response.data.data[i].attributes.licencia,
+                            observaciones: response.data.data[i].attributes.observaciones,
+                            permiso: response.data.data[i].attributes.permiso,
+                            plan: response.data.data[i].attributes.plan,
+                            sistema: response.data.data[i].attributes.sistema,
+                            trampa: response.data.data[i].attributes.trampa,
+                            medidas: response.data.data[i].attributes.medidas,
+                            cumplidas: response.data.data[i].attributes.cumplidas,
+                            evaluadas: response.data.data[i].attributes.evaluadas,
+                            incumplidas: response.data.data[i].attributes.incumplidas,
+                            cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
+                            descripcion: response.data.data[i].attributes.descripcion,
+                            marchaAcorde: response.data.data[i].attributes.marchaAcorde,
+                            nombreLicencia: response.data.data[i].attributes.nombreLicencia,
+                            nombrePermiso: response.data.data[i].attributes.nombrePermiso,
+                            observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
+                            fecha: response.data.data[i].attributes.fecha,
+                            monitoreo: response.data.data[i].attributes.licencia,
+                            funcionaBien: response.data.data[i].attributes.permiso,
+                            Inversiones: response.data.data[i].attributes.licencia,
+                            oace:response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                            osde:response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                        });
+                        Object.keys(data.rows[i]).forEach(function (key) {
+                            if (data.rows[i][key] === true) {
+                                data.rows[i][key] = "si"
+                            } else if (data.rows[i][key] === false) {
+                                data.rows[i][key] = "no"
+                            }
+                        })
+                        data.histogramOptions.year1 = data.rows
+                        count++
+                    } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows.push({
+                            name: count,
+                            id: response.data.data[i].id,
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                            desechos: response.data.data[i].attributes.desechos,
+                            inversiones: response.data.data[i].attributes.inversiones,
+                            licencia: response.data.data[i].attributes.licencia,
+                            observaciones: response.data.data[i].attributes.observaciones,
+                            permiso: response.data.data[i].attributes.permiso,
+                            plan: response.data.data[i].attributes.plan,
+                            sistema: response.data.data[i].attributes.sistema,
+                            trampa: response.data.data[i].attributes.trampa,
+                            medidas: response.data.data[i].attributes.medidas,
+                            cumplidas: response.data.data[i].attributes.cumplidas,
+                            evaluadas: response.data.data[i].attributes.evaluadas,
+                            incumplidas: response.data.data[i].attributes.incumplidas,
+                            cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
+                            descripcion: response.data.data[i].attributes.descripcion,
+                            marchaAcorde: response.data.data[i].attributes.marchaAcorde,
+                            nombreLicencia: response.data.data[i].attributes.nombreLicencia,
+                            nombrePermiso: response.data.data[i].attributes.nombrePermiso,
+                            observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
+                            fecha: response.data.data[i].attributes.fecha,
+                            monitoreo: response.data.data[i].attributes.licencia,
+                            funcionaBien: response.data.data[i].attributes.permiso,
+                            Inversiones: response.data.data[i].attributes.licencia,
+                            oace:response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                            osde:response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                        });
+                        Object.keys(data.rows[i]).forEach(function (key) {
+                            if (data.rows[i][key] === true) {
+                                data.rows[i][key] = "si"
+                            } else if (data.rows[i][key] === false) {
+                                data.rows[i][key] = "no"
+                            }
+                        })
+                        data.histogramOptions.year1 = data.rows
+                        count++
                     }
                 }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
 }
 
 </script>

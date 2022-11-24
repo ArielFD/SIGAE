@@ -3,8 +3,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" 
-                    v-model:selected="selected" v-model:pagination="pagination">
+                    :columns="columns" row-key="name" v-model:selected="selected" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
                             <div class="col-3 text-h6">Plan de medidas</div>
@@ -12,20 +11,19 @@
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Busqueda por:" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='Entidad'">
+                            <div class="col-4" v-if="data.opcion == 'Entidad'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelEntidad" :options="optionsEntidad" @filter="filterFnEntidad"
                                     label="Entidad" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='OACE'">
+                            <div class="col-4" v-if="data.opcion == 'OACE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelOrganismo" :options="optionsOrganismo" @filter="filterFnOrganismo"
                                     label="OACE" />
                             </div>
-                            <div class="col-4" v-if="data.opcion=='OSDE'">
+                            <div class="col-4" v-if="data.opcion == 'OSDE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
-                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde"
-                                    label="OSDE" />
+                                    v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde" label="OSDE" />
                             </div>
                             <div class="col-3">
                                 <div class="row justify-center">
@@ -40,10 +38,12 @@
                 </q-table>
             </q-card-section>
         </q-card>
+        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" ></histograma>
     </div>
 </template>
 
 <script setup>
+import histograma from "./histogramas_planAccion.vue"
 import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
@@ -182,13 +182,21 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
+    temp:false,
     rows: [],
+    rows1: [],
+    rows2: [],
     opcion: "",
     opcions: ["Entidad", "OACE", "OSDE"],
 
+    histogramOptions: {
+        year1: [],
+        year2: [],
+        year3: []
+    },
     entidades: [],
     organismos: [],
-    osdes:[],
+    osdes: [],
 
     fecha_actual: new Date(),
 
@@ -333,10 +341,16 @@ function getEntidad(params) {
 }
 
 async function getActacontrol(params) {
+    data.histogramOptions={
+        year1: [],
+        year2: [],
+    },
     data.rows = [];
+    data.rows1 = [];
+    data.rows2 = [];
     let count = 1
     await api
-        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${(data.fecha_actual) - 1}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
@@ -349,6 +363,7 @@ async function getActacontrol(params) {
                     if (data.opcion == 'Entidad' && response.data.data[i].attributes.entidad.data.attributes.entidad == modelEntidad.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         data.rows.push({
+                            year: data.fecha_actual,
                             name: count,
                             id: response.data.data[i].id,
                             cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
@@ -366,10 +381,12 @@ async function getActacontrol(params) {
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                         });
+                        data.histogramOptions.year1.push(data.rows)
                         count++
                     } else if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         data.rows.push({
+                            year: data.fecha_actual,
                             name: count,
                             id: response.data.data[i].id,
                             cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
@@ -387,10 +404,12 @@ async function getActacontrol(params) {
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                         });
+                        data.histogramOptions.year1.push(data.rows)
                         count++
-                    }else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data!=null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                    } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         data.rows.push({
+                            year: data.fecha_actual,
                             name: count,
                             id: response.data.data[i].id,
                             cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
@@ -408,10 +427,12 @@ async function getActacontrol(params) {
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                         });
+                        data.histogramOptions.year1.push(data.rows)
                         count++
                     }
                 }
             }
+            
             let cumplidas_corto = 0, cumplidas_largo = 0, cumplidas_mediano = 0, medidas_corto = 0, medidas_largo = 0, medidas_mediano = 0, totalMedidas = 0, totalCumplidas = 0, porcientoCorto = 0, porcientoMedio = 0.00, porcientoLargo = 0.00, porcientoTotal = 0.00;
             data.rows.forEach(element => {
                 // if(element.porcientoCorto=="NaN") element.porcientoCorto=0
@@ -454,7 +475,59 @@ async function getActacontrol(params) {
         .catch(function (error) {
             console.log(error);
         });
-
+    await api
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual - 1}`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            //console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                //Unidad de Camiones # 1
+                if (response.data.data[i].attributes.entidad.data != null) {
+                    if (data.opcion == 'Entidad' && response.data.data[i].attributes.entidad.data.attributes.entidad == modelEntidad.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows1.push({
+                            porcientoCorto: (response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100,
+                            year: data.fecha_actual - 1,
+                            porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
+                            porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
+                            porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
+                            porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                        });
+                        data.histogramOptions.year2.push(data.rows1)
+                    } else if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows1.push({
+                            year: data.fecha_actual - 1,
+                            porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
+                            porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
+                            porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
+                            porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                        });
+                        data.histogramOptions.year2.push(data.rows1)
+                    } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        data.rows1.push({
+                            year: data.fecha_actual - 1,
+                            porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
+                            porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
+                            porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
+                            porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                        });
+                        data.histogramOptions.year2.push(data.rows1)
+                    }
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    
 }
 
 </script>
