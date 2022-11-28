@@ -9,7 +9,6 @@ Icon
 .Spotlight-V100
 .Trashes
 ._*
-.env
 
 ############################
 # Linux
@@ -67,7 +66,7 @@ $RECYCLE.BIN/
 
 .tmp
 *.log
-*.sql
+# *.sql
 *.sqlite
 *.sqlite3
 
@@ -106,7 +105,7 @@ coverage
 # Strapi
 ############################
 
-.env
+# .env
 license.txt
 exports
 *.cache

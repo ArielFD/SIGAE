@@ -164,7 +164,7 @@ const pagination = ref({
   sortBy: "desc",
   descending: false,
   page: 1,
-  rowsPerPage: 100,
+  rowsPerPage: 17,
 });
 const $q = useQuasar();
 const auth = useAuthStore();

@@ -643,7 +643,7 @@ function Delete(params) {
 
 function getEntidad(params) {
     api
-        .get(`/entidads`, {
+        .get(`/entidads?filters[activo][$eq]=s`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
