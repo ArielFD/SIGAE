@@ -21,9 +21,14 @@ as&iacute; a elevar el nivel de eficiencia en la ejecuci&oacute;n de dicho proce
 </template>
 
 <script setup>
+import { onMounted, reactive } from "vue";
 import { useAuthStore } from "src/stores/auth-store";
 
 const auth = useAuthStore();
+onMounted(() => {
+ 
+});
+
 </script>
 
 <style lang="sass" scoped>
