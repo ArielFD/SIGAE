@@ -6,12 +6,16 @@
         <q-img src="~assets/Layout_/baner_2.png" class="banner" />
       </q-toolbar>
       <q-toolbar class="row no-padding glossy justify-between" style="background-color: rgb(32, 105, 126)">
+        <div>
+          <q-btn push no-caps label="SIGAE" :to="{ name: 'Interfaz_principal' }" flat size="lg" icon="home"/>
+        </div>
+        <div>
         <btn_Administrador v-if="data.admin" />
         <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
         <btn_Reportes v-if="data.public"></btn_Reportes>
-        <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" />
-        <q-btn push no-caps label="Cerrar Sesion" v-else @click="cerrarSesion" />
-
+        <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" flat size="lg"/>
+        <q-btn push no-caps label="Logout" v-else @click="cerrarSesion" flat size="lg"/>
+      </div>
         <q-dialog v-model="data.card">
           <q-card class="my-card text-black">
             <q-card-section class="no-padding">
@@ -36,7 +40,7 @@
             <q-separator dark />
 
             <q-card-actions class="justify-end">
-              <q-btn no-caps class="text-white bg-secondary" @click="Login">Confirmar</q-btn>
+              <q-btn no-caps class="text-white bg-secondary" @click="Login" v-close-popup >Confirmar</q-btn>
               <q-btn no-caps class="text-white bg-secondary" @click="clear">Limpiar Campos</q-btn>
             </q-card-actions>
           </q-card>
@@ -134,7 +138,7 @@ function getRol(params) {
       },
     })
     .then(function (response) {
-      //console.log(response);
+      console.log(response);
       if (
         response.data.role.name === "Administrador") {
         data.admin = true

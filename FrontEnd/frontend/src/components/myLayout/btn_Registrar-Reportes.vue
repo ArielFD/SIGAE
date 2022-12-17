@@ -1,7 +1,7 @@
 <template>
   <q-btn-group flat>
-    <q-btn push no-caps label="Registrar">
-      <q-menu class="bg-primary text-black">
+    <q-btn-dropdown push no-caps label="Registrar" flat size="lg">
+      <!-- <q-menu class="bg-primary text-black"> -->
         <q-list dense style="min-width: 100px">
           <q-item clickable :to="{ name: 'actaDeControl' }" class="text-black">
             <q-item-section>Acta de Control</q-item-section>
@@ -28,11 +28,11 @@
             
           </q-item>
         </q-list>
-      </q-menu>
-    </q-btn>
+      <!-- </q-menu> -->
+    </q-btn-dropdown>
 
-    <q-btn push no-caps label="Reportes" @click="$emit('hideVal')" >
-      <q-menu class="bg-primary text-black">
+    <q-btn-dropdown push no-caps label="Reportes" @click="$emit('hideVal')" flat size="lg">
+      <!-- <q-menu class="bg-primary text-black"> -->
         <q-list dense style="min-width: 100px">
           <q-item clickable :to="{ name: 'busqueda_Plan_de_Medidas' }" class="text-black">
             <q-item-section>Búsqueda Plan de Medidas</q-item-section>
@@ -56,8 +56,8 @@
             <q-item-section>Entidades</q-item-section>
           </q-item>
         </q-list>
-      </q-menu>
-    </q-btn>
+      <!-- </q-menu> -->
+    </q-btn-dropdown>
   </q-btn-group>
 </template>
 

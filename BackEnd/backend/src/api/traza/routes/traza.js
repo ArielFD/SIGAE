@@ -6,4 +6,4 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::traza.traza');
+module.exports = createCoreRouter('api::traza.traza')
