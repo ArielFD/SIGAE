@@ -7,6 +7,7 @@
           :rows="data.rows"
           :columns="columns"
           row-key="name"
+          dense
           selection="single"
           :selected-rows-label="getSelectedString"
           v-model:selected="selected"
@@ -26,7 +27,7 @@
             <q-card-section>
               <div class="text-h6">Nuevo Usuario</div>
             </q-card-section>
-
+            <form @submit.prevent.stop="onCreate">
             <q-card-section class="q-pa-sm">
               <q-input
               outlined
@@ -36,6 +37,7 @@
                 class="my-input"
                 lazy-rules
                 :rules="alerts.inputRules"
+                ref="username"
               />
               <q-input
               outlined
@@ -44,6 +46,7 @@
                 label="Email"
                 lazy-rules
                 :rules="alerts.emailRules"
+                ref="email"
               >
                 <template v-slot:prepend>
                   <q-icon name="mail" />
@@ -52,13 +55,13 @@
               <q-input
               outlined
               dense
-                ref="passRef"
                 class="q-mb-md my-input"
                 v-model="data.password"
                 prefix="Password:"
                 :type="data.isPwd ? 'password' : 'text'"
                 lazy-rules
                 :rules="alerts.passRules"
+                ref="password"
               >
                 <template v-slot:append>
                   <q-icon
@@ -74,6 +77,9 @@
                 v-model="data.rol"
                 :options="data.option"
                 label="Rol"
+                lazy-rules
+                :rules="alerts.inputRules"
+                ref="rol"
               />
             </q-card-section>
 
@@ -81,13 +87,13 @@
 
             <q-card-actions align="right">
               <q-btn
-                v-close-popup
                 flat
                 color="secondary"
                 label="Crear"
-                @click="Create"
+                type="submit"
               />
             </q-card-actions>
+          </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="editFields"
@@ -98,7 +104,7 @@
             <q-card-section>
               <div class="text-h6">Editar Usuario</div>
             </q-card-section>
-
+            <form @submit.prevent.stop="onEdit">
             <q-card-section class="">
               <q-input
                 outlined
@@ -108,6 +114,7 @@
                 class="my-input"
                 lazy-rules
                 :rules="alerts.inputRules"
+                ref="usernameEdit"
               />
               <q-input
               outlined
@@ -116,6 +123,7 @@
                 label="Email"
                 lazy-rules
                 :rules="alerts.emailRules"
+                ref="emailEdit"
               >
                 <template v-slot:prepend>
                   <q-icon name="mail" />
@@ -124,13 +132,13 @@
               <q-input
               outlined
               dense
-                ref="passRef"
                 class="my-input q-mb-md"
                 v-model="data.passwordEdit"
                 prefix="Password:"
                 :type="data.isPwd ? 'password' : 'text'"
                 lazy-rules
                 :rules="alerts.passRules"
+                ref="passwordEdit"
               >
                 <template v-slot:append>
                   <q-icon
@@ -146,6 +154,9 @@
                 v-model="data.rolEdit"
                 :options="data.option"
                 label="Rol"
+                lazy-rules
+                :rules="alerts.inputRules"
+                ref="rolEdit"
               />
             </q-card-section>
 
@@ -153,13 +164,13 @@
 
             <q-card-actions align="right">
               <q-btn
-                v-close-popup
                 flat
                 color="secondary"
                 label="Editar"
-                @click="Edit"
+                type="submit"
               />
             </q-card-actions>
+          </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="Delete"
@@ -175,6 +186,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
   sortBy: "desc",
@@ -182,6 +194,8 @@ const pagination = ref({
   page: 1,
   rowsPerPage: 10,
 });
+
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -208,15 +222,18 @@ const columns = [
     label: "Rol",
     field: "Rol",
     sortable: true,
-  },
-  {
-    name: "Contraseña",
-    align: "center",
-    label: "Contraseña",
-    field: "Contraseña",
-    sortable: true,
-  },
+  }
 ];
+
+const username = ref(null);
+const email = ref(null);
+const password = ref(null);
+const rol = ref(null);
+
+const usernameEdit = ref(null);
+const emailEdit = ref(null);
+const passwordEdit = ref(null);
+const rolEdit = ref(null);
 
 let data = reactive({
   username: "",
@@ -279,11 +296,18 @@ function Edit(params) {
     .put(`/users/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
       //console.log(response);
+      data.cardEdit = false
+      alerts.alerts[1].message = "Usuario editado";
+      $q.notify(alerts.alerts[1]);
       getUsuarios()
     })
     .catch(function (error) {
+      alerts.alerts[0].message = `Fallo editando el Usuario ${error.response.data.error.message}`;
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
+
+  selected.value = []
 }
 
 function Create() {
@@ -311,9 +335,14 @@ function Create() {
     .post("/users", dataRest, authorization)
     .then(function (response) {
       //console.log(response);
+      data.cardCreate = false
+      alerts.alerts[1].message = "Usuario creado";
+      $q.notify(alerts.alerts[1]);
       getUsuarios();
     })
     .catch(function (error) {
+      alerts.alerts[0].message = `Fallo creando el Usuario ${error.response.data.error.message}`;
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
 }
@@ -342,13 +371,13 @@ function getRoles(params) {
 function getUsuarios(params) {
   console.log(auth.jwt);
   api
-    .get("/usuarios", {
+    .get("/users?populate=%2A", {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },
     })
     .then(function (response) {
-      console.log(response.data[0]);
+      console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.length; i++) {
         data.rows.push({
@@ -374,9 +403,13 @@ function Delete(params) {
       },
     })
     .then(function (response) {
+      alerts.alerts[1].message = "Usuario eliminado";
+      $q.notify(alerts.alerts[1]);
       getUsuarios()
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo eliminando el Usuario";
+      $q.notify(alerts.alerts[0]);
       console.log(error);
     });
 }
@@ -388,4 +421,35 @@ function getSelectedString() {
         selected.value.length > 1 ? "s" : ""
       } selected of ${data.rows.length}`;
 }
+
+function onCreate() {
+  username.value.validate();
+  email.value.validate();
+  password.value.validate();
+  rol.value.validate();
+
+  if (username.value.hasError || email.value.hasError || password.value.hasError || rol.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  usernameEdit.value.validate();
+  emailEdit.value.validate();
+  passwordEdit.value.validate();
+  rolEdit.value.validate();
+
+  if (usernameEdit.value.hasError || emailEdit.value.hasError || passwordEdit.value.hasError || rolEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
+}
+
 </script>

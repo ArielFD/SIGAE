@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Carga contaminante" dense :rows="data.rows" :columns="columns"

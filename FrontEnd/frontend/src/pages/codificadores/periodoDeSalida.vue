@@ -7,6 +7,7 @@
             :rows="data.rows"
             :columns="columns"
             row-key="name"
+            dense
             :selected-rows-label="getSelectedString"
             selection="single"
             v-model:selected="selected"
@@ -26,7 +27,7 @@
               <q-card-section>
                 <div class="text-h6">Nuevo Periodo de Salida</div>
               </q-card-section>
-  
+              <form @submit.prevent.stop="onCreate">
               <q-card-section class="q-pa-sm">
                 <q-input
                   outlined
@@ -36,6 +37,7 @@
                   class="my-input"
                   lazy-rules
                   :rules="alerts.inputRules"
+                  ref="nameCategoria"
                 />
               </q-card-section>
   
@@ -43,13 +45,13 @@
   
               <q-card-actions align="right">
                 <q-btn
-                  v-close-popup
                   flat
                   color="secondary"
                   label="Crear"
-                  @click="Create"
+                  type="submit"
                 />
               </q-card-actions>
+            </form>
             </q-card>
           </q-dialog>
           <q-btn no-caps class="text-white bg-secondary" @click="editFields"
@@ -60,7 +62,7 @@
               <q-card-section>
                 <div class="text-h6">Editar Periodo</div>
               </q-card-section>
-  
+              <form @submit.prevent.stop="onEdit">
               <q-card-section class="q-pa-sm">
                 <q-input
                   outlined
@@ -70,6 +72,7 @@
                   class="my-input"
                   lazy-rules
                   :rules="alerts.inputRules"
+                  ref="salidaEdit"
                 />
               </q-card-section>
   
@@ -77,13 +80,13 @@
   
               <q-card-actions align="right">
                 <q-btn
-                  v-close-popup
                   flat
                   color="secondary"
                   label="Editar"
-                  @click="Edit"
+                  type="submit"
                 />
               </q-card-actions>
+            </form>
             </q-card>
           </q-dialog>
           <q-btn no-caps class="text-white bg-secondary" @click="Delete"
@@ -99,13 +102,16 @@
   import { api } from "boot/axios.js";
   import { useAuthStore } from "src/stores/auth-store";
   import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
-  
+  import { useQuasar } from "quasar";
+
   const pagination = ref({
     sortBy: "desc",
     descending: false,
     page: 1,
     rowsPerPage: 10,
   });
+
+  const $q = useQuasar();
   const auth = useAuthStore();
   const alerts = useAlertsRulesStore();
   const selected = ref([]);
@@ -128,6 +134,9 @@
     },
   ];
   
+  const nameCategoria = ref(null);
+const salidaEdit = ref(null);
+
   let data = reactive({
     nameCategoria: "",
     idCategoria: "",
@@ -163,11 +172,19 @@
       .put(`/salidas/${selected.value[0].id}`, dataRest, authorization)
       .then(function (response) {
         //console.log(response);
+        data.cardEdit = false
+      alerts.alerts[1].message = "Periodo editado";
+      $q.notify(alerts.alerts[1]);
         getSalidas();
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo editando el Periodo";
+      $q.notify(alerts.alerts[0]);
         console.log(error.response);
       });
+
+      data.salidaEdit = []
+  selected.value = []
   }
   
   function Create() {
@@ -187,9 +204,14 @@
       .post("/salidas", dataRest, authorization)
       .then(function (response) {
         //console.log(response);
+        data.cardCreate = false
+      alerts.alerts[1].message = "Periodo creado";
+      $q.notify(alerts.alerts[1]);
         getSalidas();
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo creando el Periodo";
+      $q.notify(alerts.alerts[0]);
         console.log(error.response);
       });
   }
@@ -202,9 +224,13 @@
         },
       })
       .then(function (response) {
+        alerts.alerts[1].message = "Periodo eliminado";
+      $q.notify(alerts.alerts[1]);
         getSalidas()
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo eliminando el Periodo";
+      $q.notify(alerts.alerts[0]);
         console.log(error);
       });
   }
@@ -239,4 +265,28 @@
           selected.value.length > 1 ? "s" : ""
         } selected of ${data.rows.length}`;
   }
+
+  function onCreate() {
+    nameCategoria.value.validate();
+
+  if (nameCategoria.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  salidaEdit.value.validate();
+
+  if (salidaEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
+}
   </script>

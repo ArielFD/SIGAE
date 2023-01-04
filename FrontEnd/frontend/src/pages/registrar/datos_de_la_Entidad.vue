@@ -1,5 +1,5 @@
 <template>
-  <div id="content">
+  <div id="content" class="col-11">
     <!-- <button @click="Import">Importar</button> -->
     <q-card class="my-card q-ma-md bg-primary" id="card" bordered>
       <q-card-section>

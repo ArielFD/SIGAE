@@ -7,6 +7,7 @@
             :rows="data.rows"
             :columns="columns"
             row-key="name"
+            dense
             :selected-rows-label="getSelectedString"
             selection="single"
             v-model:selected="selected"
@@ -26,16 +27,19 @@
               <q-card-section>
                 <div class="text-h6">Nueva Prioridad</div>
               </q-card-section>
-  
+              <form @submit.prevent.stop="onCreate">
               <q-card-section class="q-pa-sm">
                 <q-input
                   outlined
                   dense
+                  type="number"
                   v-model="data.namePrioridad"
-                  label="Nombre de la Prioridad"
+                  label="Prioridad"
                   class="my-input"
+                  style="width: 100px"
                   lazy-rules
                   :rules="alerts.inputRules"
+                  ref="namePrioridad"
                 />
               </q-card-section>
   
@@ -43,13 +47,13 @@
   
               <q-card-actions align="right">
                 <q-btn
-                  v-close-popup
                   flat
                   color="secondary"
                   label="Crear"
-                  @click="Create"
+                  type="submit"
                 />
               </q-card-actions>
+            </form>
             </q-card>
           </q-dialog>
           <q-btn no-caps class="text-white bg-secondary" @click="editFields"
@@ -60,16 +64,19 @@
               <q-card-section>
                 <div class="text-h6">Editar Prioridad</div>
               </q-card-section>
-  
+              <form @submit.prevent.stop="onEdit">
               <q-card-section class="q-pa-sm">
                 <q-input
                   outlined
                   dense
+                  type="number"
                   v-model="data.prioridadEdit"
-                  label="Nombre de la Prioridad"
+                  label="Prioridad"
                   class="my-input"
+                  style="width: 100px"
                   lazy-rules
                   :rules="alerts.inputRules"
+                  ref="prioridadEdit"
                 />
               </q-card-section>
   
@@ -77,13 +84,13 @@
   
               <q-card-actions align="right">
                 <q-btn
-                  v-close-popup
                   flat
                   color="secondary"
                   label="Editar"
-                  @click="Edit"
+                  type="submit"
                 />
               </q-card-actions>
+            </form>
             </q-card>
           </q-dialog>
           <q-btn no-caps class="text-white bg-secondary" @click="Delete"
@@ -99,13 +106,16 @@
   import { api } from "boot/axios.js";
   import { useAuthStore } from "src/stores/auth-store";
   import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
-  
+  import { useQuasar } from "quasar";
+
   const pagination = ref({
     sortBy: "desc",
     descending: false,
     page: 1,
     rowsPerPage: 10,
   });
+
+  const $q = useQuasar();
   const auth = useAuthStore();
   const alerts = useAlertsRulesStore();
   const selected = ref([]);
@@ -128,6 +138,9 @@
     },
   ];
   
+  const namePrioridad = ref(null);
+const prioridadEdit = ref(null);
+
   let data = reactive({
     namePrioridad: "",
     idPrioridad: "",
@@ -163,11 +176,19 @@
       .put(`/prioridads/${selected.value[0].id}`, dataRest, authorization)
       .then(function (response) {
         //console.log(response);
+        data.cardEdit = false
+      alerts.alerts[1].message = "Prioridad editada";
+      $q.notify(alerts.alerts[1]);
         getPrioridads();
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo editando la Prioridad";
+      $q.notify(alerts.alerts[0]);
         console.log(error.response);
       });
+
+      data.prioridadEdit = []
+  selected.value = []
   }
   
   function Create() {
@@ -187,9 +208,14 @@
       .post("/prioridads", dataRest, authorization)
       .then(function (response) {
         //console.log(response);
+        data.cardCreate = false
+      alerts.alerts[1].message = "Prioridad creada";
+      $q.notify(alerts.alerts[1]);
         getPrioridads();
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo creando la Prioridad";
+      $q.notify(alerts.alerts[0]);
         console.log(error.response);
       });
   }
@@ -202,9 +228,13 @@
         },
       })
       .then(function (response) {
+        alerts.alerts[1].message = "Prioridad eliminada";
+      $q.notify(alerts.alerts[1]);
         getPrioridads()
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo eliminando la Prioridad";
+      $q.notify(alerts.alerts[0]);
         console.log(error);
       });
   }
@@ -239,4 +269,28 @@
           selected.value.length > 1 ? "s" : ""
         } selected of ${data.rows.length}`;
   }
+
+  function onCreate() {
+    namePrioridad.value.validate();
+
+  if (namePrioridad.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  prioridadEdit.value.validate();
+
+  if (prioridadEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
+}
   </script>

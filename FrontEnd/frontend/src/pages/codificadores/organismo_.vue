@@ -1,8 +1,8 @@
 <template>
   <div>
-    <q-card class="my-card q-ma-md bg-primary" bordered>
+    <q-card class="my-card q-ma-md bg-primary" bordered style="width: 600px">
       <q-card-section>
-        <q-table title="OACE" :rows="data.rows" :columns="columns" row-key="name"
+        <q-table class="my-sticky-column-table" title="OACE" :rows="data.rows" :columns="columns" dense row-key="name"
           :selected-rows-label="getSelectedString" selection="single" v-model:selected="selected"
           v-model:pagination="pagination">
           <template v-slot:top>
@@ -13,38 +13,39 @@
       </q-card-section>
 
       <q-card-actions class="justify-end">
-        <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate=true">Insertar</q-btn>
+        <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
         <q-dialog v-model="data.cardCreate">
-          <q-card class="my-card bg-primary">
+          <q-card class="my-card bg-primary" style="width: 300px">
             <q-card-section>
               <div class="text-h6">Nuevo Organismo</div>
             </q-card-section>
-
+            <form @submit.prevent.stop="onCreate">
             <q-card-section class="q-pa-sm">
               <q-input outlined dense v-model="data.nameOrganismo" label="Nombre del Organismo" class="my-input"
-                lazy-rules :rules="alerts.inputRules" />
+                lazy-rules :rules="alerts.inputRules" ref="nameOrganismo"/>
             </q-card-section>
 
             <q-separator />
 
             <q-card-actions align="right">
-              <q-btn v-close-popup flat color="secondary" label="Crear" @click="Create" />
+              <q-btn flat color="secondary" label="Crear" type="submit" />
             </q-card-actions>
+            </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
         <q-dialog v-model="data.cardEdit">
-          <q-card class="my-card bg-primary" style="max-height: 500px">
+          <q-card class="my-card bg-primary" style="width: 300px">
             <q-card-section>
               <div class="text-h6">Editar Organismo</div>
             </q-card-section>
-
+            <form @submit.prevent.stop="onEdit">
             <q-card-section class="q-pa-sm">
               <q-input outlined dense v-model="data.organismoEdit" label="Nombre del Organismo" class="my-input"
-                lazy-rules :rules="alerts.inputRules" />
-              <div class="q-gutter-sm" v-for="(value,key,index) in data.osdes " :key="index">
-                <div v-if="value.Oace===data.organismoEdit || value.Oace==null">
-                  <q-checkbox v-model="data.selection" :val="value.id" :label="value.Nombre" color="secondary"/>
+                lazy-rules :rules="alerts.inputRules"  ref="organismoEdit"/>
+              <div class="q-gutter-sm" v-for="(value, key, index) in data.osdes " :key="index">
+                <div v-if="value.Oace === data.organismoEdit || value.Oace == null">
+                  <q-checkbox v-model="data.selection" :val="value.id" :label="value.Nombre" color="secondary" />
                 </div>
               </div>
             </q-card-section>
@@ -52,8 +53,9 @@
             <q-separator />
 
             <q-card-actions align="right">
-              <q-btn v-close-popup flat color="secondary" label="Editar" @click="Edit" />
+              <q-btn v-close-popup flat color="secondary" label="Editar" type="submit" />
             </q-card-actions>
+          </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -67,6 +69,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
   sortBy: "desc",
@@ -75,6 +78,7 @@ const pagination = ref({
   rowsPerPage: 10,
 });
 
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -104,6 +108,9 @@ const columns = [
   },
 ];
 
+const nameOrganismo = ref(null);
+const organismoEdit = ref(null);
+
 let data = reactive({
   nameOrganismo: "",
   idOrganismo: "",
@@ -123,7 +130,7 @@ onMounted(() => {
 });
 
 function getOSDEs(params) {
-  data.osdes=[]
+  data.osdes = []
   api
     .get("/osdes?populate=%2A", {
       headers: {
@@ -131,15 +138,14 @@ function getOSDEs(params) {
       },
     })
     .then(function (response) {
-      //console.log(response);
       for (let i = 0; i < response.data.data.length; i++) {
-        if(response.data.data[i].attributes.oace.data==null){
+        if (response.data.data[i].attributes.oace.data == null) {
           data.osdes.push({
             id: response.data.data[i].id,
             Nombre: response.data.data[i].attributes.nombre,
           });
         }
-        else{
+        else {
           data.osdes.push({
             id: response.data.data[i].id,
             Nombre: response.data.data[i].attributes.nombre,
@@ -147,7 +153,6 @@ function getOSDEs(params) {
           });
         }
       }
-      console.log(data.osdes);
     })
     .catch(function (error) {
       console.log(error.response);
@@ -168,8 +173,6 @@ function Edit(params) {
   for (let index = 0; index < data.selection.length; index++) {
     data.osdeEdit.push({ id: data.selection[index] })
   }
-
-  console.log("data.osdeEdit", data.osdeEdit);
 
   const dataRest = {
     data: {
@@ -194,11 +197,15 @@ function Edit(params) {
   api
     .put(`/organismos/${selected.value[0].id}`, dataRestNew, authorization)
     .then(function (response) {
-      console.log("clear", response);
+      data.cardEdit = false
+      alerts.alerts[1].message = "OACE editado";
+      $q.notify(alerts.alerts[1]);
       getOrganismos()
       getOSDEs()
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo editando el OACE";
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
 
@@ -223,10 +230,14 @@ function Create() {
   api
     .post("/organismos", dataRest, authorization)
     .then(function (response) {
-      //console.log(response);
+      data.cardCreate = false
+      alerts.alerts[1].message = "OACE creado";
+      $q.notify(alerts.alerts[1]);
       getOrganismos();
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo creando el OACE";
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
 }
@@ -239,9 +250,13 @@ function Delete(params) {
       },
     })
     .then(function (response) {
+      alerts.alerts[1].message = "OACE eliminado";
+      $q.notify(alerts.alerts[1]);
       getOrganismos()
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo eliminando el OACE";
+      $q.notify(alerts.alerts[0]);
       console.log(error);
     });
 }
@@ -254,7 +269,6 @@ function getOrganismos(params) {
       },
     })
     .then(function (response) {
-      //console.log(response);
       data.rows = [];
       for (let i = 0; i < response.data.data.length; i++) {
         let arr = []
@@ -283,5 +297,29 @@ function getSelectedString() {
     ? ""
     : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
     } selected of ${data.rows.length}`;
+}
+
+function onCreate() {
+  nameOrganismo.value.validate();
+
+  if (nameOrganismo.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  organismoEdit.value.validate();
+
+  if (organismoEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
 }
 </script>

@@ -8,11 +8,11 @@ export const useAlertsRulesStore = defineStore({
         { color: "secondary", message: "", icon: "done" },
         { color: "warning", message: "", icon: "warning" },
       ],
-      emailRules: [(val) => (val && val.length > 0) || "Please type something"],
-      inputRules: [(val) => (val && val.length > 0) || "Please type something"],
-      inputTelephone: [(val) => (val && val.length == 8) || "Incorrect tele"],
-      ageRules: [(val) => (val > 0 && val < 100) || "Edad Incorrecta"],
-      passRules: [],
+      emailRules: [(val) => (val && val.length > 0) || "Campo obligatorio"],
+      inputRules: [(val) => (val && val.length > 0) || ""],
+      inputTelephone: [(val) => (val && val.length == 8) || "Numero de telefono incorrecto"],
+      ageRules: [(val) => (val > 0 && val < 120) || "Edad Incorrecta"],
+      passRules: [(val) => (val && val.length > 0) || "Campo obligatorio"],
       carnetID: [
         (val) => val.length == 11 || "CI Incorrecto longitud menor 11",
         (val) =>

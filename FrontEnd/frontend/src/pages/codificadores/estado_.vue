@@ -7,6 +7,7 @@
           :rows="data.rows"
           :columns="columns"
           row-key="name"
+          dense
           :selected-rows-label="getSelectedString"
           selection="single"
           v-model:selected="selected"
@@ -23,7 +24,7 @@
             <q-card-section>
               <div class="text-h6">Nuevo Estado</div>
             </q-card-section>
-
+            <form @submit.prevent.stop="onCreate">
             <q-card-section class="q-pa-sm">
               <q-input
                 outlined
@@ -33,6 +34,7 @@
                 class="my-input"
                 lazy-rules
                 :rules="alerts.inputRules"
+                ref="nameEstados"
               />
             </q-card-section>
 
@@ -40,13 +42,13 @@
 
             <q-card-actions align="right">
               <q-btn
-                v-close-popup
                 flat
                 color="secondary"
                 label="Crear"
-                @click="Create"
+                type="submit"
               />
             </q-card-actions>
+          </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="editFields"
@@ -57,7 +59,7 @@
             <q-card-section>
               <div class="text-h6">Editar Estado</div>
             </q-card-section>
-
+            <form @submit.prevent.stop="onEdit">
             <q-card-section class="q-pa-sm">
               <q-input
                 outlined
@@ -67,6 +69,7 @@
                 class="my-input"
                 lazy-rules
                 :rules="alerts.inputRules"
+                ref="estadoEdit"
               />
             </q-card-section>
 
@@ -74,13 +77,13 @@
 
             <q-card-actions align="right">
               <q-btn
-                v-close-popup
                 flat
                 color="secondary"
                 label="Editar"
-                @click="Edit"
+                type="submit"
               />
             </q-card-actions>
+          </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="Delete"
@@ -96,6 +99,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
   sortBy: "desc",
@@ -104,6 +108,7 @@ const pagination = ref({
   rowsPerPage: 10,
 });
 
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -125,6 +130,9 @@ const columns = [
     sortable: true,
   },
 ];
+
+const nameEstados = ref(null);
+const estadoEdit = ref(null);
 
 let data = reactive({
   nameEstados: "",
@@ -161,9 +169,14 @@ function Edit(params) {
     .put(`/estados/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
       //console.log(response);
+      data.cardEdit = false
+      alerts.alerts[1].message = "Estado editado";
+      $q.notify(alerts.alerts[1]);
       getEstados();
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo editando el Estado";
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
 }
@@ -185,9 +198,14 @@ function Create() {
     .post("/estados", dataRest, authorization)
     .then(function (response) {
       //console.log(response);
+      data.cardCreate = false
+      alerts.alerts[1].message = "Estado creado";
+      $q.notify(alerts.alerts[1]);
       getEstados();
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo creando el Estado";
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
 }
@@ -200,9 +218,13 @@ function Delete(params) {
       },
     })
     .then(function (response) {
+      alerts.alerts[1].message = "Estado eliminado";
+      $q.notify(alerts.alerts[1]);
       getEstados()
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo eliminando el Estado";
+      $q.notify(alerts.alerts[0]);
       console.log(error);
     });
 }
@@ -236,5 +258,29 @@ function getSelectedString() {
     : `${selected.value.length} record${
         selected.value.length > 1 ? "s" : ""
       } selected of ${data.rows.length}`;
+}
+
+function onCreate() {
+  nameEstados.value.validate();
+
+  if (nameEstados.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  estadoEdit.value.validate();
+
+  if (estadoEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
 }
 </script>

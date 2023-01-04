@@ -18,189 +18,206 @@
                         </q-item>
 
                         <q-separator />
-
-                        <q-card-section>
-                            <div class="row">
-                                <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
-                                    v-model="model" :options="options" @filter="filterFn" label="Entidad"
-                                    style="max-width: 50%" />
-                                <q-input outlined dense v-model="data.fecha" type="date" hint="Fecha" />
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Plan correctamente elaborado:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.plan" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.plan" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-                            </div>
-                            <div v-if="data.plan == 'si'">
+                        <form @submit.prevent.stop="onCreate">
+                            <q-card-section>
+                                <div class="row">
+                                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
+                                        outlined v-model="model" :options="options" @filter="filterFn" label="Entidad"
+                                        style="max-width: 50%" lazy-rules :rules="alerts.inputRules" ref="modelo" />
+                                    <q-input outlined dense v-model="data.fecha" type="date" hint="Fecha" lazy-rules
+                                        :rules="alerts.inputRules" ref="fecha" />
+                                </div>
                                 <div>
-                                    Acerca del plan:
                                     <q-item>
+                                        <q-item-section avatar>Plan correctamente elaborado:</q-item-section>
                                         <q-item-section>
                                             <div class="row">
-                                                <q-input outlined dense v-model="data.medidas" class="q-pa-sm col-3"
-                                                    type="number" hint="Total de medidas" style="max-width: 150px" />
-                                                <q-input outlined dense v-model="data.cumplidas" class="q-pa-sm col-3"
-                                                    type="number" style="max-width: 170px" hint="Cumplidas" />
-                                                <q-input outlined dense v-model="data.evaluadas" class="q-pa-sm col-3"
-                                                    type="number" style="max-width: 150px" hint="No evaluadas" />
-                                                <q-input outlined dense v-model="data.incumplidas" class="q-pa-sm col-3"
-                                                    type="number" style="max-width: 170px" hint="Incumplidas" />
+                                                <q-radio v-model="data.plan" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.plan" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
                                             </div>
                                         </q-item-section>
                                     </q-item>
                                 </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Tiene permiso de vertimiento:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.permiso" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.permiso" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div v-if="data.permiso == 'si'">
-                                <div>
-                                    Detalles:
-                                    <q-item>
-                                        <q-item-section>
-                                            <div>
-                                                <q-input outlined dense v-model="data.nombrePermiso" class="q-pa-sm"
-                                                    type="text" label="Nombre del documento" style="max-width: 100%" />
-                                                <q-input outlined dense v-model="data.cuerpo" class="q-pa-sm"
-                                                    type="text" style="max-width: 100%" label="Cuerpo receptor" />
-                                            </div>
-                                        </q-item-section>
-                                    </q-item>
+                                <div v-if="data.plan == 'si'">
+                                    <div>
+                                        Acerca del plan:
+                                        <q-item>
+                                            <q-item-section>
+                                                <div class="row">
+                                                    <q-input outlined dense v-model="data.medidas" class="q-pa-sm col-3"
+                                                        type="number" hint="Total de medidas" style="max-width: 150px"
+                                                        lazy-rules :rules="alerts.inputRules" ref="medidas" />
+                                                    <q-input outlined dense v-model="data.cumplidas"
+                                                        class="q-pa-sm col-3" type="number" style="max-width: 170px"
+                                                        hint="Cumplidas" lazy-rules :rules="alerts.inputRules"
+                                                        ref="cumplidas" />
+                                                    <q-input outlined dense v-model="data.evaluadas"
+                                                        class="q-pa-sm col-3" type="number" style="max-width: 150px"
+                                                        hint="No evaluadas" lazy-rules :rules="alerts.inputRules"
+                                                        ref="evaluadas" />
+                                                    <q-input outlined dense v-model="data.incumplidas"
+                                                        class="q-pa-sm col-3" type="number" style="max-width: 170px"
+                                                        hint="Incumplidas" lazy-rules :rules="alerts.inputRules"
+                                                        ref="incumplidas" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Licencia ambiental actualizada:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.licencia" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.licencia" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div v-if="data.licencia == 'si'">
-                                <div>
-                                    Detalles:
-                                    <q-item>
-                                        <q-item-section>
-                                            <div>
-                                                <q-input outlined dense v-model="data.nombreLicencia" class="q-pa-sm"
-                                                    type="text" label="Nombre del documento" style="max-width: 100%" />
-                                            </div>
-                                        </q-item-section>
-                                    </q-item>
-                                </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Tiene plan de manejo de desechos peligrosos:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.desechos" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.desechos" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div v-if="data.desechos == 'si'">
                                 <div>
                                     <q-item>
+                                        <q-item-section avatar>Tiene permiso de vertimiento:</q-item-section>
                                         <q-item-section>
-                                            <div>
-                                                <q-input outlined dense v-model="data.observacionesDesechos"
-                                                    class="q-pa-sm" type="textarea" label="Observaciones"
-                                                    style="max-width: 100%" />
+                                            <div class="row">
+                                                <q-radio v-model="data.permiso" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.permiso" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
                                             </div>
                                         </q-item-section>
                                     </q-item>
-                                </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.inversiones" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.inversiones" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
 
-                            </div>
-                            <div v-if="data.inversiones == 'si'">
+                                </div>
+                                <div v-if="data.permiso == 'si'">
+                                    <div>
+                                        Detalles:
+                                        <q-item>
+                                            <q-item-section>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.nombrePermiso" class="q-pa-sm"
+                                                        type="text" label="Nombre del documento" style="max-width: 100%"
+                                                        lazy-rules :rules="alerts.inputRules" ref="nombrePermiso" />
+                                                    <q-input outlined dense v-model="data.cuerpo" class="q-pa-sm"
+                                                        type="text" style="max-width: 100%" label="Cuerpo receptor"
+                                                        lazy-rules :rules="alerts.inputRules" ref="cuerpo" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
                                 <div>
-                                    Detalles:
                                     <q-item>
+                                        <q-item-section avatar>Licencia ambiental actualizada:</q-item-section>
                                         <q-item-section>
-                                            <q-item>
-                                                <q-item-section avatar>Marcha acorde al cronograma:</q-item-section>
-                                                <q-item-section>
-                                                    <div class="row">
-                                                        <q-radio v-model="data.marcha" checked-icon="task_alt"
-                                                            unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                            color="secondary" />
-                                                        <q-radio v-model="data.marcha" checked-icon="task_alt"
-                                                            unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                            color="secondary" />
-                                                    </div>
-                                                </q-item-section>
-                                            </q-item>
-                                            <div>
-                                                <q-input outlined dense v-model="data.descripcion" class="q-pa-sm"
-                                                    type="textarea" label="Descripcion" style="max-width: 100%" />
+                                            <div class="row">
+                                                <q-radio v-model="data.licencia" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.licencia" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
                                             </div>
                                         </q-item-section>
                                     </q-item>
+
                                 </div>
-                            </div>
-                            <q-input v-model="data.observaciones" filled type="textarea" label="Observaciones"
-                                class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" />
-                        </q-card-section>
+                                <div v-if="data.licencia == 'si'">
+                                    <div>
+                                        Detalles:
+                                        <q-item>
+                                            <q-item-section>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.nombreLicencia"
+                                                        class="q-pa-sm" type="text" label="Nombre del documento"
+                                                        style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
+                                                        ref="nombreLicencia" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
+                                <div>
+                                    <q-item>
+                                        <q-item-section avatar>Tiene plan de manejo de desechos
+                                            peligrosos:</q-item-section>
+                                        <q-item-section>
+                                            <div class="row">
+                                                <q-radio v-model="data.desechos" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.desechos" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
 
-                        <q-separator dark />
+                                </div>
+                                <div v-if="data.desechos == 'si'">
+                                    <div>
+                                        <q-item>
+                                            <q-item-section>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.observacionesDesechos"
+                                                        class="q-pa-sm" type="textarea" label="Observaciones"
+                                                        style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
+                                                        ref="observacionesDesechos" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
+                                <div>
+                                    <q-item>
+                                        <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
+                                        <q-item-section>
+                                            <div class="row">
+                                                <q-radio v-model="data.inversiones" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.inversiones" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
 
-                        <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
-                            <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
-                        </q-card-actions>
+                                </div>
+                                <div v-if="data.inversiones == 'si'">
+                                    <div>
+                                        Detalles:
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item>
+                                                    <q-item-section avatar>Marcha acorde al cronograma:</q-item-section>
+                                                    <q-item-section>
+                                                        <div class="row">
+                                                            <q-radio v-model="data.marcha" checked-icon="task_alt"
+                                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                                color="secondary" />
+                                                            <q-radio v-model="data.marcha" checked-icon="task_alt"
+                                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                                color="secondary" />
+                                                        </div>
+                                                    </q-item-section>
+                                                </q-item>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.descripcion" class="q-pa-sm"
+                                                        type="textarea" label="Descripcion" style="max-width: 100%"
+                                                        lazy-rules :rules="alerts.inputRules" ref="descripcion" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
+                                <q-input v-model="data.observaciones" filled type="textarea" label="Observaciones"
+                                    class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules
+                                    :rules="alerts.inputRules" ref="observaciones" />
+                            </q-card-section>
+
+                            <q-separator dark />
+
+                            <q-card-actions class="justify-end">
+                                <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                            </q-card-actions>
+                        </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
@@ -213,193 +230,210 @@
                         </q-item>
 
                         <q-separator />
-
-                        <q-card-section>
-                            <div class="row">
-                                <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
-                                    v-model="data.entidadEdit" :options="options" @filter="filterFn" label="Entidad"
-                                    style="max-width: 50%" />
-                                <q-input outlined dense v-model="data.fechaEdit" type="date" hint="Fecha" />
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Plan correctamente elaborado:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.planEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.planEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-                            </div>
-                            <div v-if="data.planEdit == 'si'">
+                        <form @submit.prevent.stop="onEdit">
+                            <q-card-section>
+                                <div class="row">
+                                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
+                                        outlined v-model="data.entidadEdit" :options="options" @filter="filterFn"
+                                        label="Entidad" style="max-width: 50%" lazy-rules :rules="alerts.inputRules"
+                                        ref="modeloEdit" />
+                                    <q-input outlined dense v-model="data.fechaEdit" type="date" hint="Fecha" lazy-rules
+                                        :rules="alerts.inputRules" ref="fechaEdit" />
+                                </div>
                                 <div>
                                     <q-item>
-                                        <q-item-section avatar>Acerca del plan:</q-item-section>
+                                        <q-item-section avatar>Plan correctamente elaborado:</q-item-section>
                                         <q-item-section>
                                             <div class="row">
-                                                <q-input outlined dense v-model="data.medidasEdit" class="q-pa-sm col-3"
-                                                    type="number" hint="Total de medidas" style="max-width: 150px" />
-                                                <q-input outlined dense v-model="data.cumplidasEdit"
-                                                    class="q-pa-sm col-3" type="number" style="max-width: 170px"
-                                                    hint="Cumplidas" />
-                                                <q-input outlined dense v-model="data.evaluadasEdit"
-                                                    class="q-pa-sm col-3" type="number" style="max-width: 150px"
-                                                    hint="No evaluadas" />
-                                                <q-input outlined dense v-model="data.incumplidasEdit"
-                                                    class="q-pa-sm col-3" type="number" style="max-width: 170px"
-                                                    hint="Incumplidas" />
+                                                <q-radio v-model="data.planEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.planEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
                                             </div>
                                         </q-item-section>
                                     </q-item>
                                 </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Tiene permiso de vertimiento:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.permisoEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.permisoEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div v-if="data.permisoEdit == 'si'">
-                                <div>
-                                    Detalles:
-                                    <q-item>
-                                        <q-item-section>
-                                            <div>
-                                                <q-input outlined dense v-model="data.nombrePermisoEdit" class="q-pa-sm"
-                                                    type="text" label="Nombre del documento" style="max-width: 100%" />
-                                                <q-input outlined dense v-model="data.cuerpoEdit" class="q-pa-sm"
-                                                    type="text" style="max-width: 100%" label="Cuerpo receptor" />
-                                            </div>
-                                        </q-item-section>
-                                    </q-item>
+                                <div v-if="data.planEdit == 'si'">
+                                    <div>
+                                        <q-item>
+                                            <q-item-section avatar>Acerca del plan:</q-item-section>
+                                            <q-item-section>
+                                                <div class="row">
+                                                    <q-input outlined dense v-model="data.medidasEdit"
+                                                        class="q-pa-sm col-3" type="number" hint="Total de medidas"
+                                                        style="max-width: 150px" lazy-rules :rules="alerts.inputRules"
+                                                        ref="medidasEdit" />
+                                                    <q-input outlined dense v-model="data.cumplidasEdit"
+                                                        class="q-pa-sm col-3" type="number" style="max-width: 170px"
+                                                        hint="Cumplidas" lazy-rules :rules="alerts.inputRules"
+                                                        ref="cumplidasEdit" />
+                                                    <q-input outlined dense v-model="data.evaluadasEdit"
+                                                        class="q-pa-sm col-3" type="number" style="max-width: 150px"
+                                                        hint="No evaluadas" lazy-rules :rules="alerts.inputRules"
+                                                        ref="evaluadasEdit" />
+                                                    <q-input outlined dense v-model="data.incumplidasEdit"
+                                                        class="q-pa-sm col-3" type="number" style="max-width: 170px"
+                                                        hint="Incumplidas" lazy-rules :rules="alerts.inputRules"
+                                                        ref="incumplidasEdit" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Licencia ambiental actualizada:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.licenciaEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.licenciaEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div v-if="data.licenciaEdit == 'si'">
-                                <div>
-                                    Detalles:
-                                    <q-item>
-                                        <q-item-section>
-                                            <div>
-                                                <q-input outlined dense v-model="data.nombreLicenciaEdit"
-                                                    class="q-pa-sm" type="text" label="Nombre del documento"
-                                                    style="max-width: 100%" />
-                                            </div>
-                                        </q-item-section>
-                                    </q-item>
-                                </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Tiene plan de manejo de desechos peligrosos:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.desechosEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.desechosEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
-
-                            </div>
-                            <div v-if="data.desechosEdit == 'si'">
                                 <div>
                                     <q-item>
+                                        <q-item-section avatar>Tiene permiso de vertimiento:</q-item-section>
                                         <q-item-section>
-                                            <div>
-                                                <q-input outlined dense v-model="data.observacionesDesechosEdit"
-                                                    class="q-pa-sm" type="textarea" label="Observaciones"
-                                                    style="max-width: 100%" />
+                                            <div class="row">
+                                                <q-radio v-model="data.permisoEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.permisoEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
                                             </div>
                                         </q-item-section>
                                     </q-item>
-                                </div>
-                            </div>
-                            <div>
-                                <q-item>
-                                    <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
-                                    <q-item-section>
-                                        <div class="row">
-                                            <q-radio v-model="data.inversionesEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                color="secondary" />
-                                            <q-radio v-model="data.inversionesEdit" checked-icon="task_alt"
-                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                color="secondary" />
-                                        </div>
-                                    </q-item-section>
-                                </q-item>
 
-                            </div>
-                            <div v-if="data.inversionesEdit == 'si'">
+                                </div>
+                                <div v-if="data.permisoEdit == 'si'">
+                                    <div>
+                                        Detalles:
+                                        <q-item>
+                                            <q-item-section>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.nombrePermisoEdit"
+                                                        class="q-pa-sm" type="text" label="Nombre del documento"
+                                                        style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
+                                                        ref="nombrePermisoEdit" />
+                                                    <q-input outlined dense v-model="data.cuerpoEdit" class="q-pa-sm"
+                                                        type="text" style="max-width: 100%" label="Cuerpo receptor"
+                                                        lazy-rules :rules="alerts.inputRules" ref="cuerpoEdit" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
                                 <div>
-                                    Detalles:
                                     <q-item>
+                                        <q-item-section avatar>Licencia ambiental actualizada:</q-item-section>
                                         <q-item-section>
-                                            <q-item>
-                                                <q-item-section avatar>Marcha acorde al cronograma:</q-item-section>
-                                                <q-item-section>
-                                                    <div class="row">
-                                                        <q-radio v-model="data.marchaEdit" checked-icon="task_alt"
-                                                            unchecked-icon="panorama_fish_eye" val="si" label="Si"
-                                                            color="secondary" />
-                                                        <q-radio v-model="data.marchaEdit" checked-icon="task_alt"
-                                                            unchecked-icon="panorama_fish_eye" val="no" label="No"
-                                                            color="secondary" />
-                                                    </div>
-                                                </q-item-section>
-                                            </q-item>
-                                            <div>
-                                                <q-input outlined dense v-model="data.descripcionEdit" class="q-pa-sm"
-                                                    type="textarea" label="Descripcion" style="max-width: 100%" />
+                                            <div class="row">
+                                                <q-radio v-model="data.licenciaEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.licenciaEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
                                             </div>
                                         </q-item-section>
                                     </q-item>
+
                                 </div>
-                            </div>
-                            <q-input v-model="data.observacionesEdit" filled type="textarea" label="Observaciones"
-                                class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" />
-                        </q-card-section>
+                                <div v-if="data.licenciaEdit == 'si'">
+                                    <div>
+                                        Detalles:
+                                        <q-item>
+                                            <q-item-section>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.nombreLicenciaEdit"
+                                                        class="q-pa-sm" type="text" label="Nombre del documento"
+                                                        style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
+                                                        ref="nombreLicenciaEdit" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
+                                <div>
+                                    <q-item>
+                                        <q-item-section avatar>Tiene plan de manejo de desechos
+                                            peligrosos:</q-item-section>
+                                        <q-item-section>
+                                            <div class="row">
+                                                <q-radio v-model="data.desechosEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.desechosEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
 
-                        <q-separator dark />
+                                </div>
+                                <div v-if="data.desechosEdit == 'si'">
+                                    <div>
+                                        <q-item>
+                                            <q-item-section>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.observacionesDesechosEdit"
+                                                        class="q-pa-sm" type="textarea" label="Observaciones"
+                                                        style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
+                                                        ref="observacionesDesechosEdit" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
+                                <div>
+                                    <q-item>
+                                        <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
+                                        <q-item-section>
+                                            <div class="row">
+                                                <q-radio v-model="data.inversionesEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                    color="secondary" />
+                                                <q-radio v-model="data.inversionesEdit" checked-icon="task_alt"
+                                                    unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                    color="secondary" />
+                                            </div>
+                                        </q-item-section>
+                                    </q-item>
 
-                        <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Edit">Editar</q-btn>
-                            <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
-                        </q-card-actions>
+                                </div>
+                                <div v-if="data.inversionesEdit == 'si'">
+                                    <div>
+                                        Detalles:
+                                        <q-item>
+                                            <q-item-section>
+                                                <q-item>
+                                                    <q-item-section avatar>Marcha acorde al cronograma:</q-item-section>
+                                                    <q-item-section>
+                                                        <div class="row">
+                                                            <q-radio v-model="data.marchaEdit" checked-icon="task_alt"
+                                                                unchecked-icon="panorama_fish_eye" val="si" label="Si"
+                                                                color="secondary" />
+                                                            <q-radio v-model="data.marchaEdit" checked-icon="task_alt"
+                                                                unchecked-icon="panorama_fish_eye" val="no" label="No"
+                                                                color="secondary" lazy-rules />
+                                                        </div>
+                                                    </q-item-section>
+                                                </q-item>
+                                                <div>
+                                                    <q-input outlined dense v-model="data.descripcionEdit"
+                                                        class="q-pa-sm" type="textarea" label="Descripcion"
+                                                        style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
+                                                        ref="descripcionEdit" />
+                                                </div>
+                                            </q-item-section>
+                                        </q-item>
+                                    </div>
+                                </div>
+                                <q-input v-model="data.observacionesEdit" filled type="textarea" label="Observaciones"
+                                    class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules
+                                    :rules="alerts.inputRules" ref="observacionesEdit" />
+                            </q-card-section>
+
+                            <q-separator dark />
+
+                            <q-card-actions class="justify-end">
+                                <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                            </q-card-actions>
+                        </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -413,6 +447,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
     sortBy: "desc",
@@ -421,6 +456,7 @@ const pagination = ref({
     rowsPerPage: 17,
 });
 
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -488,6 +524,30 @@ const columns = [
 const stringOptions = []
 const model = ref([])
 const options = ref(stringOptions)
+
+const observaciones = ref(null);
+const medidas = ref(null);
+const cumplidas = ref(null);
+const evaluadas = ref(null);
+const incumplidas = ref(null);
+const nombrePermiso = ref(null);
+const cuerpo = ref(null);
+const nombreLicencia = ref(null);
+const observacionesDesechos = ref(null);
+const descripcion = ref(null);
+const fecha = ref(null);
+
+const observacionesEdit = ref(null);
+const medidasEdit = ref(null);
+const cumplidasEdit = ref(null);
+const evaluadasEdit = ref(null);
+const incumplidasEdit = ref(null);
+const nombrePermisoEdit = ref(null);
+const cuerpoEdit = ref(null);
+const nombreLicenciaEdit = ref(null);
+const observacionesDesechosEdit = ref(null);
+const descripcionEdit = ref(null);
+const fechaEdit = ref(null);
 
 let data = reactive({
     rows: [],
@@ -823,7 +883,7 @@ async function getContaminantes(params) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
                             params.monitoreo = "si"
-                        } 
+                        }
                     }
                     break;
                 }
@@ -848,7 +908,7 @@ async function getTratamiento(params) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
                             params.monitoreo = "si"
-                        } 
+                        }
                     }
                     break;
                 }
@@ -873,7 +933,7 @@ async function getFuncionamiento(params) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
                         if (response.data.data[i].attributes.entidad.data[0].attributes.entidad == params.entidad && response.data.data[i].attributes.anno >= data.fecha_actual - 5) {
                             params.monitoreo = "si"
-                        } 
+                        }
                     }
                     break;
                 }
@@ -889,6 +949,51 @@ function getSelectedString() {
         ? ""
         : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
         } selected of ${data.rows.length}`;
+}
+
+
+function onCreate() {
+    observaciones.value.validate();
+    medidas.value.validate();
+    cumplidas.value.validate();
+    evaluadas.value.validate();
+    incumplidas.value.validate();
+    nombrePermiso.value.validate();
+    cuerpo.value.validate();
+    nombreLicencia.value.validate();
+    observacionesDesechos.value.validate();
+    descripcion.value.validate();
+    fecha.value.validate();
+
+    if (observaciones.value.hasError || medidas.value.hasError || cumplidas.value.hasError || evaluadas.value.hasError || incumplidas.value.hasError || nombrePermiso.value.hasError || cuerpo.value.hasError || nombreLicencia.value.hasError || observacionesDesechos.value.hasError || descripcion.value.hasError || fecha.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    } else {
+        Create();
+    }
+}
+
+function onEdit() {
+    observacionesEdit.value.validate();
+    medidasEdit.value.validate();
+    cumplidasEdit.value.validate();
+    evaluadasEdit.value.validate();
+    incumplidasEdit.value.validate();
+    nombrePermisoEdit.value.validate();
+    cuerpoEdit.value.validate();
+    nombreLicenciaEdit.value.validate();
+    observacionesDesechosEdit.value.validate();
+    descripcionEdit.value.validate();
+    fechaEdit.value.validate();
+
+    if (observacionesEdit.value.hasError || medidasEdit.value.hasError || cumplidasEdit.value.hasError || evaluadasEdit.value.hasError || incumplidasEdit.value.hasError || nombrePermisoEdit.value.hasError || cuerpoEdit.value.hasError || nombreLicenciaEdit.value.hasError || observacionesDesechosEdit.value.hasError || descripcionEdit.value.hasError || fechaEdit.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    } else {
+        Edit();
+    }
 }
 
 </script>

@@ -7,42 +7,45 @@
       </q-toolbar>
       <q-toolbar class="row no-padding glossy justify-between" style="background-color: rgb(32, 105, 126)">
         <div>
-          <q-btn push no-caps label="SIGAE" :to="{ name: 'Interfaz_principal' }" flat size="lg" icon="home"/>
+          <q-btn push no-caps :label="data.Tittle" :to="{ name: 'Interfaz_principal' }" flat size="lg" icon="home" />
         </div>
         <div>
-        <btn_Administrador v-if="data.admin" />
-        <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
-        <btn_Reportes v-if="data.public"></btn_Reportes>
-        <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" flat size="lg"/>
-        <q-btn push no-caps label="Logout" v-else @click="cerrarSesion" flat size="lg"/>
-      </div>
+          <btn_Administrador v-if="data.admin" />
+          <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
+          <btn_Reportes v-if="data.public"></btn_Reportes>
+          <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" flat size="lg" />
+          <q-btn push no-caps label="Logout" v-else @click="cerrarSesion" flat size="lg" />
+        </div>
         <q-dialog v-model="data.card">
           <q-card class="my-card text-black">
             <q-card-section class="no-padding">
               <q-img src="~assets/login/logo_direccion.png" />
             </q-card-section>
 
-            <q-card-section>
-              <p class="text text-center"><b>Logueo</b></p>
-              <q-input outlined v-model="auth.email" class="input q-pb-md" label="Usuario" dense color="secondary" />
-              <q-input outlined dense v-model="auth.password" label="Contraseña" class="input"
-                :type="auth.isPwd ? 'password' : 'text'" color="secondary">
-                <template v-slot:append>
-                  <q-icon :name="auth.isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                    @click="auth.isPwd = !auth.isPwd" />
-                </template>
-              </q-input>
-              <div>
-                <q-checkbox v-model="auth.rememberMe" label="Recordarme" color="secondary" />
-              </div>
-            </q-card-section>
+            <form @submit.prevent.stop="onLogin">
+              <q-card-section>
+                <p class="text text-center"><b>Logueo</b></p>
+                <q-input ref="nameRef" outlined v-model="auth.email" class="input q-pb-lg" label="Usuario" dense
+                  color="secondary" lazy-rules :rules="alertRules.emailRules" />
+                <q-input ref="passRef" outlined dense v-model="auth.password" label="Contraseña" class="input"
+                  :type="auth.isPwd ? 'password' : 'text'" color="secondary" lazy-rules :rules="alertRules.passRules">
+                  <template v-slot:append>
+                    <q-icon :name="auth.isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
+                      @click="auth.isPwd = !auth.isPwd" />
+                  </template>
+                </q-input>
+                <div>
+                  <q-checkbox v-model="auth.rememberMe" label="Recordarme" color="secondary" />
+                </div>
+              </q-card-section>
 
-            <q-separator dark />
+              <q-separator dark />
 
-            <q-card-actions class="justify-end">
-              <q-btn no-caps class="text-white bg-secondary" @click="Login" v-close-popup >Confirmar</q-btn>
-              <q-btn no-caps class="text-white bg-secondary" @click="clear">Limpiar Campos</q-btn>
-            </q-card-actions>
+              <q-card-actions class="justify-end">
+                <q-btn no-caps class="text-white bg-secondary" type="submit">Confirmar</q-btn>
+                <q-btn no-caps class="text-white bg-secondary" @click="clear">Limpiar Campos</q-btn>
+              </q-card-actions>
+            </form>
           </q-card>
         </q-dialog>
 
@@ -69,7 +72,7 @@
       </q-toolbar>
     </q-footer>
 
-    <q-page-container>
+    <q-page-container class="row justify-center">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -92,11 +95,15 @@ const router = useRouter();
 const route = useRoute();
 const $q = useQuasar();
 
+const nameRef = ref(null);
+const passRef = ref(null);
+
 let data = reactive({
   admin: false,
   auth: false,
-  public: true,
-  card: false
+  public: false,
+  card: false,
+  Tittle: ""
 })
 
 onMounted(() => {
@@ -108,7 +115,7 @@ onMounted(() => {
     JSON.parse(localStorage.getItem("userData")).rememberMe
   ) {
     (auth.jwt = localStorage.getItem("jwt")),
-    (auth.email = JSON.parse(localStorage.getItem("userData")).email),
+      (auth.email = JSON.parse(localStorage.getItem("userData")).email),
       (auth.password = JSON.parse(localStorage.getItem("userData")).password),
       (auth.rememberMe = JSON.parse(
         localStorage.getItem("userData")
@@ -121,7 +128,7 @@ onMounted(() => {
   // var os=require('os')
   // var networkInterfaces=os.networkInterfaces()
   // console.log(networkInterfaces);
-  
+
   auth.getLocalIP().then((ipAddr) => {
     console.log(ipAddr);
     auth.ip = ipAddr
@@ -131,36 +138,43 @@ onMounted(() => {
 })
 
 function getRol(params) {
-  api
-    .get("/usuarios/$", {
-      headers: {
-        Authorization: "Bearer " + auth.jwt,
-      },
-    })
-    .then(function (response) {
-      console.log(response);
-      if (
-        response.data.role.name === "Administrador") {
-        data.admin = true
-        data.auth = false
-        data.public = false
-      }
-      if (
-        response.data.role.name === "Especialista") {
-        data.auth = true
-        data.admin = false
-        data.public = false
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  if (auth.jwt == "" || auth.jwt == null) {
+    data.admin = false
+    data.auth = false
+    data.public = true
+    data.Tittle = "SIGAE"
+  }
+  else {
+    api
+      .get("/users/me?populate=%2A", {
+        headers: {
+          Authorization: "Bearer " + auth.jwt,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        if (
+          response.data.role.name === "Administrador") {
+          data.admin = true
+          data.auth = false
+          data.public = false
+          data.Tittle = "SIGAE-" + response.data.role.name + "-" + response.data.username
+        }
+        if (
+          response.data.role.name === "Especialista") {
+          data.auth = true
+          data.admin = false
+          data.public = false
+          data.Tittle = "SIGAE-" + response.data.role.name + "-" + response.data.username
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 }
 
 function cerrarSesion(params) {
-  data.auth = false
-  data.admin = false
-  data.public = true
   auth.jwt = ''
   localStorage.setItem("jwt", '');
   if (JSON.parse(
@@ -169,6 +183,7 @@ function cerrarSesion(params) {
     localStorage.setItem("userData", null);
   }
   router.push("/");
+  getRol()
 }
 
 async function Login() {
@@ -179,6 +194,7 @@ async function Login() {
     })
     .then(function (response) {
       //console.log(response);
+      data.card = false
       alertRules.alerts[1].message = "Sesion Iniciada, Bienvenido!!!";
       $q.notify(alertRules.alerts[1]);
       auth.jwt = response.data.jwt;
@@ -210,6 +226,20 @@ async function Login() {
 function clear(params) {
   (auth.email = ""), (auth.password = ""), (auth.rememberMe = false);
 }
+
+function onLogin() {
+  nameRef.value.validate();
+  passRef.value.validate();
+
+  if (nameRef.value.hasError || nameRef.value.hasError) {
+    alertRules.alerts[0].message = "Credenciales incorrectas";
+    $q.notify(alertRules.alerts[0]);
+    // form has error
+  } else {
+    Login();
+  }
+}
+
 </script>
 
 <style lang="sass" scoped>
