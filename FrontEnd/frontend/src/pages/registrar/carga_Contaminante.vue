@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div  class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Carga contaminante" dense :rows="data.rows" :columns="columns"
@@ -18,13 +18,13 @@
                         </q-item>
 
                         <q-separator />
-
+                        <form @submit.prevent.stop="onCreate">
                         <q-card-section>
                             <div>
                                 <div class="row">
                                     <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
                                         outlined v-model="model" :options="options" @filter="filterFn"
-                                        label="Entidad" />
+                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modelo"/>
                                     <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
                                 </div>
                                 <div class="column items-start">
@@ -59,9 +59,10 @@
                         <q-separator dark />
 
                         <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
+                            <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
                             <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
                         </q-card-actions>
+                    </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
@@ -74,13 +75,13 @@
                         </q-item>
 
                         <q-separator />
-
+                        <form @submit.prevent.stop="onEdit">
                         <q-card-section>
                             <div>
                                 <div class="row">
                                     <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
                                         outlined v-model="data.entidadEdit" :options="options" @filter="filterFn"
-                                        label="Entidad" />
+                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modeloEdit"/>
                                     <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año" class="col-2" />
                                 </div>
                                 <div class="column items-start">
@@ -115,8 +116,9 @@
                         <q-separator dark />
 
                         <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Edit">Editar</q-btn>
+                            <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
                         </q-card-actions>
+                    </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -130,6 +132,7 @@ import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
   sortBy: "desc",
@@ -138,6 +141,7 @@ const pagination = ref({
   rowsPerPage: 17,
 });
 
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -248,7 +252,11 @@ const stringOptions = []
 const model = ref([])
 const options = ref(stringOptions)
 
+const modelo = ref(null);
+const modeloEdit = ref(null);
+
 let data = reactive({
+    fecha_actual: new Date(),
     rows: [],
     _DB05: "0",
     _DQ0: "0",
@@ -305,9 +313,15 @@ function filterFn(val, update) {
 }
 
 onMounted(() => {
+    getYear()
     getContaminantes()
     getEntidad()
 });
+
+function getYear(params) {
+    data.fecha_actual = data.fecha_actual.getFullYear()
+    data.año = data.fecha_actual
+}
 
 function editFields(params) {
     (data._DB05Edit = selected.value[0].DB05),
@@ -362,11 +376,18 @@ function Edit(params) {
         .put(`/cargacontaminantes/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
+            data.cardEdit = false
+      alerts.alerts[1].message = "Carga contaminate editada";
+      $q.notify(alerts.alerts[1]);
             getContaminantes();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo editando la Carga contaminate";
+      $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
+
+        selected.value = []
 }
 
 function Create() {
@@ -402,11 +423,17 @@ function Create() {
         .post("/cargacontaminantes", dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
+            data.cardCreate = false
+      alerts.alerts[1].message = "Carga contaminate creada";
+      $q.notify(alerts.alerts[1]);
             getContaminantes();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo creando la Carga contaminate";
+      $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
+
 }
 
 function Delete(params) {
@@ -418,9 +445,13 @@ function Delete(params) {
                 },
             })
             .then(function (response) {
+                alerts.alerts[1].message = "Carga contaminate eliminada";
+      $q.notify(alerts.alerts[1]);
                 getContaminantes()
             })
             .catch(function (error) {
+                alerts.alerts[0].message = "Fallo eliminando la Carga contaminate";
+      $q.notify(alerts.alerts[0]);
                 console.log(error);
             });
 
@@ -499,6 +530,30 @@ function getSelectedString() {
         ? ""
         : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
         } selected of ${data.rows.length}`;
+}
+
+function onCreate() {
+  modelo.value.validate();
+
+  if (modelo.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  modeloEdit.value.validate();
+
+  if (modeloEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
 }
 
 </script>

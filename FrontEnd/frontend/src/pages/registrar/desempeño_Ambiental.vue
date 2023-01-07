@@ -1,5 +1,5 @@
 <template>
-    <div class="col-11">
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows"
@@ -39,13 +39,13 @@
                         </q-item>
 
                         <q-separator />
-
+                        <form @submit.prevent.stop="onCreate">
                         <q-card-section>
                             <div>
                                 <div class="row">
                                     <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
                                         outlined v-model="model" :options="options" @filter="filterFn"
-                                        label="Entidad" />
+                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modelo"/>
                                     <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
                                 </div>
                                 <div class="column items-start" v-if="data.rowsAnt.length > 0">
@@ -188,16 +188,17 @@
                                         :false-value="0" />
                                 </div>
                                 <q-input outlined dense v-model="data.observaciones" type="textarea"
-                                    label="Observaciones" class="q-pa-xs" />
+                                    label="Observaciones" class="q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="observaciones"/>
                             </div>
                         </q-card-section>
 
                         <q-separator dark />
 
                         <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
+                            <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
                             <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
                         </q-card-actions>
+                    </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
@@ -210,13 +211,13 @@
                         </q-item>
 
                         <q-separator />
-
+                        <form @submit.prevent.stop="onEdit">
                         <q-card-section>
                             <div>
                                 <div class="row">
                                     <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
                                         outlined v-model="data.entidadEdit" :options="options" @filter="filterFn"
-                                        label="Entidad" />
+                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modeloEdit"/>
                                     <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año"
                                         class="col-2" />
                                 </div>
@@ -256,15 +257,16 @@
                                         false-value="no" />
                                 </div>
                                 <q-input outlined dense v-model="data.observacionesEdit" type="textarea"
-                                    label="Observaciones" class="q-pa-xs" />
+                                    label="Observaciones" class="q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="observacionesEdit"/>
                             </div>
                         </q-card-section>
 
                         <q-separator dark />
 
                         <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Edit">Editar</q-btn>
+                            <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
                         </q-card-actions>
+                    </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -278,6 +280,7 @@ import { onMounted, reactive, ref, watch } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
     sortBy: "desc",
@@ -286,6 +289,7 @@ const pagination = ref({
     rowsPerPage: 17,
 });
 
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -417,6 +421,11 @@ const stringOptions = []
 const model = ref([])
 const options = ref(stringOptions)
 
+const modelo = ref(null);
+const observaciones = ref(null);
+const modeloEdit = ref(null);
+const observacionesEdit = ref(null);
+
 let data = reactive({
     rows: [],
     rowsAnt: [],
@@ -464,6 +473,7 @@ let data = reactive({
     cardCreate: false,
 });
 
+
 function filterFn(val, update) {
     if (val === '') {
         update(() => {
@@ -505,6 +515,7 @@ watch(() => model.value, (value) => {
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()
     data.fecha_annoAnt = data.fecha_annoAnt.getFullYear()
+    data.año = data.fecha_actual
 }
 
 function editFields(params) {
@@ -573,11 +584,18 @@ function Edit(params) {
         .put(`/desempenoambientals/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
+            data.cardEdit = false
+      alerts.alerts[1].message = "Desempeño ambiental editado";
+      $q.notify(alerts.alerts[1]);
             getDesempeño();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo editando el Desempeño ambiental";
+      $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
+
+        selected.value = []
 }
 
 function Create() {
@@ -615,9 +633,14 @@ function Create() {
         .post("/desempenoambientals", dataRest, authorization)
         .then(function (response) {
             ////////console.log(response);
+            data.cardCreate = false
+      alerts.alerts[1].message = "Desempeño ambiental creado";
+      $q.notify(alerts.alerts[1]);
             getDesempeño();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo creando el Desempeño ambiental";
+      $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
 }
@@ -631,9 +654,13 @@ function Delete(params) {
                 },
             })
             .then(function (response) {
+                alerts.alerts[1].message = "Desempeño ambiental eliminado";
+      $q.notify(alerts.alerts[1]);
                 getDesempeño()
             })
             .catch(function (error) {
+                alerts.alerts[0].message = "Fallo eliminando el Desempeño ambiental";
+      $q.notify(alerts.alerts[0]);
                 console.log(error);
             });
 
@@ -785,6 +812,32 @@ function getSelectedString() {
         ? ""
         : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
         } selected of ${data.rows.length}`;
+}
+
+function onCreate() {
+  modelo.value.validate();
+  observaciones.value.validate();
+
+  if (modelo.value.hasError || observaciones.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+    modeloEdit.value.validate();
+    observacionesEdit.value.validate();
+
+  if (modeloEdit.value.hasError || observacionesEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
 }
 
 </script>

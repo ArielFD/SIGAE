@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
@@ -525,6 +525,7 @@ const stringOptions = []
 const model = ref([])
 const options = ref(stringOptions)
 
+const modelo = ref(null);
 const observaciones = ref(null);
 const medidas = ref(null);
 const cumplidas = ref(null);
@@ -537,6 +538,7 @@ const observacionesDesechos = ref(null);
 const descripcion = ref(null);
 const fecha = ref(null);
 
+const modeloEdit = ref(null);
 const observacionesEdit = ref(null);
 const medidasEdit = ref(null);
 const cumplidasEdit = ref(null);
@@ -560,15 +562,15 @@ let data = reactive({
     plan: "no",
     sistema: "no",
     trampa: "no",
-    medidas: "",
-    cumplidas: "",
-    evaluadas: "",
-    incumplidas: "",
+    medidas: 0,
+    cumplidas: 0,
+    evaluadas: 0,
+    incumplidas: 0,
     nombrePermiso: "",
     cuerpo: "",
     nombreLicencia: "",
     observacionesDesechos: "",
-    marcha: "",
+    marcha: "si",
     descripcion: "",
     fecha: "",
 
@@ -707,11 +709,18 @@ function Edit(params) {
         .put(`/plan-enfrentamientos/${selected.value[0].id}`, dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
+            data.cardEdit = false
+            alerts.alerts[1].message = "Plan de enfrentameinto editado";
+            $q.notify(alerts.alerts[1]);
             getEnfrentamiento();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo editando el Plan de enfrentameinto";
+            $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
+
+    selected.value = []
 }
 
 function Create() {
@@ -761,9 +770,14 @@ function Create() {
         .post("/plan-enfrentamientos", dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
+            data.cardCreate = false
+            alerts.alerts[1].message = "Plan de enfrentameinto creado";
+            $q.notify(alerts.alerts[1]);
             getEnfrentamiento();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo creando el Plan de enfrentameinto";
+            $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
 }
@@ -777,9 +791,13 @@ function Delete(params) {
                 },
             })
             .then(function (response) {
+                alerts.alerts[1].message = "Plan de enfrentameinto eliminado";
+                $q.notify(alerts.alerts[1]);
                 getEnfrentamiento()
             })
             .catch(function (error) {
+                alerts.alerts[0].message = "Fallo eliminando el Plan de enfrentameinto";
+                $q.notify(alerts.alerts[0]);
                 console.log(error);
             });
 
@@ -953,45 +971,132 @@ function getSelectedString() {
 
 
 function onCreate() {
+    let problems = "ok"
+    modelo.value.validate();
     observaciones.value.validate();
-    medidas.value.validate();
-    cumplidas.value.validate();
-    evaluadas.value.validate();
-    incumplidas.value.validate();
-    nombrePermiso.value.validate();
-    cuerpo.value.validate();
-    nombreLicencia.value.validate();
-    observacionesDesechos.value.validate();
-    descripcion.value.validate();
     fecha.value.validate();
 
-    if (observaciones.value.hasError || medidas.value.hasError || cumplidas.value.hasError || evaluadas.value.hasError || incumplidas.value.hasError || nombrePermiso.value.hasError || cuerpo.value.hasError || nombreLicencia.value.hasError || observacionesDesechos.value.hasError || descripcion.value.hasError || fecha.value.hasError) {
+    if (modelo.value.hasError || observaciones.value.hasError || fecha.value.hasError) {
         alerts.alerts[0].message = "Rellene todo los campos obligatorios";
         $q.notify(alerts.alerts[0]);
-        // form has error
-    } else {
+        problems= "ko"
+    }
+    // if (data.plan == 'si' ){
+    //     medidas.value.validate()
+    //     cumplidas.value.validate() 
+    //     evaluadas.value.validate()
+    //     incumplidas.value.validate()
+    //     if (medidas.value.hasError || cumplidas.value.hasError || evaluadas.value.hasError || incumplidas.value.hasError){
+    //     alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    //     $q.notify(alerts.alerts[0]);
+    //     problems= "ko"
+    //     }
+    // }
+    if (data.permiso == 'si') {
+        nombrePermiso.value.validate()
+        cuerpo.value.validate()
+        if(nombrePermiso.value.hasError || cuerpo.value.hasError){
+            alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+            $q.notify(alerts.alerts[0]);
+            problems= "ko"
+        }
+    }
+    if (data.licencia == 'si' ) {
+        nombreLicencia.value.validate()
+        if(nombreLicencia.value.hasError){
+            alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+            $q.notify(alerts.alerts[0]);
+            problems= "ko"
+        }
+    }
+    if (data.desechos == 'si' ) {
+        observacionesDesechos.value.validate()
+        if(observacionesDesechos.value.hasError){
+            alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+            $q.notify(alerts.alerts[0]);
+            problems= "ko"
+        }
+    }
+    if (data.inversiones == 'si') {
+        descripcion.value.validate()
+       if(descripcion.value.hasError){
+           alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+           $q.notify(alerts.alerts[0]);
+           problems= "ko"
+       }
+    }
+    
+    if (parseInt(data.medidas) !== parseInt(data.cumplidas) + parseInt(data.incumplidas)) {
+        alerts.alerts[0].message = "El total de medidas debe ser igual a la suma de las medidas cumplidas e incumplidas";
+        $q.notify(alerts.alerts[0]);
+        problems= "ko"
+    }
+    if(problems == "ok") {
         Create();
     }
 }
 
 function onEdit() {
+    let problems = "ok"
+    modeloEdit.value.validate();
     observacionesEdit.value.validate();
-    medidasEdit.value.validate();
-    cumplidasEdit.value.validate();
-    evaluadasEdit.value.validate();
-    incumplidasEdit.value.validate();
-    nombrePermisoEdit.value.validate();
-    cuerpoEdit.value.validate();
-    nombreLicenciaEdit.value.validate();
-    observacionesDesechosEdit.value.validate();
-    descripcionEdit.value.validate();
     fechaEdit.value.validate();
 
-    if (observacionesEdit.value.hasError || medidasEdit.value.hasError || cumplidasEdit.value.hasError || evaluadasEdit.value.hasError || incumplidasEdit.value.hasError || nombrePermisoEdit.value.hasError || cuerpoEdit.value.hasError || nombreLicenciaEdit.value.hasError || observacionesDesechosEdit.value.hasError || descripcionEdit.value.hasError || fechaEdit.value.hasError) {
+    if (modeloEdit.value.hasError || observacionesEdit.value.hasError || fechaEdit.value.hasError) {
         alerts.alerts[0].message = "Rellene todo los campos obligatorios";
         $q.notify(alerts.alerts[0]);
-        // form has error
-    } else {
+        problems= "ko"
+    }
+    // if (data.planEdit == 'si' ){
+    //     medidasEdit.value.validate()
+    //     cumplidasEdit.value.validate() 
+    //     evaluadasEdit.value.validate()
+    //     incumplidasEdit.value.validate()
+    //     if (medidasEdit.value.hasError || cumplidasEdit.value.hasError || evaluadasEdit.value.hasError || incumplidasEdit.value.hasError){
+    //     alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    //     $q.notify(alerts.alerts[0]);
+    //     problems= "ko"
+    //     }
+    // }
+    if (data.permisoEdit == 'si') {
+        nombrePermisoEdit.value.validate()
+        cuerpoEdit.value.validate()
+        if(nombrePermisoEdit.value.hasError || cuerpoEdit.value.hasError){
+            alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+            $q.notify(alerts.alerts[0]);
+            problems= "ko"
+        }
+    }
+    if (data.licenciaEdit == 'si' ) {
+        nombreLicenciaEdit.value.validate()
+        if(nombreLicenciaEdit.value.hasError){
+            alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+            $q.notify(alerts.alerts[0]);
+            problems= "ko"
+        }
+    }
+    if (data.desechosEdit == 'si' ) {
+        observacionesDesechosEdit.value.validate()
+        if(observacionesDesechosEdit.value.hasError){
+            alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+            $q.notify(alerts.alerts[0]);
+            problems= "ko"
+        }
+    }
+    if (data.inversionesEdit == 'si') {
+        descripcionEdit.value.validate()
+       if(descripcionEdit.value.hasError){
+           alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+           $q.notify(alerts.alerts[0]);
+           problems= "ko"
+       }
+    }
+    if (parseInt(data.medidasEdit) !== parseInt(data.cumplidasEdit) + parseInt(data.incumplidasEdit)) {
+        alerts.alerts[0].message = "El total de medidas debe ser igual a la suma de las medidas cumplidas e incumplidas";
+        $q.notify(alerts.alerts[0]);
+        problems= "ko"
+    }
+    if(problems == "ok") {
         Edit();
     }
 }

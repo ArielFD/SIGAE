@@ -19,7 +19,7 @@
               <q-btn color="secondary" icon-right="archive" label="Exportar a Ecxel" no-caps @click="exportTable" />
               <q-btn color="secondary" label="Cambiar el nombre de la Entidad" no-caps @click="editNombre" />
               <q-dialog v-model="data.cardCambiar">
-                <q-card class="my-card bg-primary" flat bordered>
+                <q-card class="my-card bg-primary" style="width: 400px" flat bordered>
                   <q-item>
                     <q-item-section>
                       <q-item-label><b>Editar: "Entidad"</b></q-item-label>
@@ -58,42 +58,44 @@
             </q-item>
 
             <q-separator />
+            <form @submit.prevent.stop="onCreate">
+              <q-card-section>
+                <div class="row justify-between">
+                  <q-input outlined dense v-model="data.entidad" type="text" label="Nombre de la Entidad"
+                    class="col-12 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="entidad"/>
+                  <q-input outlined dense v-model="data.director" type="text" label="Nombre del Director"
+                    class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="director"/>
+                  <q-input outlined dense v-model="data.coordinador" type="text" label="Nombre del Coordinador"
+                    class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="coordinador"/>
+                  <q-input outlined dense v-model="data.telefono" type="text" label="Telefono" class="col-4 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="telefono"/>
+                  <q-input outlined dense v-model="data.trabajadores" type="number" label="Trabajadores"
+                    class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="trabajadores"/>
+                  <q-input outlined dense v-model="data.PIB" type="text" label="PIB" class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="PIB"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.fuente"
+                    :options="data.fuentes" label="Tipo de fuente" lazy-rules :rules="alerts.inputRules" ref="fuente"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.municipio"
+                    :options="data.municipios" label="Municipio" lazy-rules :rules="alerts.inputRules" ref="municipio"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.prioridad"
+                    :options="data.prioridades" label="Prioridad" />
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.salida"
+                    :options="data.salidas" label="Periodo de salida" lazy-rules :rules="alerts.inputRules" ref="salida"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.organismo"
+                    :options="data.organismos" label="OACE" lazy-rules :rules="alerts.inputRules" ref="organismo"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.osde" :options="data.osdes"
+                    label="OSDE" lazy-rules :rules="alerts.inputRules" ref="osde"/>
+                  <q-input outlined dense v-model="data.objeto" type="textarea" hint="Objeto social"
+                    class="col-12 q-pa-xs q-mb-md" lazy-rules :rules="alerts.inputRules" ref="objeto"/>
+                  <geo @addLatLon='addLatLon' :LatLon="data.latlon"></geo>
+                </div>
+              </q-card-section>
 
-            <q-card-section>
-              <div>
-                <q-input outlined dense v-model="data.entidad" type="text" label="Nombre de la Entidad"
-                  class="q-pa-xs" />
-                <q-input outlined dense v-model="data.director" type="text" label="Nombre del Director"
-                  class="q-pa-xs" />
-                <q-input outlined dense v-model="data.coordinador" type="text" label="Nombre del Coordinador"
-                  class="q-pa-xs" />
-                <q-input outlined dense v-model="data.telefono" type="text" label="Telefono" class="q-pa-xs" />
-                <q-input outlined dense v-model="data.trabajadores" type="number" label="Cantidad de Trabajadores"
-                  class="q-pa-xs" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.fuente" :options="data.fuentes"
-                  label="Tipo de fuente" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.municipio" :options="data.municipios"
-                  label="Municipio" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.prioridad" :options="data.prioridades"
-                  label="Prioridad" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.salida" :options="data.salidas"
-                  label="Periodo de salida" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.organismo" :options="data.organismos"
-                  label="OACE" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.osde" :options="data.osdes"
-                  label="OSDE" />
-                <q-input outlined dense v-model="data.PIB" type="text" label="PIB" class="q-pa-xs" />
-                <q-input outlined dense v-model="data.objeto" type="textarea" hint="Objeto social" class="q-pa-xs" />
-                <geo @addLatLon='addLatLon' :LatLon="data.latlon"></geo>
-              </div>
-            </q-card-section>
+              <q-separator dark />
 
-            <q-separator dark />
-
-            <q-card-actions class="justify-end">
-              <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
-              <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
-            </q-card-actions>
+              <q-card-actions class="justify-end">
+                <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
+                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+              </q-card-actions>
+            </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
@@ -106,42 +108,44 @@
             </q-item>
 
             <q-separator />
+            <form @submit.prevent.stop="onEdit">
+              <q-card-section>
+                <div class="row justify-between">
+                  <q-input outlined dense v-model="data.entidadEdit" type="text" label="Nombre de la Entidad"
+                    class="col-12 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="entidadEdit"/>
+                  <q-input outlined dense v-model="data.directorEdit" type="text" label="Nombre del Director"
+                    class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="directorEdit"/>
+                  <q-input outlined dense v-model="data.coordinadorEdit" type="text" label="Nombre del Coordinador"
+                    class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="coordinadorEdit"/>
+                  <q-input outlined dense v-model="data.telefonoEdit" type="text" label="Telefono"
+                    class="col-4 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="telefonoEdit"/>
+                  <q-input outlined dense v-model="data.trabajadoresEdit" type="number" label="Trabajadores"
+                    class="col-3 q-pa-xs" />
+                  <q-input outlined dense v-model="data.PIBEdit" type="text" label="PIB" class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="PIBEdit"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.fuenteEdit"
+                    :options="data.fuentes" label="Tipo de fuente" lazy-rules :rules="alerts.inputRules" ref="fuenteEdit"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.municipioEdit"
+                    :options="data.municipios" label="Municipio" lazy-rules :rules="alerts.inputRules" ref="municipioEdit"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.prioridadEdit"
+                    :options="data.prioridades" label="Prioridad"  />
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.salidaEdit"
+                    :options="data.salidas" label="Periodo de salida" lazy-rules :rules="alerts.inputRules" ref="salidaEdit"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.organismoEdit"
+                    :options="data.organismos" label="OACE" lazy-rules :rules="alerts.inputRules" ref="organismoEdit"/>
+                  <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.osdeEdit"
+                    :options="data.osdes" label="OSDE" lazy-rules :rules="alerts.inputRules" ref="osdeEdit"/>
+                  <q-input outlined dense v-model="data.objetoEdit" type="textarea" hint="Objeto social"
+                    class="col-12 q-pa-xs q-mb-md" lazy-rules :rules="alerts.inputRules" ref="objetoEdit"/>
+                  <geo @addLatLon='addLatLon' :LatLon="data.latlonEdit"></geo>
+                </div>
+              </q-card-section>
 
-            <q-card-section>
-              <div>
-                <q-input outlined dense v-model="data.entidadEdit" type="text" label="Nombre de la Entidad"
-                  class="q-pa-xs" disable />
-                <q-input outlined dense v-model="data.directorEdit" type="text" label="Nombre del Director"
-                  class="q-pa-xs" />
-                <q-input outlined dense v-model="data.coordinadorEdit" type="text" label="Nombre del Coordinador"
-                  class="q-pa-xs" />
-                <q-input outlined dense v-model="data.telefonoEdit" type="text" label="Telefono" class="q-pa-xs" />
-                <q-input outlined dense v-model="data.trabajadoresEdit" type="number" label="Cantidad de Trabajadores"
-                  class="q-pa-xs" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.fuenteEdit" :options="data.fuentes"
-                  label="Tipo de fuente" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.municipioEdit"
-                  :options="data.municipios" label="Municipio" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.prioridadEdit"
-                  :options="data.prioridades" label="Prioridad" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.salidaEdit" :options="data.salidas"
-                  label="Periodo de salida" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.organismoEdit"
-                  :options="data.organismos" label="OACE" />
-                <q-select class="text-black q-pa-xs" dense outlined v-model="data.osdeEdit" :options="data.osdes"
-                  label="OSDE" />
-                <q-input outlined dense v-model="data.PIBEdit" type="text" label="PIB" class="q-pa-xs" />
-                <q-input outlined dense v-model="data.objetoEdit" type="textarea" hint="Objeto social"
-                  class="q-pa-xs" />
-                <geo @addLatLon='addLatLon' :LatLon="data.latlonEdit"></geo>
-              </div>
-            </q-card-section>
+              <q-separator dark />
 
-            <q-separator dark />
-
-            <q-card-actions class="justify-end">
-              <q-btn no-caps class="text-white bg-secondary" @click="Edit">Editar</q-btn>
-            </q-card-actions>
+              <q-card-actions class="justify-end">
+                <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
+              </q-card-actions>
+            </form>
           </q-card>
         </q-dialog>
         <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -258,6 +262,34 @@ const columns = [
     field: "PIB",
     sortable: true,
   }];
+
+const entidad = ref(null);
+const organismo = ref(null);
+const municipio = ref(null);
+// const prioridad = ref(null);
+const salida = ref(null);
+const osde = ref(null);
+const trabajadores = ref(null);
+const objeto = ref(null);
+const fuente = ref(null);
+const director = ref(null);
+const telefono = ref(null);
+const coordinador = ref(null);
+const PIB = ref(null);
+
+const entidadEdit = ref(null);
+const organismoEdit = ref(null);
+const municipioEdit = ref(null);
+// const prioridadEdit = ref(null);
+const salidaEdit = ref(null);
+const osdeEdit = ref(null);
+const trabajadoresEdit = ref(null);
+const objetoEdit = ref(null);
+const fuenteEdit = ref(null);
+const directorEdit = ref(null);
+const telefonoEdit = ref(null);
+const coordinadorEdit = ref(null);
+const PIBEdit = ref(null);
 
 let data = reactive({
   rows: [],
@@ -585,11 +617,18 @@ function Edit(params) {
     .put(`/entidads/${selected.value[0].id}`, dataRest, authorization)
     .then(function (response) {
       ////console.log(response);
+      data.cardEdit = false
+      alerts.alerts[1].message = "OACE editado";
+      $q.notify(alerts.alerts[1]);
       getEntidades();
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo editando el OACE";
+      $q.notify(alerts.alerts[0]);
       console.log(error.response);
     });
+
+    selected.value = []
 }
 
 function Create() {
@@ -644,9 +683,14 @@ function Create() {
     .post("/entidads", dataRest, authorization)
     .then(function (response) {
       ////console.log(response);
+      data.cardCreate = false
+      alerts.alerts[1].message = "OACE creado";
+      $q.notify(alerts.alerts[1]);
       getEntidades();
     })
     .catch(function (error) {
+      alerts.alerts[0].message = "Fallo creando el OACE";
+      $q.notify(alerts.alerts[0]);
       console.log(error);
     });
 }
@@ -722,9 +766,13 @@ function Delete(params) {
         },
       })
       .then(function (response) {
+        alerts.alerts[1].message = "OACE eliminado";
+      $q.notify(alerts.alerts[1]);
         getEntidades()
       })
       .catch(function (error) {
+        alerts.alerts[0].message = "Fallo eliminando el OACE";
+      $q.notify(alerts.alerts[0]);
         console.log(error);
       });
 
@@ -944,6 +992,61 @@ function getSelectedString() {
     ? ""
     : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
     } selected of ${data.rows.length}`;
+}
+
+function onCreate() {
+
+  entidad.value.validate();
+  organismo.value.validate();
+  municipio.value.validate();
+  // prioridad.value.validate();
+  salida.value.validate();
+  osde.value.validate();
+  trabajadores.value.validate();
+  objeto.value.validate();
+  fuente.value.validate();
+  director.value.validate();
+  telefono.value.validate();
+  coordinador.value.validate();
+  PIB.value.validate();
+
+  if (entidad.value.hasError || organismo.value.hasError || municipio.value.hasError ||
+    salida.value.hasError || osde.value.hasError || trabajadores.value.hasError ||
+    objeto.value.hasError || fuente.value.hasError || director.value.hasError ||
+    telefono.value.hasError || coordinador.value.hasError || PIB.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Create();
+  }
+}
+
+function onEdit() {
+  entidadEdit.value.validate();
+  organismoEdit.value.validate();
+  municipioEdit.value.validate();
+  // prioridadEdit.value.validate();
+  salidaEdit.value.validate();
+  osdeEdit.value.validate();
+  // trabajadoresEdit.value.validate();
+  objetoEdit.value.validate();
+  fuenteEdit.value.validate();
+  directorEdit.value.validate();
+  telefonoEdit.value.validate();
+  coordinadorEdit.value.validate();
+  PIBEdit.value.validate();
+
+  if (entidadEdit.value.hasError || organismoEdit.value.hasError || municipioEdit.value.hasError ||
+    salidaEdit.value.hasError || osdeEdit.value.hasError  ||
+    objetoEdit.value.hasError || fuenteEdit.value.hasError || directorEdit.value.hasError ||
+    telefonoEdit.value.hasError || coordinadorEdit.value.hasError || PIBEdit.value.hasError) {
+    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+    $q.notify(alerts.alerts[0]);
+    // form has error
+  } else {
+    Edit();
+  }
 }
 
 </script>

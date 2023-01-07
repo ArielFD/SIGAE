@@ -2,13 +2,14 @@
     <div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Riesgo Tecnologico" dense :rows="data.rows" :columns="columns"
-                    row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
+                <q-table class="my-sticky-header-table" title="Riesgo Tecnologico" dense :rows="data.rows"
+                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
                     v-model:selected="selected" v-model:pagination="pagination" />
             </q-card-section>
 
             <q-card-actions class="justify-end">
-                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
+                <q-btn no-caps class="text-white bg-secondary"
+                    @click="data.cardCreate = true; data.rowsMateriales = []">Insertar</q-btn>
                 <q-dialog v-model="data.cardCreate">
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
@@ -18,66 +19,74 @@
                         </q-item>
 
                         <q-separator />
+                        <form @submit.prevent.stop="onCreate">
+                            <q-card-section>
+                                <div class="row">
+                                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
+                                        outlined v-model="model" :options="options" @filter="filterFn" label="Entidad"
+                                        lazy-rules :rules="alerts.inputRules" ref="modelo" />
+                                    <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
+                                </div>
+                            </q-card-section>
 
-                        <q-card-section>
-                            <div class="row">
-                                <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
-                                    v-model="model" :options="options" @filter="filterFn" label="Entidad" />
-                                <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
+                            <q-checkbox v-model="data.sustancia" color="secondary"
+                                label="Materiales o sustancias peligrosas" true-value="si" false-value="no"
+                                class="full-width justify-center" />
+
+                            <div class="q-pa-md" v-if="data.sustancia == 'si'">
+                                <q-table title="Tabla de Materiales y Sustancias peligrosas" :rows="data.rowsMateriales"
+                                    :columns="columnsMateriales" row-key="name" selection="single"
+                                    v-model:selected="selected" />
+
+                                <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
+                                    @click="data.cardCreateMaterial = true">Agregar</q-btn>
+                                <q-dialog v-model="data.cardCreateMaterial">
+                                    <q-card class="my-card bg-primary" style="width:375px">
+                                        <q-card-section>
+                                            <div class="text-h6">Nuevo Material o Sustancia</div>
+                                        </q-card-section>
+                                        <form @submit.prevent.stop="onCreateMaterial">
+                                            <q-card-section class="row q-pa-sm">
+                                                <q-input outlined dense v-model="data.tipoMaterial"
+                                                    label="Nombre del material" class="col-6 q-pa-sm text-black"
+                                                    lazy-rules :rules="alerts.inputRules" ref="tipoMaterial" />
+                                                <q-select class="col-6 q-pa-sm text-black" dense outlined
+                                                    v-model="data.categoria" :options="data.category" label="Categoria"
+                                                    lazy-rules :rules="alerts.inputRules" ref="categoria" />
+                                                <q-input outlined dense v-model="data.cantidad" label="Cantidad"
+                                                    type="number" class="col-6 q-pa-sm text-black" lazy-rules
+                                                    :rules="alerts.inputRules" ref="cantidad" />
+                                                <q-select class="col-6 q-pa-sm text-black" dense outlined
+                                                    v-model="data.unidad" :options="data.unid" label="Unidad" lazy-rules
+                                                    :rules="alerts.inputRules" ref="unidad" />
+                                                <q-input outlined dense v-model="data.contencion"
+                                                    label="Forma de contencion" class="col-12 q-pa-sm text-black"
+                                                    lazy-rules :rules="alerts.inputRules" ref="contencion" />
+                                                <q-input outlined dense v-model="data.alcance" label="Alcance"
+                                                    class="col-12 q-pa-sm text-black" lazy-rules
+                                                    :rules="alerts.inputRules" ref="alcance" />
+                                            </q-card-section>
+
+                                            <q-separator />
+
+                                            <q-card-actions align="right">
+                                                <q-btn flat color="secondary" label="Crear" type="submit" />
+                                            </q-card-actions>
+                                        </form>
+                                    </q-card>
+                                </q-dialog>
+                                <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="DeleteMaterial">
+                                    Eliminar
+                                </q-btn>
                             </div>
-                        </q-card-section>
 
-                        <q-checkbox v-model="data.sustancia" color="secondary"
-                            label="Materiales o sustancias peligrosas" true-value="si" false-value="no"
-                            class="full-width justify-center" />
+                            <q-separator dark />
 
-                        <div class="q-pa-md" v-if="data.sustancia=='si'">
-                            <q-table title="Tabla de Materiales y Sustancias peligrosas" :rows="data.rowsMateriales"
-                                :columns="columnsMateriales" row-key="name" selection="single"
-                                v-model:selected="selected" />
-
-                            <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
-                                @click="data.cardCreateMaterial=true">Agregar</q-btn>
-                            <q-dialog v-model="data.cardCreateMaterial">
-                                <q-card class="my-card bg-primary">
-                                    <q-card-section>
-                                        <div class="text-h6">Nuevo Material o Sustancia</div>
-                                    </q-card-section>
-
-                                    <q-card-section class="q-pa-sm">
-                                        <q-input outlined dense v-model="data.tipoMaterial" label="Nombre del material"
-                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
-                                        <q-select class="col-8 q-mr-xl text-black" dense outlined
-                                            v-model="data.categoria" :options="data.category" label="Categoria" />
-                                        <q-input outlined dense v-model="data.cantidad" label="Cantidad" type="number"
-                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
-                                        <q-select class="col-8 q-mr-xl text-black" dense outlined v-model="data.unidad"
-                                            :options="data.unid" label="Unidad" />
-                                        <q-input outlined dense v-model="data.contencion" label="Forma de contencion"
-                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
-                                        <q-input outlined dense v-model="data.alcance" label="Alcance" class="my-input"
-                                            lazy-rules :rules="alerts.inputRules" />
-                                    </q-card-section>
-
-                                    <q-separator />
-
-                                    <q-card-actions align="right">
-                                        <q-btn v-close-popup flat color="secondary" label="Crear"
-                                            @click="CreateMaterial" />
-                                    </q-card-actions>
-                                </q-card>
-                            </q-dialog>
-                            <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="DeleteMaterial">
-                                Eliminar
-                            </q-btn>
-                        </div>
-
-                        <q-separator dark />
-
-                        <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
-                            <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
-                        </q-card-actions>
+                            <q-card-actions class="justify-end">
+                                <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                            </q-card-actions>
+                        </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
@@ -90,66 +99,75 @@
                         </q-item>
 
                         <q-separator />
+                        <form @submit.prevent.stop="onEdit">
+                            <q-card-section>
+                                <div class="row">
+                                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
+                                        outlined v-model="data.entidadEdit" :options="options" @filter="filterFn"
+                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modeloEdit" />
+                                    <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año"
+                                        class="col-2" />
+                                </div>
+                            </q-card-section>
 
-                        <q-card-section>
-                            <div class="row">
-                                <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
-                                    v-model="data.entidadEdit" :options="options" @filter="filterFn" label="Entidad" />
-                                <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año" class="col-2" />
+                            <q-checkbox v-model="data.sustanciaEdit" color="secondary"
+                                label="Materiales o sustancias peligrosas" true-value="si" false-value="no"
+                                class="full-width justify-center" />
+
+                            <div class="q-pa-md" v-if="data.sustanciaEdit == 'si'">
+                                <q-table title="Tabla de Materiales y Sustancias peligrosas" :rows="data.rowsMateriales"
+                                    :columns="columnsMateriales" row-key="name" selection="single"
+                                    v-model:selected="selected" />
+
+                                <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
+                                    @click="data.cardCreateMaterial = true">Agregar</q-btn>
+                                <q-dialog v-model="data.cardCreateMaterial">
+                                    <q-card class="my-card bg-primary" style="width:375px">
+                                        <q-card-section>
+                                            <div class="text-h6">Nuevo Material o Sustancia</div>
+                                        </q-card-section>
+                                        <form @submit.prevent.stop="onCreateMaterial">
+                                            <q-card-section class="row q-pa-sm">
+                                                <q-input outlined dense v-model="data.tipoMaterial"
+                                                    label="Nombre del material" class="col-6 q-pa-sm text-black"
+                                                    lazy-rules :rules="alerts.inputRules" ref="tipoMaterial" />
+                                                <q-select class="col-6 q-pa-sm text-black" dense outlined
+                                                    v-model="data.categoria" :options="data.category" label="Categoria"
+                                                    lazy-rules :rules="alerts.inputRules" ref="categoria" />
+                                                <q-input outlined dense v-model="data.cantidad" label="Cantidad"
+                                                    type="number" class="col-6 q-pa-sm text-black" lazy-rules
+                                                    :rules="alerts.inputRules" ref="cantidad" />
+                                                <q-select class="col-6 q-pa-sm text-black" dense outlined
+                                                    v-model="data.unidad" :options="data.unid" label="Unidad" lazy-rules
+                                                    :rules="alerts.inputRules" ref="unidad" />
+                                                <q-input outlined dense v-model="data.contencion"
+                                                    label="Forma de contencion" class="col-12 q-pa-sm text-black"
+                                                    lazy-rules :rules="alerts.inputRules" ref="contencion" />
+                                                <q-input outlined dense v-model="data.alcance" label="Alcance"
+                                                    class="col-12 q-pa-sm text-black" lazy-rules
+                                                    :rules="alerts.inputRules" ref="alcance" />
+                                            </q-card-section>
+
+                                            <q-separator />
+
+                                            <q-card-actions align="right">
+                                                <q-btn flat color="secondary" label="Crear" type="submit" />
+                                            </q-card-actions>
+                                        </form>
+                                    </q-card>
+                                </q-dialog>
+                                <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="DeleteMaterial">
+                                    Eliminar
+                                </q-btn>
                             </div>
-                        </q-card-section>
 
-                        <q-checkbox v-model="data.sustanciaEdit" color="secondary"
-                            label="Materiales o sustancias peligrosas" true-value="si" false-value="no"
-                            class="full-width justify-center" />
+                            <q-separator dark />
 
-                        <div class="q-pa-md" v-if="data.sustanciaEdit=='si'">
-                            <q-table title="Tabla de Materiales y Sustancias peligrosas" :rows="data.rowsMateriales"
-                                :columns="columnsMateriales" row-key="name" selection="single"
-                                v-model:selected="selected" />
-
-                            <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
-                                @click="data.cardCreateMaterial=true">Agregar</q-btn>
-                            <q-dialog v-model="data.cardCreateMaterial">
-                                <q-card class="my-card bg-primary">
-                                    <q-card-section>
-                                        <div class="text-h6">Nuevo Material o Sustancia</div>
-                                    </q-card-section>
-
-                                    <q-card-section class="q-pa-sm">
-                                        <q-input outlined dense v-model="data.tipoMaterial" label="Nombre del material"
-                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
-                                        <q-select class="col-8 q-mr-xl text-black" dense outlined
-                                            v-model="data.categoria" :options="data.category" label="Categoria" />
-                                        <q-input outlined dense v-model="data.cantidad" label="Cantidad" type="number"
-                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
-                                        <q-select class="col-8 q-mr-xl text-black" dense outlined v-model="data.unidad"
-                                            :options="data.unid" label="Unidad" />
-                                        <q-input outlined dense v-model="data.contencion" label="Forma de contencion"
-                                            class="my-input" lazy-rules :rules="alerts.inputRules" />
-                                        <q-input outlined dense v-model="data.alcance" label="Alcance" class="my-input"
-                                            lazy-rules :rules="alerts.inputRules" />
-                                    </q-card-section>
-
-                                    <q-separator />
-
-                                    <q-card-actions align="right">
-                                        <q-btn v-close-popup flat color="secondary" label="Crear"
-                                            @click="CreateMaterial" />
-                                    </q-card-actions>
-                                </q-card>
-                            </q-dialog>
-                            <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="DeleteMaterial">
-                                Eliminar
-                            </q-btn>
-                        </div>
-
-                        <q-separator dark />
-
-                        <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" @click="Create">Agregar</q-btn>
-                            <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
-                        </q-card-actions>
+                            <q-card-actions class="justify-end">
+                                <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                            </q-card-actions>
+                        </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -163,14 +181,16 @@ import { ref, onMounted, reactive } from 'vue'
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useQuasar } from "quasar";
 
 const pagination = ref({
-  sortBy: "desc",
-  descending: false,
-  page: 1,
-  rowsPerPage: 17,
+    sortBy: "desc",
+    descending: false,
+    page: 1,
+    rowsPerPage: 17,
 });
 
+const $q = useQuasar();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -211,7 +231,18 @@ const stringOptions = []
 const model = ref([])
 const options = ref(stringOptions)
 
+const modelo = ref(null);
+const modeloEdit = ref(null);
+
+const categoria = ref(null);
+const unidad = ref(null);
+const tipoMaterial = ref(null);
+const cantidad = ref(null);
+const contencion = ref(null);
+const alcance = ref(null);
+
 let data = reactive({
+    fecha_actual: new Date(),
     rows: [],
     rowsMateriales: [],
     categorias: [],
@@ -230,26 +261,33 @@ let data = reactive({
     contencion: "",
     alcance: "",
     sustancia: "no",
-    identidadEdit:"",
-    sustanciaEdit:"no",
-    id_ResidualEdit:[],
-    entidadEdit:"",
-    añoEdit:"",
-    id_SustanciaEdit:[],
+    identidadEdit: "",
+    sustanciaEdit: "no",
+    id_ResidualEdit: [],
+    entidadEdit: "",
+    añoEdit: "",
+    id_SustanciaEdit: [],
 
     cardEdit: false,
     cardCreate: false,
     cardCreateMaterial: false,
 
+    temp:null
 })
 
 onMounted(() => {
+    getYear()
     getCategorias()
     getUnidades()
     getEntidad()
     getInstalacion()
     getSustancias(data.id_Sustancia)
 })
+
+function getYear(params) {
+    data.fecha_actual = data.fecha_actual.getFullYear()
+    data.año = data.fecha_actual
+}
 
 function filterFn(val, update) {
     if (val === '') {
@@ -269,21 +307,23 @@ function filterFn(val, update) {
 }
 
 function editFields(params) {
-  data.entidades.forEach(element => {
-    if (element.nombre == selected.value[0].entidad) data.identidadEdit = { id: element.id }
-  });
-  if (selected.value[0].id_sustancia.length > 0) { 
-    data.sustanciaEdit = "si"
-    for (let index = 0; index < selected.value[0].id_sustancia.length; index++) {
-      data.id_SustanciaEdit.push({id:selected.value[0].id_sustancia[index]})
-      data.id_Sustancia.push(selected.value[0].id_sustancia[index])
+    data.id_Sustancia = []
+    data.entidades.forEach(element => {
+        if (element.nombre == selected.value[0].entidad) data.identidadEdit = { id: element.id }
+    });
+    if (selected.value[0].id_sustancia.length > 0) {
+        data.sustanciaEdit = "si"
+        for (let index = 0; index < selected.value[0].id_sustancia.length; index++) {
+            data.id_SustanciaEdit.push({ id: selected.value[0].id_sustancia[index] })
+            data.id_Sustancia.push(selected.value[0].id_sustancia[index])
+        }
+        getSustancias(data.id_Sustancia)
     }
-    getSustancias(data.id_Sustancia)
-   }
-  else { data.sustanciaEdit = "no" }
-  (data.añoEdit = selected.value[0].año),
-    (data.entidadEdit = selected.value[0].entidad),
-    (data.cardEdit = true);
+    else { data.sustanciaEdit = "no" }
+    (data.añoEdit = selected.value[0].año),
+        (data.entidadEdit = selected.value[0].entidad),
+        (data.cardEdit = true);
+        (data.temp=selected.value[0].id)
 }
 
 function CreateMaterial(params) {
@@ -318,12 +358,17 @@ function CreateMaterial(params) {
     api
         .post("/sustancias", dataRest, authorization)
         .then(function (response) {
-            ////console.log(response);
+            console.log(response);
+            data.cardCreateMaterial = false
+            alerts.alerts[1].message = "Material creado";
+            $q.notify(alerts.alerts[1]);
             data.id_Sustancia.push(response.data.data.id)
-            getSustancias(data.id_Sustancia);
             data.id_Sustancias.push({ id: response.data.data.id })
+            getSustancias(data.id_Sustancia);
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo creando el Material";
+            $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
 }
@@ -352,11 +397,55 @@ function Create() {
         .post("/instalacionespeligrosas", dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
+            data.cardCreate = false
+            alerts.alerts[1].message = "Riesgo tecnologico creado";
+            $q.notify(alerts.alerts[1]);
+            data.rowsMateriales = [];
             getInstalacion();
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo creando el Riesgo tecnologico";
+            $q.notify(alerts.alerts[0]);
             console.log(error.response);
         });
+}
+
+function Edit() {
+    data.id_Sustancias = []
+    data.rowsMateriales.forEach(element => {
+        if(element.id) data.id_Sustancias.push(element.id)
+    });
+    const dataRest = {
+        data: {
+            // entidad: data.tempEntidad,
+            // anno: data.año,
+            sustancias: data.id_Sustancias,
+        },
+    };
+
+    const authorization = {
+        headers: {
+            Authorization: `Bearer ${auth.jwt}`,
+        },
+    };
+
+    api
+        .put(`/instalacionespeligrosas/${data.temp}`, dataRest, authorization)
+        .then(function (response) {
+            console.log(response);
+            data.cardEdit = false
+            alerts.alerts[1].message = "Riesgo tecnologico editado";
+            $q.notify(alerts.alerts[1]);
+            data.rowsMateriales = [];
+            getInstalacion();
+        })
+        .catch(function (error) {
+            alerts.alerts[0].message = "Fallo editando el Riesgo tecnologico";
+            $q.notify(alerts.alerts[0]);
+            console.log(error.response);
+        });
+
+    selected.value = []
 }
 
 function DeleteMaterial(params) {
@@ -369,14 +458,19 @@ function DeleteMaterial(params) {
         })
         .then(function (response) {
             ////console.log(response);
+
             for (let index = 0; index < data.id_Sustancia.length; index++) {
                 if (tempId == data.id_Sustancia[index]) {
                     data.id_Sustancia.splice(index, 1)
                 }
             }
+            alerts.alerts[1].message = "Material eliminado";
+            $q.notify(alerts.alerts[1]);
             getSustancias(data.id_Sustancia)
         })
         .catch(function (error) {
+            alerts.alerts[0].message = "Fallo eliminando el Material";
+            $q.notify(alerts.alerts[0]);
             console.log(error);
         });
     selected.value = []
@@ -391,13 +485,17 @@ function Delete(params) {
                 },
             })
             .then(function (response) {
-                getInstalacion()
+                alerts.alerts[1].message = "Riesgo tecnologico eliminado";
+                $q.notify(alerts.alerts[1]);
             })
             .catch(function (error) {
+                alerts.alerts[0].message = "Fallo eliminando el Riesgo tecnologico";
+                $q.notify(alerts.alerts[0]);
                 console.log(error);
             });
 
     }
+    getInstalacion()
     selected.value = []
 }
 
@@ -553,6 +651,50 @@ function getSelectedString() {
         ? ""
         : `${selected.value.length} record${selected.value.length > 1 ? "s" : ""
         } selected of ${data.rows.length}`;
+}
+
+function onCreate() {
+    data.id_Sustancia = []
+    data.rowsMateriales = [];
+    modelo.value.validate();
+
+    if (modelo.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    }
+    else {
+        Create();
+    }
+}
+
+function onCreateMaterial() {
+    categoria.value.validate();
+    unidad.value.validate();
+    tipoMaterial.value.validate();
+    cantidad.value.validate();
+    contencion.value.validate();
+    alcance.value.validate();
+    if (categoria.value.hasError || unidad.value.hasError || tipoMaterial.value.hasError || cantidad.value.hasError || contencion.value.hasError || alcance.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    }
+    else {
+        CreateMaterial();
+    }
+}
+
+function onEdit() {
+    modeloEdit.value.validate();
+    
+    if (modeloEdit.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    } else {
+        Edit();
+    }
 }
 </script>
 
