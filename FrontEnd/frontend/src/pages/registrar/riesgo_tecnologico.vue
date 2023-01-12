@@ -400,12 +400,14 @@ function Create() {
             data.cardCreate = false
             alerts.alerts[1].message = "Riesgo tecnologico creado";
             $q.notify(alerts.alerts[1]);
+            auth.postTraza("Riesgo tecnologico creado", "Satisfactorio")
             data.rowsMateriales = [];
             getInstalacion();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando el Riesgo tecnologico";
             $q.notify(alerts.alerts[0]);
+            auth.postTraza("Riesgo tecnologico creado", "Fallo")
             console.log(error.response);
         });
 }
@@ -436,12 +438,14 @@ function Edit() {
             data.cardEdit = false
             alerts.alerts[1].message = "Riesgo tecnologico editado";
             $q.notify(alerts.alerts[1]);
+            auth.postTraza("Riesgo tecnologico editado", "Satisfactorio")
             data.rowsMateriales = [];
             getInstalacion();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo editando el Riesgo tecnologico";
             $q.notify(alerts.alerts[0]);
+            auth.postTraza("Riesgo tecnologico editado", "Fallo")
             console.log(error.response);
         });
 
@@ -466,11 +470,13 @@ function DeleteMaterial(params) {
             }
             alerts.alerts[1].message = "Material eliminado";
             $q.notify(alerts.alerts[1]);
+            auth.postTraza("Material eliminado", "Satisfactorio")
             getSustancias(data.id_Sustancia)
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo eliminando el Material";
             $q.notify(alerts.alerts[0]);
+            auth.postTraza("Material eliminado", "Fallo")
             console.log(error);
         });
     selected.value = []

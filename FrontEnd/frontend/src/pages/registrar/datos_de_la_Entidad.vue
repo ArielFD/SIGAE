@@ -618,13 +618,15 @@ function Edit(params) {
     .then(function (response) {
       ////console.log(response);
       data.cardEdit = false
-      alerts.alerts[1].message = "OACE editado";
+      alerts.alerts[1].message = "Entidad editada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Entidad editada", "Satisfactorio")
       getEntidades();
     })
     .catch(function (error) {
-      alerts.alerts[0].message = "Fallo editando el OACE";
+      alerts.alerts[0].message = "Fallo editando la entidad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Entidad editada", "Fallo")
       console.log(error.response);
     });
 
@@ -684,13 +686,15 @@ function Create() {
     .then(function (response) {
       ////console.log(response);
       data.cardCreate = false
-      alerts.alerts[1].message = "OACE creado";
+      alerts.alerts[1].message = "Entidad creada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Entidad creada", "Satisfactorio")
       getEntidades();
     })
     .catch(function (error) {
-      alerts.alerts[0].message = "Fallo creando el OACE";
+      alerts.alerts[0].message = "Fallo creando la entidad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Entidad creada", "Fallo")
       console.log(error);
     });
 }
@@ -766,13 +770,15 @@ function Delete(params) {
         },
       })
       .then(function (response) {
-        alerts.alerts[1].message = "OACE eliminado";
+        alerts.alerts[1].message = "Entidad eliminada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Entidad eliminada", "Satisfactorio")
         getEntidades()
       })
       .catch(function (error) {
-        alerts.alerts[0].message = "Fallo eliminando el OACE";
+        alerts.alerts[0].message = "Fallo eliminando la Entidad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Entidad eliminada", "Fallo")
         console.log(error);
       });
 

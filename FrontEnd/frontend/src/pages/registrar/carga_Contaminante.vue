@@ -379,11 +379,13 @@ function Edit(params) {
             data.cardEdit = false
       alerts.alerts[1].message = "Carga contaminate editada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Carga contaminate editada", "Satisfactorio")
             getContaminantes();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo editando la Carga contaminate";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Carga contaminate editada", "Fallo")
             console.log(error.response);
         });
 
@@ -426,11 +428,13 @@ function Create() {
             data.cardCreate = false
       alerts.alerts[1].message = "Carga contaminate creada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Carga contaminate creada", "Satisfactorio")
             getContaminantes();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando la Carga contaminate";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Carga contaminate creada", "Fallo")
             console.log(error.response);
         });
 
@@ -447,11 +451,13 @@ function Delete(params) {
             .then(function (response) {
                 alerts.alerts[1].message = "Carga contaminate eliminada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Carga contaminate eliminada", "Satisfactorio")
                 getContaminantes()
             })
             .catch(function (error) {
                 alerts.alerts[0].message = "Fallo eliminando la Carga contaminate";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Carga contaminate eliminada", "Fallo")
                 console.log(error);
             });
 

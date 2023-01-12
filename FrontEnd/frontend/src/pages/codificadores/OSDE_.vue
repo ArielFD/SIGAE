@@ -133,11 +133,13 @@ function Edit(params) {
       data.cardEdit = false
       alerts.alerts[1].message = "OSDE editado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("OSDE editado", "Satisfactorio")
       getOSDEs();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo editando el OSDE";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("OSDE editado", "Fallo")
       console.log(error.response);
     });
 
@@ -165,11 +167,13 @@ function Create() {
       data.cardCreate = false
       alerts.alerts[1].message = "OSDE creado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("OSDE creado", "Satisfactorio")
       getOSDEs();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo creando el OSDE";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("OSDE creado", "Fallo")
       console.log(error.response);
     });
 }
@@ -184,11 +188,13 @@ function Delete(params) {
     .then(function (response) {
       alerts.alerts[1].message = "OSDE eliminado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("OSDE eliminado", "Satisfactorio")
       getOSDEs()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando el OSDE";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("OSDE eliminado", "Fallo")
       console.log(error);
     });
 }

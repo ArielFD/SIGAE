@@ -172,11 +172,13 @@ function Edit(params) {
       data.cardEdit = false
       alerts.alerts[1].message = "Estado editado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Estado editado", "Satisfactorio")
       getEstados();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo editando el Estado";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Estado editado", "Fallo")
       console.log(error.response);
     });
 }
@@ -201,11 +203,13 @@ function Create() {
       data.cardCreate = false
       alerts.alerts[1].message = "Estado creado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Estado creado", "Satisfactorio")
       getEstados();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo creando el Estado";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Estado creado", "Fallo")
       console.log(error.response);
     });
 }
@@ -220,11 +224,13 @@ function Delete(params) {
     .then(function (response) {
       alerts.alerts[1].message = "Estado eliminado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Estado eliminado", "Satisfactorio")
       getEstados()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando el Estado";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Estado eliminado", "Fallo")
       console.log(error);
     });
 }

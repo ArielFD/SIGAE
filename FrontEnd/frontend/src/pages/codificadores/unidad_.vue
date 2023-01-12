@@ -173,11 +173,13 @@ function Edit(params) {
       data.cardEdit = false
       alerts.alerts[1].message = "Unidad editada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Unidad editada", "Satisfactorio")
       getUnidads();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo editando la Unidad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Unidad editada", "Fallo")
       console.log(error.response);
     });
 
@@ -205,11 +207,13 @@ function Create() {
         data.cardCreate = false
       alerts.alerts[1].message = "Unidad creada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Unidad creada", "Satisfactorio")
         getUnidads();
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo creando la Unidad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Unidad creada", "Fallo")
         console.log(error.response);
       });
     
@@ -226,11 +230,13 @@ function Delete(params) {
     .then(function (response) {
       alerts.alerts[1].message = "Unidad eliminada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Unidad eliminada", "Satisfactorio")
       getUnidads()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando la Unidad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Unidad eliminada", "Fallo")
       console.log(error);
     });
 }

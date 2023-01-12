@@ -299,11 +299,13 @@ function Edit(params) {
       data.cardEdit = false
       alerts.alerts[1].message = "Usuario editado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Usuario editado", "Satisfactorio")
       getUsuarios()
     })
     .catch(function (error) {
       alerts.alerts[0].message = `Fallo editando el Usuario ${error.response.data.error.message}`;
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Usuario editado", "Fallo")
       console.log(error.response);
     });
 
@@ -338,11 +340,13 @@ function Create() {
       data.cardCreate = false
       alerts.alerts[1].message = "Usuario creado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Usuario creado", "Satisfactorio")
       getUsuarios();
     })
     .catch(function (error) {
       alerts.alerts[0].message = `Fallo creando el Usuario ${error.response.data.error.message}`;
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Usuario creado", "Fallo")
       console.log(error.response);
     });
 }
@@ -405,11 +409,13 @@ function Delete(params) {
     .then(function (response) {
       alerts.alerts[1].message = "Usuario eliminado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Usuario eliminado", "Satisfactorio")
       getUsuarios()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando el Usuario";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Usuario eliminado", "Fallo")
       console.log(error);
     });
 }

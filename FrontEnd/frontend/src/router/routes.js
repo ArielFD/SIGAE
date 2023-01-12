@@ -1,7 +1,6 @@
 const routes = [
   {
     path: "/",
-    meta: { requireAuth: true },
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
@@ -13,30 +12,36 @@ const routes = [
       {
         path: "Registrar/actaDeControl",
         name:"actaDeControl",
+        meta: { requireAuth: true },
         component: () => import("pages/registrar/acta_de_control.vue"),
       },
       {
         path: "Registrar/riesgoTecnologico",
         name:"riesgoTecnologico",
+        meta: { requireAuth: true },
         component: () => import("pages/registrar/riesgo_tecnologico.vue"),
       },
       {
         path: "Registrar/datosDeLaEntidad",
         name:"datosDeLaEntidad",
+        meta: { requireAuth: true },
         component: () => import("pages/registrar/datos_de_la_Entidad.vue"),
       },
       {
         path: "Registrar/cargaContaminante",
         name:"cargaContaminante",
+        meta: { requireAuth: true },
         component: () => import("pages/registrar/carga_Contaminante.vue"),
       },
       {
         path: "Registrar/desempeñoAmbiental",
         name:"desempeñoAmbiental",
+        meta: { requireAuth: true },
         component: () => import("pages/registrar/desempeño_Ambiental.vue"),
       },{
         path: "Registrar/planEnfrentamiento",
         name:"planEnfrentamiento",
+        meta: { requireAuth: true },
         component: () => import("pages/registrar/planEnfrentamiento.vue"),
       },
       //############################Reportes############################
@@ -44,21 +49,25 @@ const routes = [
       {
         path: "reportes/busqueda_Plan_de_Medidas",
         name:"busqueda_Plan_de_Medidas",
+        meta: { requireAuth: true },
         component: () => import("pages/reportes/busqueda_Plan_de_Medidas.vue"),
       },
       {
         path: "reportes/plan_enfrentamiento",
         name:"plan_enfrentamiento",
+        meta: { requireAuth: true },
         component: () => import("pages/reportes/plan_enfrentamiento.vue"),
       },
       {
         path: "reportes/desempeño_por_Ministerio",
         name:"desempeño_por_Ministerio",
+        meta: { requireAuth: true },
         component: () => import("pages/reportes/desempeño_por_Ministerio.vue"),
       },
       {
         path: "reportes/residuales_por_Categoría",
         name:"residuales_por_Categoría",
+        meta: { requireAuth: true },
         component: () => import("pages/reportes/residuales_por_Categoría.vue"),
       },
       {
@@ -69,64 +78,76 @@ const routes = [
       {
         path: "reportes/trampa_de_grasa",
         name:"trampa_de_grasa",
+        meta: { requireAuth: true },
         component: () => import("pages/reportes/trampa_de_grasa.vue"),
       },
       {
         path: "reportes/entidades",
         name:"entidades",
+        meta: { requireAuth: true },
         component: () => import("pages/reportes/entidades_.vue"),
       },
       //############################Seguridad############################
       {
         path: "seguridad/ver_trazas",
         name:"ver_trazas",
+        meta: { requireAuth: true },
         component: () => import("pages/seguridad/ver_trazas.vue"),
       },
       //############################Codificadores############################
       {
         path: "codificadores/organismo",
         name:"organismo",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/organismo_.vue"),
       },
       {
         path: "codificadores/categoria",
         name:"categoria",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/categoria_.vue"),
       },
       {
         path: "codificadores/municipio",
         name:"municipio",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/municipio_.vue"),
       },
       {
         path: "codificadores/unidad",
         name:"unidad",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/unidad_.vue"),
       },
       {
         path: "codificadores/estado",
         name:"estado",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/estado_.vue"),
       },
       {
         path: "codificadores/OSDE",
         name:"osde",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/OSDE_.vue"),
       },
       {
         path: "codificadores/prioridad",
         name:"prioridad",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/prioridad_.vue"),
       },
       {
         path: "codificadores/periodoDeSalida",
         name:"periodoDeSalida",
+        meta: { requireAuth: true },
         component: () => import("pages/codificadores/periodoDeSalida.vue"),
       },
       //############################Administrar############################
       {
         path: "administrar/usuario",
         name:"usuario",
+        meta: { requireAuth: true },
         component: () => import("src/pages/administrar/usuario_.vue"),
       }
     ],

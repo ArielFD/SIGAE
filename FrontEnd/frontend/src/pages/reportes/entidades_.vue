@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Entidades" dense :rows="data.rows"
@@ -9,13 +9,13 @@
                             <div class="col-3 text-h6">Entidades</div>
                             <div class="col-9">
                                 <div class="row justify-start">
-                                    <q-btn no-caps class="col-2 q-ma-xs text-white bg-secondary" dense
+                                    <q-btn no-caps class="q-ma-xs text-white bg-secondary" dense
                                         @click="historial">Historial de Entidades</q-btn>
-                                    <q-btn no-caps class="col-2 q-ma-xs text-white bg-secondary" @click="cerradas">
+                                    <q-btn no-caps class="q-ma-xs text-white bg-secondary" @click="cerradas">
                                         Entidades Cerradas</q-btn>
-                                    <q-btn no-caps class="col-2 q-ma-xs text-white bg-secondary" @click="noVisitadas">
+                                    <q-btn no-caps class="q-ma-xs text-white bg-secondary" @click="noVisitadas">
                                         Entidades no Visitadas</q-btn>
-                                    <q-btn no-caps class="col-2 q-ma-xs text-white bg-secondary" @click="ministerio">
+                                    <q-btn no-caps class="q-ma-xs text-white bg-secondary" @click="ministerio">
                                         Entidades por Ministerio</q-btn>
                                     <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
                                         class="col text-black q-pa-xs" />
@@ -23,6 +23,7 @@
                             </div>
                         </div>
                     </template>
+
                 </q-table>
             </q-card-section>
         </q-card>
@@ -182,7 +183,7 @@ const columnsEMinisterio = [
         field: (row) => row.name,
         format: (val) => `${val}`,
         field: "name",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "entidad",
@@ -190,49 +191,49 @@ const columnsEMinisterio = [
         required: true,
         label: "Entidad",
         field: "entidad",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "organismo",
         align: "center",
         label: "Organismo",
         field: "organismo",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "municipio",
         align: "center",
         label: "Municipio",
         field: "municipio",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "director",
         align: "center",
         label: "Director",
         field: "director",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "telefono",
         align: "center",
         label: "Telefono",
         field: "telefono",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "coordinador",
         align: "center",
         label: "Coordinador",
         field: "coordinador",
-        sortable: true,
+        sortable: false,
     },
     {
         name: "tipo_fuente",
         align: "center",
         label: "Tipo de Fuente",
         field: "tipo_fuente",
-        sortable: true,
+        sortable: false,
     }
 ];
 
@@ -409,6 +410,7 @@ async function ministerio(params) {
     data.rows = [];
     data.columns = columnsEMinisterio
     let count = 1
+    let organismo = ""
     api
         .get(`/entidads?populate[0]=organismo&populate[1]=municipio&[activo][$eq]=s&sort[0]=organismo.organismo%3Aasc`, {
             headers: {
@@ -419,17 +421,45 @@ async function ministerio(params) {
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                 if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }
-                data.rows.push({
-                    name: count,
-                    id: response.data.data[i].id,
-                    entidad: response.data.data[i].attributes.entidad,
-                    organismo: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
-                    municipio: response.data.data[i].attributes.municipio.data[0].attributes.municipio,
-                    director: response.data.data[i].attributes.nomb_director,
-                    telefono: response.data.data[i].attributes.num_telefono,
-                    coordinador: response.data.data[i].attributes.nomb_coordinador,
-                    tipo_fuente: response.data.data[i].attributes.tipo_fuente
-                })
+                if (organismo !== response.data.data[i].attributes.organismo.data[0].attributes.organismo) {
+                    count = 1
+                    data.rows.push({
+                        name: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
+                        id: "",
+                        entidad: "",
+                        organismo: "",
+                        municipio: "",
+                        director: "",
+                        telefono: "",
+                        coordinador: "",
+                        tipo_fuente: ""
+                    })
+                    organismo = response.data.data[i].attributes.organismo.data[0].attributes.organismo
+                    data.rows.push({
+                        name: count,
+                        id: response.data.data[i].id,
+                        entidad: response.data.data[i].attributes.entidad,
+                        organismo: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
+                        municipio: response.data.data[i].attributes.municipio.data[0].attributes.municipio,
+                        director: response.data.data[i].attributes.nomb_director,
+                        telefono: response.data.data[i].attributes.num_telefono,
+                        coordinador: response.data.data[i].attributes.nomb_coordinador,
+                        tipo_fuente: response.data.data[i].attributes.tipo_fuente
+                    })
+                }
+                else {
+                    data.rows.push({
+                        name: count,
+                        id: response.data.data[i].id,
+                        entidad: response.data.data[i].attributes.entidad,
+                        organismo: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
+                        municipio: response.data.data[i].attributes.municipio.data[0].attributes.municipio,
+                        director: response.data.data[i].attributes.nomb_director,
+                        telefono: response.data.data[i].attributes.num_telefono,
+                        coordinador: response.data.data[i].attributes.nomb_coordinador,
+                        tipo_fuente: response.data.data[i].attributes.tipo_fuente
+                    })
+                }
                 count++
             }
         }).catch(function (error) {

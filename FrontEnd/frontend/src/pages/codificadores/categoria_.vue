@@ -175,11 +175,13 @@ function Edit(params) {
       data.cardEdit = false
       alerts.alerts[1].message = "Categoria editada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Categoria editada", "Satisfactorio")
       getCategorias();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo editando la categoria";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Categoria editada", "Fallo")
       console.log(error.response);
     });
 
@@ -207,11 +209,13 @@ function Create() {
       data.cardCreate = false
       alerts.alerts[1].message = "Categoria creada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Categoria creada", "Satisfactorio")
       getCategorias();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo creando la categoria";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Categoria creada", "Fallo")
       console.log(error.response);
     });
 }
@@ -226,11 +230,13 @@ function Delete(params) {
     .then(function (response) {
       alerts.alerts[1].message = "Categoria eliminada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Categoria eliminada", "Satisfactorio")
       getCategorias()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando la categoria";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Categoria eliminada", "Fallo")
       console.log(error);
     });
 }

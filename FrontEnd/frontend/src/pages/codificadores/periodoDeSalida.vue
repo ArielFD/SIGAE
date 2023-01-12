@@ -175,11 +175,13 @@ const salidaEdit = ref(null);
         data.cardEdit = false
       alerts.alerts[1].message = "Periodo editado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Periodo editado", "Satisfactorio")
         getSalidas();
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo editando el Periodo";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Periodo editado", "Fallo")
         console.log(error.response);
       });
 
@@ -207,11 +209,13 @@ const salidaEdit = ref(null);
         data.cardCreate = false
       alerts.alerts[1].message = "Periodo creado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Periodo creado", "Satisfactorio")
         getSalidas();
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo creando el Periodo";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Periodo creado", "Fallo")
         console.log(error.response);
       });
   }
@@ -226,11 +230,13 @@ const salidaEdit = ref(null);
       .then(function (response) {
         alerts.alerts[1].message = "Periodo eliminado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Periodo eliminado", "Satisfactorio")
         getSalidas()
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo eliminando el Periodo";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Periodo eliminado", "Fallo")
         console.log(error);
       });
   }

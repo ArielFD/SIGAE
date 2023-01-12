@@ -179,11 +179,13 @@ const prioridadEdit = ref(null);
         data.cardEdit = false
       alerts.alerts[1].message = "Prioridad editada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Prioridad editada", "Satisfactorio")
         getPrioridads();
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo editando la Prioridad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Prioridad editada", "Fallo")
         console.log(error.response);
       });
 
@@ -211,11 +213,13 @@ const prioridadEdit = ref(null);
         data.cardCreate = false
       alerts.alerts[1].message = "Prioridad creada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Prioridad creada", "Satisfactorio")
         getPrioridads();
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo creando la Prioridad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Prioridad creada", "Fallo")
         console.log(error.response);
       });
   }
@@ -230,11 +234,13 @@ const prioridadEdit = ref(null);
       .then(function (response) {
         alerts.alerts[1].message = "Prioridad eliminada";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Prioridad eliminada", "Satisfactorio")
         getPrioridads()
       })
       .catch(function (error) {
         alerts.alerts[0].message = "Fallo eliminando la Prioridad";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Prioridad eliminada", "Fallo")
         console.log(error);
       });
   }

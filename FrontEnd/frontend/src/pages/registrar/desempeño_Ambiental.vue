@@ -587,11 +587,13 @@ function Edit(params) {
             data.cardEdit = false
       alerts.alerts[1].message = "Desempeño ambiental editado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Desempeño ambiental editado", "Satisfactorio")
             getDesempeño();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo editando el Desempeño ambiental";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Desempeño ambiental editado", "Fallo")
             console.log(error.response);
         });
 
@@ -636,11 +638,13 @@ function Create() {
             data.cardCreate = false
       alerts.alerts[1].message = "Desempeño ambiental creado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Desempeño ambiental creado", "Satisfactorio")
             getDesempeño();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando el Desempeño ambiental";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Desempeño ambiental creado", "Fallo")
             console.log(error.response);
         });
 }
@@ -656,11 +660,13 @@ function Delete(params) {
             .then(function (response) {
                 alerts.alerts[1].message = "Desempeño ambiental eliminado";
       $q.notify(alerts.alerts[1]);
+      auth.postTraza("Desempeño ambiental eliminado", "Satisfactorio")
                 getDesempeño()
             })
             .catch(function (error) {
                 alerts.alerts[0].message = "Fallo eliminando el Desempeño ambiental";
       $q.notify(alerts.alerts[0]);
+      auth.postTraza("Desempeño ambiental eliminado", "Fallo")
                 console.log(error);
             });
 

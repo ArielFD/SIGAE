@@ -1,5 +1,7 @@
 <template>
     <div class="col-12">
+        <q-slide-transition duration="1000" appear="true">
+            <!-- <div v-show="data.visible"> -->
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
@@ -439,6 +441,8 @@
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
             </q-card-actions>
         </q-card>
+    <!-- </div> -->
+</q-slide-transition>
     </div>
 </template>
   
@@ -551,6 +555,7 @@ const observacionesDesechosEdit = ref(null);
 const descripcionEdit = ref(null);
 const fechaEdit = ref(null);
 
+
 let data = reactive({
     rows: [],
 
@@ -604,7 +609,9 @@ let data = reactive({
     identidadEdit: "",
 
     monitoreo: false,
-    fecha_actual: new Date()
+    fecha_actual: new Date(),
+
+    visible:false
 });
 
 function filterFn(val, update) {
@@ -628,6 +635,7 @@ onMounted(() => {
     getEnfrentamiento()
     getEntidad()
     getYear()
+    data.visible=true
 });
 
 function getYear(params) {
@@ -712,11 +720,13 @@ function Edit(params) {
             data.cardEdit = false
             alerts.alerts[1].message = "Plan de enfrentameinto editado";
             $q.notify(alerts.alerts[1]);
+            auth.postTraza("Plan de enfrentameinto editado", "Satisfactorio")
             getEnfrentamiento();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo editando el Plan de enfrentameinto";
             $q.notify(alerts.alerts[0]);
+            auth.postTraza("Plan de enfrentameinto editado", "Fallo")
             console.log(error.response);
         });
 
@@ -773,11 +783,13 @@ function Create() {
             data.cardCreate = false
             alerts.alerts[1].message = "Plan de enfrentameinto creado";
             $q.notify(alerts.alerts[1]);
+            auth.postTraza("Plan de enfrentameinto creado", "Satisfactorio")
             getEnfrentamiento();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando el Plan de enfrentameinto";
             $q.notify(alerts.alerts[0]);
+            auth.postTraza("Plan de enfrentameinto creado", "Fallo")
             console.log(error.response);
         });
 }
@@ -793,11 +805,13 @@ function Delete(params) {
             .then(function (response) {
                 alerts.alerts[1].message = "Plan de enfrentameinto eliminado";
                 $q.notify(alerts.alerts[1]);
+                auth.postTraza("Plan de enfrentameinto eliminado", "Satisfactorio")
                 getEnfrentamiento()
             })
             .catch(function (error) {
                 alerts.alerts[0].message = "Fallo eliminando el Plan de enfrentameinto";
                 $q.notify(alerts.alerts[0]);
+                auth.postTraza("Plan de enfrentameinto eliminado", "Fallo")
                 console.log(error);
             });
 

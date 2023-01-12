@@ -31,6 +31,10 @@
                                         class="col-6 text-black q-pa-xs" />
                                     <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
                                         @click="getActacontrol()" />
+                                        <q-btn flat round color="secondary" icon="bar_chart" class="col-2  q-pa-xs"
+                                        @click="data.histograma=!data.histograma"  v-if="data.histograma==true"/>
+                                        <q-btn flat round color="red" icon="bar_chart" class="col-2  q-pa-xs"
+                                        @click="data.histograma=!data.histograma"  v-else/>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +42,7 @@
                 </q-table>
             </q-card-section>
         </q-card>
-        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" ></histograma>
+        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma==true" ></histograma>
     </div>
 </template>
 
@@ -199,7 +203,7 @@ let data = reactive({
     osdes: [],
 
     fecha_actual: new Date(),
-
+    histograma:false
 });
 
 function getYear(params) {
