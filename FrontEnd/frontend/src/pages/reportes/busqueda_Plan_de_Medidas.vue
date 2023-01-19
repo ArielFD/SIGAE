@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
@@ -27,14 +27,16 @@
                             </div>
                             <div class="col-3">
                                 <div class="row justify-center">
-                                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
-                                        class="col-6 text-black q-pa-xs" />
-                                    <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
+                                    <q-input outlined dense v-model="data.fecha_actual" type="number"
+                                        label="Año a buscar" class="col-4 text-black q-pa-xs" />
+                                    <q-input outlined dense v-model="data.fecha_cliente" type="number"
+                                        label="Año a comparar" class="col-4 text-black q-pa-xs" />
+                                    <q-btn flat round color="secondary" icon="search" class="col-1 text-black q-pa-xs"
                                         @click="getActacontrol()" />
-                                        <q-btn flat round color="secondary" icon="bar_chart" class="col-2  q-pa-xs"
-                                        @click="data.histograma=!data.histograma"  v-if="data.histograma==true"/>
-                                        <q-btn flat round color="red" icon="bar_chart" class="col-2  q-pa-xs"
-                                        @click="data.histograma=!data.histograma"  v-else/>
+                                    <q-btn flat round color="secondary" icon="bar_chart" class="col-1  q-pa-xs"
+                                        @click="data.histograma = !data.histograma" v-if="data.histograma == true" />
+                                    <q-btn flat round color="red" icon="bar_chart" class="col-1  q-pa-xs"
+                                        @click="data.histograma = !data.histograma" v-else />
                                 </div>
                             </div>
                         </div>
@@ -42,7 +44,7 @@
                 </q-table>
             </q-card-section>
         </q-card>
-        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma==true" ></histograma>
+        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma == true"></histograma>
     </div>
 </template>
 
@@ -186,28 +188,28 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
-    temp:false,
+    temp: false,
     rows: [],
     rows1: [],
-    rows2: [],
     opcion: "",
     opcions: ["Entidad", "OACE", "OSDE"],
 
     histogramOptions: {
         year1: [],
         year2: [],
-        year3: []
     },
     entidades: [],
     organismos: [],
     osdes: [],
 
     fecha_actual: new Date(),
-    histograma:false
+    fecha_cliente: "",
+    histograma: false
 });
 
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()
+    data.fecha_cliente=data.fecha_actual-1
 }
 
 function filterFnOsde(val, update) {
@@ -345,16 +347,17 @@ function getEntidad(params) {
 }
 
 async function getActacontrol(params) {
-    data.histogramOptions={
+    data.histograma=false
+    data.histogramOptions = {
         year1: [],
         year2: [],
     },
-    data.rows = [];
+        data.rows = [];
     data.rows1 = [];
-    data.rows2 = [];
+
     let count = 1
     await api
-        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${(data.fecha_actual) - 1}`, {
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
@@ -385,7 +388,7 @@ async function getActacontrol(params) {
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                         });
-                        data.histogramOptions.year1.push(data.rows)
+                        data.histogramOptions.year2.push(data.rows)
                         count++
                     } else if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -408,7 +411,7 @@ async function getActacontrol(params) {
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                         });
-                        data.histogramOptions.year1.push(data.rows)
+                        data.histogramOptions.year2.push(data.rows)
                         count++
                     } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -431,12 +434,12 @@ async function getActacontrol(params) {
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
                         });
-                        data.histogramOptions.year1.push(data.rows)
+                        data.histogramOptions.year2.push(data.rows)
                         count++
                     }
                 }
             }
-            
+
             let cumplidas_corto = 0, cumplidas_largo = 0, cumplidas_mediano = 0, medidas_corto = 0, medidas_largo = 0, medidas_mediano = 0, totalMedidas = 0, totalCumplidas = 0, porcientoCorto = 0, porcientoMedio = 0.00, porcientoLargo = 0.00, porcientoTotal = 0.00;
             data.rows.forEach(element => {
                 // if(element.porcientoCorto=="NaN") element.porcientoCorto=0
@@ -456,31 +459,12 @@ async function getActacontrol(params) {
                 porcientoLargo = ((cumplidas_largo / medidas_largo) * 100).toFixed(2)
                 porcientoTotal = ((totalCumplidas / totalMedidas) * 100).toFixed(2)
             });
-            if (data.opcion == 'Organismo') {
-                data.rows.push({
-                    name: "Total",
-                    cumplidas_corto: cumplidas_corto,
-                    cumplidas_largo: cumplidas_largo,
-                    cumplidas_mediano: cumplidas_mediano,
-                    medidas_corto: medidas_corto,
-                    medidas_largo: medidas_largo,
-                    medidas_mediano: medidas_mediano,
-                    totalMedidas: totalMedidas,
-                    totalCumplidas: totalCumplidas,
-                    porcientoCorto: porcientoCorto,
-                    porcientoMedio: porcientoMedio,
-                    porcientoLargo: porcientoLargo,
-                    porcientoTotal: porcientoTotal,
-                    entidad: "",
-                    organismo: ""
-                });
-            }
         })
         .catch(function (error) {
             console.log(error);
         });
     await api
-        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual - 1}`, {
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_cliente}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
@@ -494,36 +478,36 @@ async function getActacontrol(params) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         data.rows1.push({
                             porcientoCorto: (response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100,
-                            year: data.fecha_actual - 1,
+                            year: data.fecha_cliente,
                             porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
                             porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
                             porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
                             porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                         });
-                        data.histogramOptions.year2.push(data.rows1)
+                        data.histogramOptions.year1.push(data.rows1)
                     } else if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         data.rows1.push({
-                            year: data.fecha_actual - 1,
+                            year: data.fecha_cliente,
                             porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
                             porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
                             porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
                             porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                         });
-                        data.histogramOptions.year2.push(data.rows1)
+                        data.histogramOptions.year1.push(data.rows1)
                     } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         data.rows1.push({
-                            year: data.fecha_actual - 1,
+                            year: data.fecha_cliente,
                             porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
                             porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
                             porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
                             porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                         });
-                        data.histogramOptions.year2.push(data.rows1)
+                        data.histogramOptions.year1.push(data.rows1)
                     }
                 }
             }
@@ -531,7 +515,7 @@ async function getActacontrol(params) {
         .catch(function (error) {
             console.log(error);
         });
-    
+
 }
 
 </script>

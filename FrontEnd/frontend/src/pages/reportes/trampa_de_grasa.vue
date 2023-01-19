@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"

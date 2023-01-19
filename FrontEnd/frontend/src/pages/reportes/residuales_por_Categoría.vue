@@ -310,7 +310,7 @@ async function getActacontrol(params) {
             },
         })
         .then(function (response) {
-            //console.log(response);
+            console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (data.opcion == 'Categoria' && response.data.data[i].attributes.residuals.data.length > 0) {
@@ -318,6 +318,7 @@ async function getActacontrol(params) {
                             if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
 
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                                console.log(response.data.data[i].id);
                                 data.rows.push({
                                     name: count,
                                     id: response.data.data[i].id,
@@ -339,7 +340,7 @@ async function getActacontrol(params) {
                         console.log("Paso 1");
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
                             console.log("Paso 2");
-                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[0].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+                            if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
                                 console.log("Paso 3");
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                                 data.rows.push({
@@ -360,9 +361,13 @@ async function getActacontrol(params) {
 
                         }
                     } else if (data.opcion == 'OSDE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                        console.log("paso 1");
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+                            console.log("paso 2");
                             if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
+                                console.log("paso 3");
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                                console.log("paso 4");
                                 data.rows.push({
                                     name: count,
                                     id: response.data.data[i].id,

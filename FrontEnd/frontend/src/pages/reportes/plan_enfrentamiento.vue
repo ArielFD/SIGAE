@@ -27,10 +27,10 @@
                                         class="col-6 text-black q-pa-xs" /> -->
                                     <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
                                         @click="getEnfrentamiento()" />
-                                        <q-btn flat round color="secondary" icon="bar_chart" class="col-2  q-pa-xs"
-                                        @click="data.histograma=!data.histograma"  v-if="data.histograma==true"/>
-                                        <q-btn flat round color="red" icon="bar_chart" class="col-2  q-pa-xs"
-                                        @click="data.histograma=!data.histograma"  v-else/>
+                                    <q-btn flat round color="secondary" icon="bar_chart" class="col-2  q-pa-xs"
+                                        @click="data.histograma = !data.histograma" v-if="data.histograma == true" />
+                                    <q-btn flat round color="red" icon="bar_chart" class="col-2  q-pa-xs"
+                                        @click="data.histograma = !data.histograma" v-else />
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                 </q-table>
             </q-card-section>
         </q-card>
-        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma==true"></histograma>
+        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma == true"></histograma>
     </div>
 </template>
   
@@ -185,7 +185,7 @@ let data = reactive({
         year1: [],
     },
 
-    histograma:false
+    histograma: false
 });
 
 function filterFnOsde(val, update) {
@@ -294,6 +294,11 @@ async function getEnfrentamiento(params) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
+                            console.log("Entra");
+                            response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
+                        }
+                        console.log(response);
                         data.rows.push({
                             name: count,
                             id: response.data.data[i].id,
@@ -320,16 +325,18 @@ async function getEnfrentamiento(params) {
                             monitoreo: response.data.data[i].attributes.licencia,
                             funcionaBien: response.data.data[i].attributes.permiso,
                             Inversiones: response.data.data[i].attributes.licencia,
-                            oace:response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
-                            osde:response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                            oace: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                            osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
                         });
-                        Object.keys(data.rows[i]).forEach(function (key) {
-                            if (data.rows[i][key] === true) {
-                                data.rows[i][key] = "si"
-                            } else if (data.rows[i][key] === false) {
-                                data.rows[i][key] = "no"
-                            }
-                        })
+                        if (data.rows[i]) {
+                            Object.keys(data.rows[i]).forEach(function (key) {
+                                if (data.rows[i][key] === true) {
+                                    data.rows[i][key] = "si"
+                                } else if (data.rows[i][key] === false) {
+                                    data.rows[i][key] = "no"
+                                }
+                            })
+                        }
                         data.histogramOptions.year1 = data.rows
                         count++
                     } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
@@ -360,8 +367,8 @@ async function getEnfrentamiento(params) {
                             monitoreo: response.data.data[i].attributes.licencia,
                             funcionaBien: response.data.data[i].attributes.permiso,
                             Inversiones: response.data.data[i].attributes.licencia,
-                            oace:response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
-                            osde:response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                            oace: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                            osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
                         });
                         Object.keys(data.rows[i]).forEach(function (key) {
                             if (data.rows[i][key] === true) {

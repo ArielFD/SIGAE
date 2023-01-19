@@ -17,8 +17,6 @@
                                         Entidades no Visitadas</q-btn>
                                     <q-btn no-caps class="q-ma-xs text-white bg-secondary" @click="ministerio">
                                         Entidades por Ministerio</q-btn>
-                                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
-                                        class="col text-black q-pa-xs" />
                                 </div>
                             </div>
                         </div>
@@ -331,9 +329,9 @@ async function historial(params) {
                                     Authorization: "Bearer " + auth.jwt,
                                 },
                             }).then(function (response) {
-                                //console.log(response);
+                                // console.log(response);
                                 if (index == 0) element.nombresAnterior = element.nombresAnterior.concat(response.data.data.attributes.entidad)
-                                else element.nombresAnterior = element.nombresAnterior.concat(", " + response.data.data.attributes.entidad)
+                                else element.nombresAnterior = element.nombresAnterior.concat(" , " + response.data.data.attributes.entidad)
                             }).catch(function (error) {
                                 console.log(error);
                             });
@@ -348,11 +346,10 @@ async function historial(params) {
     }
 }
 
-async function noVisitadas(params) {
-    data.rows = [];
-    data.columns = columnsENoVisitadas
-    let count = 1
-    api
+function entidadesActivas() {
+    return new Promise(resolve => {
+        let count = 1
+        api
         .get(`/entidads?populate[0]=organismo&populate[1]=municipio&[activo][$eq]=s`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
@@ -374,33 +371,47 @@ async function noVisitadas(params) {
                 })
                 count++
             }
-
-            let temp = []
-            api
-                .get(`/actacontrols?populate[0]=entidad&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
-                    headers: {
-                        Authorization: "Bearer " + auth.jwt,
-                    },
-                })
-                .then(function (response) {
-                    //console.log(response);
-                    for (let i = 0; i < response.data.data.length; i++) {
-                        if (response.data.data[i].attributes.entidad.data != null) temp.push(response.data.data[i].attributes.entidad.data.attributes.entidad)
-                        data.rows.forEach((element, indexF) => {
-                            for (let index = 0; index < temp.length; index++) {
-                                if (element.entidad == temp[index]) data.rows.splice(indexF, 1)
-                            }
-                        });
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+            resolve(data.rows)
 
         }).catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
+    })
+}
 
+async function noVisitadas(params) {
+    data.rows = [];
+    data.columns = columnsENoVisitadas
+    
+    let entidades = await entidadesActivas()
+   
+    let temp = []
+    api
+        .get(`/actacontrols?populate[0]=entidad&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].attributes.entidad.data != null) temp.push(response.data.data[i].attributes.entidad.data.attributes.entidad)
+            }
+            console.log(temp);
+            for (let index = 0; index < temp.length; index++) {
+                entidades.forEach((element, indexF) => {
+                    console.log(element.entidad);
+                    if (element.entidad == temp[index]) {
+                        console.log("Entra");
+                        entidades.splice(indexF, 1)
+                    }
+                });
+            }
+            // console.log(temp);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 
 
 
@@ -425,14 +436,14 @@ async function ministerio(params) {
                     count = 1
                     data.rows.push({
                         name: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
-                        id: "",
-                        entidad: "",
-                        organismo: "",
-                        municipio: "",
-                        director: "",
-                        telefono: "",
-                        coordinador: "",
-                        tipo_fuente: ""
+                        id: "~~~~~~~~~~~~~~~~~~",
+                        entidad: "~~~~~~~~~~~~~~~~~~",
+                        organismo: "~~~~~~~~~~~~~~~~~~",
+                        municipio: "~~~~~~~~~~~~~~~~~~",
+                        director: "~~~~~~~~~~~~~~~~~~",
+                        telefono: "~~~~~~~~~~~~~~~~~~",
+                        coordinador: "~~~~~~~~~~~~~~~~~~",
+                        tipo_fuente: "~~~~~~~~~~~~~~~~~~"
                     })
                     organismo = response.data.data[i].attributes.organismo.data[0].attributes.organismo
                     data.rows.push({

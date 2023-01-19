@@ -13,6 +13,7 @@
           <btn_Administrador v-if="data.admin" />
           <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
           <btn_Reportes v-if="data.public"></btn_Reportes>
+          <btn_Histogramas v-if="data.public"></btn_Histogramas>
           <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" flat size="lg" />
           <q-btn push no-caps label="Logout" v-else @click="cerrarSesion" flat size="lg" />
         </div>
@@ -64,9 +65,10 @@
     <q-footer elevated>
       <q-toolbar style="color: rgb(4, 48, 158)">
         <div class="col">
-          <div class="row justify-between">
-            <div>© 2022 Todos los derechos reservados</div>
-            <div>Powered by Joven CLub</div>
+          <div class="row justify-center">
+            <div>SIGAE v2.0 copyright 2011-2023</div>
+            <!-- <div>© 2022 Todos los derechos reservados</div> -->
+            <!-- <div>Powered by Joven CLub</div> -->
           </div>
         </div>
       </q-toolbar>
@@ -83,6 +85,7 @@ import { defineComponent, reactive, ref, onMounted } from "vue";
 import btn_Administrador from "src/components/myLayout/btn_Admistrador.vue"
 import btn_RegistrarReportes from "src/components/myLayout/btn_Registrar-Reportes.vue"
 import btn_Reportes from "src/components/myLayout/btn_Reportes.vue"
+import btn_Histogramas from "src/components/myLayout/btn_histogramas.vue"
 import { api } from "boot/axios.js";
 import { useQuasar } from "quasar";
 import { useRouter, useRoute } from "vue-router";

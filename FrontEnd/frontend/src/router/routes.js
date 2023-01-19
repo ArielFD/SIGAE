@@ -87,6 +87,40 @@ const routes = [
         meta: { requireAuth: true },
         component: () => import("pages/reportes/entidades_.vue"),
       },
+
+      //############################Histogramas############################
+      
+      {
+        path: "histogramas/comparacion_cumplimento_medidas",
+        name:"comparacion_cumplimento_medidas",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/comparacion_cumplimento_medidas.vue"),
+      },
+      {
+        path: "histogramas/comparacion_parametros_desempeño",
+        name:"comparacion_parametros_desempeño",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/comparacion_parametros_desempeño.vue"),
+      },
+      {
+        path: "histogramas/coordinadores_ambientales",
+        name:"coordinadores_ambientales",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/coordinadores_ambientales.vue"),
+      },
+      {
+        path: "histogramas/cumplimiento_plan_enfrentamiento",
+        name:"cumplimiento_plan_enfrentamiento",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/cumplimiento_plan_enfrentamiento.vue"),
+      },
+      {
+        path: "histogramas/desempeño_ambiental",
+        name:"desempeño_ambiental",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/desempeño_ambiental.vue"),
+      },
+
       //############################Seguridad############################
       {
         path: "seguridad/ver_trazas",

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
@@ -359,67 +359,120 @@ async function getDesempeño(params) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (data.opcion == "OACE" && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo == modelOrganismo.value && (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores) == data.cantidad) {
-                            data.rows.push({
-                                name: count.toString(),
-                                id: response.data.data[i].id,
-                                entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
-                                coordinador: response.data.data[i].attributes.exist_coordinador,
-                                diagnostico: response.data.data[i].attributes.exist_diagnostico,
-                                politica: response.data.data[i].attributes.exist_politica,
-                                indicadores: response.data.data[i].attributes.exist_indicadores,
-                                plan: response.data.data[i].attributes.exist_plan_accion,
-                                legislacion: response.data.data[i].attributes.exist_legislacion,
-                                capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
-                                acciones: response.data.data[i].attributes.exist_accionespml,
-                                programa: response.data.data[i].attributes.exist_program_gestionambiental,
-                                recurso: response.data.data[i].attributes.exist_recurso_financiero,
-                                aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
-                                sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
-                                anno: response.data.data[i].attributes.anno,
-                                carga: response.data.data[i].attributes.disminucion_carga_contaminante,
-                                observaciones: response.data.data[i].attributes.observaciones,
-                                total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
-                            });
-                            Object.keys(data.rows[i]).forEach(function (key) {
-                                if (data.rows[i][key] === 1) {
-                                    data.rows[i][key] = "si"
-                                } else if (data.rows[i][key] === 0) {
-                                    data.rows[i][key] = "no"
-                                }
-                            })
+                        if (data.opcion == "OACE" && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
+                            if (data.cantidad != 0 && response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores == data.cantidad) {
+                                data.rows.push({
+                                    name: count.toString(),
+                                    id: response.data.data[i].id,
+                                    entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+                                    coordinador: response.data.data[i].attributes.exist_coordinador,
+                                    diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                                    politica: response.data.data[i].attributes.exist_politica,
+                                    indicadores: response.data.data[i].attributes.exist_indicadores,
+                                    plan: response.data.data[i].attributes.exist_plan_accion,
+                                    legislacion: response.data.data[i].attributes.exist_legislacion,
+                                    capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                                    acciones: response.data.data[i].attributes.exist_accionespml,
+                                    programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                                    recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                                    aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                                    sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                                    anno: response.data.data[i].attributes.anno,
+                                    carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                                    observaciones: response.data.data[i].attributes.observaciones,
+                                    total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
+                                });
+                            }
+                            else if (data.cantidad == 0) {
+                                data.rows.push({
+                                    name: count.toString(),
+                                    id: response.data.data[i].id,
+                                    entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+                                    coordinador: response.data.data[i].attributes.exist_coordinador,
+                                    diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                                    politica: response.data.data[i].attributes.exist_politica,
+                                    indicadores: response.data.data[i].attributes.exist_indicadores,
+                                    plan: response.data.data[i].attributes.exist_plan_accion,
+                                    legislacion: response.data.data[i].attributes.exist_legislacion,
+                                    capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                                    acciones: response.data.data[i].attributes.exist_accionespml,
+                                    programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                                    recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                                    aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                                    sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                                    anno: response.data.data[i].attributes.anno,
+                                    carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                                    observaciones: response.data.data[i].attributes.observaciones,
+                                    total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
+                                });
+                            }
+                            if (data.rows[i]) {
+                                Object.keys(data.rows[i]).forEach(function (key) {
+                                    if (data.rows[i][key] === 1) {
+                                        data.rows[i][key] = "si"
+                                    } else if (data.rows[i][key] === 0) {
+                                        data.rows[i][key] = "no"
+                                    }
+                                })
+                            }
                             count++
                         } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data[0].attributes.osde.data != null && response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre == modelOsde.value) {
                             if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            console.log("number",i);
-                            data.rows.push({
-                                name: count.toString(),
-                                id: response.data.data[i].id,
-                                entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
-                                coordinador: response.data.data[i].attributes.exist_coordinador,
-                                diagnostico: response.data.data[i].attributes.exist_diagnostico,
-                                politica: response.data.data[i].attributes.exist_politica,
-                                indicadores: response.data.data[i].attributes.exist_indicadores,
-                                plan: response.data.data[i].attributes.exist_plan_accion,
-                                legislacion: response.data.data[i].attributes.exist_legislacion,
-                                capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
-                                acciones: response.data.data[i].attributes.exist_accionespml,
-                                programa: response.data.data[i].attributes.exist_program_gestionambiental,
-                                recurso: response.data.data[i].attributes.exist_recurso_financiero,
-                                aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
-                                sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
-                                anno: response.data.data[i].attributes.anno,
-                                carga: response.data.data[i].attributes.disminucion_carga_contaminante,
-                                observaciones: response.data.data[i].attributes.observaciones,
-                                total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
-                            });
-                            Object.keys(data.rows[i]).forEach(function (key) {
-                                if (data.rows[i][key] === 1) {
-                                    data.rows[i][key] = "si"
-                                } else if (data.rows[i][key] === 0) {
-                                    data.rows[i][key] = "no"
-                                }
-                            })
+                            if (data.cantidad != 0 && response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores == data.cantidad) {
+                                data.rows.push({
+                                    name: count.toString(),
+                                    id: response.data.data[i].id,
+                                    entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+                                    coordinador: response.data.data[i].attributes.exist_coordinador,
+                                    diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                                    politica: response.data.data[i].attributes.exist_politica,
+                                    indicadores: response.data.data[i].attributes.exist_indicadores,
+                                    plan: response.data.data[i].attributes.exist_plan_accion,
+                                    legislacion: response.data.data[i].attributes.exist_legislacion,
+                                    capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                                    acciones: response.data.data[i].attributes.exist_accionespml,
+                                    programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                                    recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                                    aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                                    sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                                    anno: response.data.data[i].attributes.anno,
+                                    carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                                    observaciones: response.data.data[i].attributes.observaciones,
+                                    total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
+                                });
+                            }
+                            else if(data.cantidad == 0){
+                                data.rows.push({
+                                    name: count.toString(),
+                                    id: response.data.data[i].id,
+                                    entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
+                                    coordinador: response.data.data[i].attributes.exist_coordinador,
+                                    diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                                    politica: response.data.data[i].attributes.exist_politica,
+                                    indicadores: response.data.data[i].attributes.exist_indicadores,
+                                    plan: response.data.data[i].attributes.exist_plan_accion,
+                                    legislacion: response.data.data[i].attributes.exist_legislacion,
+                                    capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                                    acciones: response.data.data[i].attributes.exist_accionespml,
+                                    programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                                    recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                                    aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                                    sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                                    anno: response.data.data[i].attributes.anno,
+                                    carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                                    observaciones: response.data.data[i].attributes.observaciones,
+                                    total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
+                                });
+                            }
+                            if (data.rows[i]) {
+                                Object.keys(data.rows[i]).forEach(function (key) {
+                                    if (data.rows[i][key] === 1) {
+                                        data.rows[i][key] = "si"
+                                    } else if (data.rows[i][key] === 0) {
+                                        data.rows[i][key] = "no"
+                                    }
+                                })
+                            }
                             count++
                         }
                     }
@@ -430,6 +483,7 @@ async function getDesempeño(params) {
                 console.log(error);
             });
     }
+    console.log(data.rows);
 }
 
 </script>
