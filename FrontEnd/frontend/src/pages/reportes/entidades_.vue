@@ -72,13 +72,13 @@ const columnsHistorial = [
         field: "nombresAnterior",
         sortable: true,
     },
-    {
-        name: "referencia",
-        align: "center",
-        label: "Referencia",
-        field: "referencia",
-        sortable: true,
-    }
+    // {
+    //     name: "referencia",
+    //     align: "center",
+    //     label: "Referencia",
+    //     field: "referencia",
+    //     sortable: true,
+    // }
 ];
 
 const columnsECerradas = [
@@ -423,7 +423,7 @@ async function ministerio(params) {
     let count = 1
     let organismo = ""
     api
-        .get(`/entidads?populate[0]=organismo&populate[1]=municipio&[activo][$eq]=s&sort[0]=organismo.organismo%3Aasc`, {
+        .get(`/entidads?populate[0]=organismo&populate[1]=municipio&filters[activo][$eq]=s&sort[0]=organismo.organismo%3Aasc`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },

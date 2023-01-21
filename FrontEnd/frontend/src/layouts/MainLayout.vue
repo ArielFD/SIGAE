@@ -13,7 +13,7 @@
           <btn_Administrador v-if="data.admin" />
           <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
           <btn_Reportes v-if="data.public"></btn_Reportes>
-          <btn_Histogramas v-if="data.public"></btn_Histogramas>
+          <btn_Histogramas v-if="data.public || data.auth"></btn_Histogramas>
           <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" flat size="lg" />
           <q-btn push no-caps label="Logout" v-else @click="cerrarSesion" flat size="lg" />
         </div>
@@ -66,7 +66,7 @@
       <q-toolbar style="color: rgb(4, 48, 158)">
         <div class="col">
           <div class="row justify-center">
-            <div>SIGAE v2.0 copyright 2011-2023</div>
+            <div>SIGAE v2.0 copyright 2011-2023 - (21/01/2023)</div>
             <!-- <div>© 2022 Todos los derechos reservados</div> -->
             <!-- <div>Powered by Joven CLub</div> -->
           </div>
@@ -185,7 +185,7 @@ function cerrarSesion(params) {
   ).rememberMe == false) {
     localStorage.setItem("userData", null);
   }
-  router.push("/");
+  router.push("/Principal");
   getRol()
 }
 
@@ -207,7 +207,7 @@ async function Login() {
       localStorage.setItem("jwt", response.data.jwt);
       localStorage.setItem("userData", JSON.stringify(auth.user));
       localStorage.setItem("fallo", "0");
-
+      router.push("/Principal");
       auth.postTraza("Login", "Satisfactorio")
       getRol()
     })

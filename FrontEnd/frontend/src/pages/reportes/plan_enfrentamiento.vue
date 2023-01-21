@@ -121,7 +121,7 @@ const columns = [
     {
         name: "funcionaBien",
         align: "center",
-        label: "Funcioan Bien",
+        label: "Funciona Bien",
         field: "funcionaBien",
         sortable: true,
     },
