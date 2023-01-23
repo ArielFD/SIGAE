@@ -1,0 +1,391 @@
+<template>
+    <div class="col-12 q-pa-md">
+        <div class="row justify-between">
+            <p class="col-7">
+                <label><b>Plan de medidas por:</b> </label> &nbsp;
+                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Corto"
+                    label="Corto" color="secondary" />
+                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Mediano"
+                    label="Mediano" color="secondary" />
+                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Largo"
+                    label="Largo" color="secondary" />
+                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
+                    label="OACE" color="secondary" />
+                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"
+                    label="OSDE" color="secondary" />
+                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Totales"
+                    label="Totales" color="secondary" />
+            </p>
+            <div class="col-3">
+                <div class="row justify-end">
+                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                        class="col-2 text-black q-pa-xs" style="width:100px" />
+                    <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
+                        @click="getopcion()" />
+                </div>
+            </div>
+        </div>
+        <apexcharts width="100%" height="350" type="bar" :options="data.chartOptions" :series="data.series">
+        </apexcharts>
+    </div>
+</template>
+
+<script setup>
+import { reactive, onMounted } from "vue";
+import apexcharts from "vue3-apexcharts";
+import { api } from "boot/axios.js";
+import { useAuthStore } from "src/stores/auth-store";
+import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+//   let temp=console.log.bind(console);
+//   const props=defineProps(["dataHistogram"])
+const auth = useAuthStore();
+const alerts = useAlertsRulesStore();
+
+onMounted(() => {
+    getYear()
+    getOrganismos()
+    getOSDE()
+})
+
+let data = reactive({
+    fecha_actual: new Date(),
+    opcion: "OACE",
+    rows: [],
+    organismos:[],
+    osdes:[],
+
+    chartOptions: {
+        stroke:{
+            show:true,
+            width:5,
+            colors:['transparent']
+        },
+        chart: {
+            id: "basic-bar",
+            animations: {
+                speed: 500
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            style:{
+                colors:['black']
+            },
+        },
+        colors: ['#C10015', '#0022ff','#35c609'],
+        xaxis: {
+            categories: [],
+            labels:{
+                maxHeight:500,
+            }
+        },
+        yaxis: {
+            maxValue: 100,
+            decimalsInFloat: 2
+        }
+    },
+    series: [
+        {
+            name: "Total de medidas",
+            data: [],
+        },
+        {
+            name: "Cumplidas",
+            data: [],
+        },
+    ]
+})
+
+function getYear(params) {
+    data.fecha_actual = data.fecha_actual.getFullYear()
+}
+
+async function getOrganismos(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.organismos.push(response.data.data[i].attributes.organismo);
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
+
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/osdes`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.osdes.push(response.data.data[i].attributes.nombre);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+}
+
+async function getMedidas(params) {
+    data.rows = [];
+    let data1=[],data2=[],data3=[]
+    let count = 1
+    await api
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                //Unidad de Camiones # 1
+                if (response.data.data[i].attributes.entidad.data != null) {
+                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        if(!response.data.data[i].attributes.entidad.data.attributes.osde.data) response.data.data[i].attributes.entidad.data.attributes.osde.data={ attributes: { nombre: "-" } }
+                        data.rows.push({
+                            year: data.fecha_actual,
+                            name: count,
+                            id: response.data.data[i].id,
+                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
+                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
+                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
+                            medidas_corto: response.data.data[i].attributes.medidas_corto,
+                            medidas_largo: response.data.data[i].attributes.medidas_largo,
+                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
+                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
+                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
+                            porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
+                            porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
+                            porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
+                            porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
+                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                            osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                        });
+                    
+                }
+            }
+
+            for (let index = 0; index < data.organismos.length; index++) {
+                data.rows.forEach(element => {
+                    switch (data.opcion) {
+                        case "Totales":{
+                            if(element.organismo==data.organismos[index]){
+                                if(!data1[index]) {
+                                    data1[index]=element.totalMedidas
+                                }
+                                else{
+                                    data1[index]+=element.totalMedidas
+                                }
+                                if(!data2[index]) {
+                                    data2[index]=element.totalCumplidas
+                                }
+                                else{
+                                    data2[index]+=element.totalCumplidas
+                                }
+                                // if(data2[index]/data1[index]) data.organismos[index]=data.organismos[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
+                                // else data.organismos[index]=data.organismos[index]+" 0%"
+                            }
+                            break;
+                        }   
+                        case "Corto":{
+                            if(element.organismo==data.organismos[index]){
+                                if(!data1[index]) {
+                                    data1[index]=element.medidas_corto
+                                }
+                                else{
+                                    data1[index]+=element.medidas_corto
+                                }
+                                if(!data2[index]) {
+                                    data2[index]=element.cumplidas_corto
+                                }
+                                else{
+                                    data2[index]+=element.cumplidas_corto
+                                }
+                            }
+                            break;
+                        }   
+                        case "Mediano":{
+                            if(element.organismo==data.organismos[index]){
+                                if(!data1[index]) {
+                                    data1[index]=element.medidas_mediano
+                                }
+                                else{
+                                    data1[index]+=element.medidas_mediano
+                                }
+                                if(!data2[index]) {
+                                    data2[index]=element.cumplidas_mediano
+                                }
+                                else{
+                                    data2[index]+=element.cumplidas_mediano
+                                }
+                            }
+                            break;
+                        }   
+                        case "Largo":{
+                            if(element.organismo==data.organismos[index]){
+                                if(!data1[index]) {
+                                    data1[index]=element.medidas_largo
+                                }
+                                else{
+                                    data1[index]+=element.medidas_largo
+                                }
+                                if(!data2[index]) {
+                                    data2[index]=element.cumplidas_largo
+                                }
+                                else{
+                                    data2[index]+=element.cumplidas_largo
+                                }
+                            }
+                            break;
+                        }   
+                        case "OACE":{
+                            if(element.organismo==data.organismos[index]){
+                                if(!data1[index]) {
+                                    data1[index]=element.medidas_corto
+                                }
+                                else{
+                                    data1[index]+=element.medidas_corto
+                                }
+                                if(!data2[index]) {
+                                    data2[index]=element.medidas_mediano
+                                }
+                                else{
+                                    data2[index]+=element.medidas_mediano
+                                }
+                                if(!data3[index]) {
+                                    data3[index]=element.medidas_largo
+                                }
+                                else{
+                                    data3[index]+=element.medidas_largo
+                                }
+                            }
+                            break;
+                        }   
+                        case "OSDE":{
+                            if(element.osde==data.osdes[index]){
+                                if(!data1[index]) {
+                                    data1[index]=element.medidas_corto
+                                }
+                                else{
+                                    data1[index]+=element.medidas_corto
+                                }
+                                if(!data2[index]) {
+                                    data2[index]=element.cumplidas_corto
+                                }
+                                else{
+                                    data2[index]+=element.cumplidas_corto
+                                }
+                            }
+                            break;
+                        }   
+                    }
+                });
+                   
+            }
+
+            // for (let index = 0; index < data.organismos.length; index++) {
+            //     if(!data1[index]) data1[index]=0
+            //     if(!data2[index]) data2[index]=0
+            //     if(!data3[index]) data3[index]=0
+            // }
+            if(data.opcion=="Corto" || data.opcion=="Mediano" || data.opcion=="Largo" || data.opcion=="Totales" ){
+                data.chartOptions = {
+                                xaxis: {
+                                    categories: data.organismos
+                                }
+                            };
+                            data.series = [
+                                {
+                                    name: "Medidas",
+                                    data: data1,
+                                },
+                                {
+                                    name: "Cumplidas",
+                                    data: data2,
+                                }
+                            ]
+                            for (let index = 0; index < data.organismos.length; index++) {
+                if(!data1[index]) data1[index]=0
+                if(!data2[index]) data2[index]=0
+                if(!data3[index]) data3[index]=0
+            }
+            }
+            else if(data.opcion=="OACE"){
+                data.chartOptions = {
+                                xaxis: {
+                                    categories: data.organismos
+                                }
+                            };
+                            data.series = [
+                                {
+                                    name: "Corto",
+                                    data: data1,
+                                },
+                                {
+                                    name: "Mediano",
+                                    data: data2,
+                                },
+                                {
+                                    name: "Largo",
+                                    data: data3,
+                                }
+                            ]
+                            for (let index = 0; index < data.organismos.length; index++) {
+                if(!data1[index]) data1[index]=0
+                if(!data2[index]) data2[index]=0
+                if(!data3[index]) data3[index]=0
+            }
+            }
+            else if(data.opcion=="OSDE"){
+                data.chartOptions = {
+                                xaxis: {
+                                    categories: data.osdes
+                                }
+                            };
+                            data.series = [
+                                {
+                                    name: "Corto",
+                                    data: data1,
+                                },
+                                {
+                                    name: "Mediano",
+                                    data: data2,
+                                },
+                                {
+                                    name: "Largo",
+                                    data: data3,
+                                }
+                            ]
+                            for (let index = 0; index < data.osdes.length; index++) {
+                if(!data1[index]) data1[index]=0
+                if(!data2[index]) data2[index]=0
+                if(!data3[index]) data3[index]=0
+            }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
+async function getopcion(params) {
+    getMedidas()
+}
+
+</script>

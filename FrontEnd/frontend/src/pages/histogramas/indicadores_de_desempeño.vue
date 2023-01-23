@@ -1,0 +1,705 @@
+<template>
+    <div class="col-12 q-pa-md">
+        <div class="row justify-center">
+            <p class="col-2">
+                <label><b>Indicadores de desempeño:</b> </label> &nbsp;
+            </p>
+            <div class="col-2" style="width:150px">
+                <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion" :options="data.opciones"
+                    label="Busqueda por:" />
+            </div>
+            <div class="col-2">
+                <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
+                    v-model="data.indicador" :options="data.indicadores" label="Indicador" />
+            </div>
+            <div class="col-3">
+                <div class="row justify-start">
+                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                        class="col-2 text-black q-pa-xs" style="width:100px" />
+                    <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
+                        @click="getopcion()" />
+                </div>
+            </div>
+        </div>
+        <apexcharts width="100%" height="350" type="bar" :options="data.chartOptions" :series="data.series">
+        </apexcharts>
+    </div>
+</template>
+
+<script setup>
+import { reactive, onMounted } from "vue";
+import apexcharts from "vue3-apexcharts";
+import { api } from "boot/axios.js";
+import { useAuthStore } from "src/stores/auth-store";
+import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+//   let temp=console.log.bind(console);
+//   const props=defineProps(["dataHistogram"])
+const auth = useAuthStore();
+const alerts = useAlertsRulesStore();
+
+onMounted(() => {
+    getYear()
+    getOrganismos()
+    getOSDE()
+})
+
+let data = reactive({
+    fecha_actual: new Date(),
+    opciones: ["OACE", "OSDE"],
+    opcion: "OACE",
+    indicadores: ["Coordinador", "Diagnostico", "Politica", "Indicadores", "Plan de accion", "Legislacion", "Plan de capacitacion", "Acciones PML", "Programa de gestion ambiental", "recursos financieros", "Aprovechamiento Economico", "Sistema de tratamiento", "Carga contaminante"],
+    indicador: "Coordinador",
+    rows: [],
+    organismos: [],
+    osdes: [],
+
+    chartOptions: {
+        stroke: {
+            show: true,
+            width: 5,
+            colors: ['transparent']
+        },
+        chart: {
+            id: "basic-bar",
+            animations: {
+                speed: 500
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                colors: ['black']
+            },
+        },
+        colors: ['#0022ff'],
+        xaxis: {
+            categories: [],
+            labels: {
+                maxHeight: 500,
+            }
+        },
+        yaxis: {
+            maxValue: 100,
+            decimalsInFloat: 2
+        }
+    },
+    series: [
+        {
+            name: "Porciento",
+            data: [],
+        }
+    ]
+})
+
+function getYear(params) {
+    data.fecha_actual = data.fecha_actual.getFullYear()
+}
+
+async function getOrganismos(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.organismos.push(response.data.data[i].attributes.organismo);
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
+
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/osdes`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.osdes.push(response.data.data[i].attributes.nombre);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+}
+
+async function getDesempeño(params) {
+    data.rows = [];
+
+    let data1 = [], data2 = [], data3 = []
+    for (let index = 1; index < 10; index++) {
+        await api
+            .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                console.log(response);
+                let data1 = [], data2 = []
+                for (let i = 0; i < response.data.data.length; i++) {
+                    if (response.data.data[i].attributes.entidad.data.length > 0) {
+
+                        if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                        if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
+                            response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
+                        }
+
+                        data.rows.push({
+                            coordinador: response.data.data[i].attributes.exist_coordinador,
+                            diagnostico: response.data.data[i].attributes.exist_diagnostico,
+                            politica: response.data.data[i].attributes.exist_politica,
+                            indicadores: response.data.data[i].attributes.exist_indicadores,
+                            plan: response.data.data[i].attributes.exist_plan_accion,
+                            legislacion: response.data.data[i].attributes.exist_legislacion,
+                            capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
+                            acciones: response.data.data[i].attributes.exist_accionespml,
+                            programa: response.data.data[i].attributes.exist_program_gestionambiental,
+                            recurso: response.data.data[i].attributes.exist_recurso_financiero,
+                            aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
+                            sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
+                            carga: response.data.data[i].attributes.disminucion_carga_contaminante,
+                            organismo: response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo,
+                            oace: response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre
+                        });
+                    }
+                }
+
+                if (data.opcion == "OACE") {
+                    for (let index = 0; index < data.organismos.length; index++) {
+                        data.rows.forEach(element => {
+                            switch (data.indicador) {
+                                case "Coordinador": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.coordinador
+                                        }
+                                        else {
+                                            data1[index] += element.coordinador
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Diagnostico": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.diagnostico
+                                        }
+                                        else {
+                                            data1[index] += element.diagnostico
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Politica": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.politica
+                                        }
+                                        else {
+                                            data1[index] += element.politica
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Indicadores": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.indicadores
+                                        }
+                                        else {
+                                            data1[index] += element.indicadores
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Plan de accion": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.plan
+                                        }
+                                        else {
+                                            data1[index] += element.plan
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Legislacion": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.legislacion
+                                        }
+                                        else {
+                                            data1[index] += element.legislacion
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Plan de capacitacion": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.capacitacion
+                                        }
+                                        else {
+                                            data1[index] += element.capacitacion
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Acciones PML": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.acciones
+                                        }
+                                        else {
+                                            data1[index] += element.acciones
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Programa de gestion ambiental": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.programa
+                                        }
+                                        else {
+                                            data1[index] += element.programa
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "recursos financieros": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.recurso
+                                        }
+                                        else {
+                                            data1[index] += element.recurso
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Aprovechamiento Economico": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.aprovechamiento
+                                        }
+                                        else {
+                                            data1[index] += element.aprovechamiento
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Sistema de tratamiento": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.sistema
+                                        }
+                                        else {
+                                            data1[index] += element.sistema
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Carga contaminante": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.carga
+                                        }
+                                        else {
+                                            data1[index] += element.carga
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                            }
+                        });
+
+                    }
+                    data.chartOptions = {
+                                xaxis: {
+                                    categories: data.organismos
+                                }
+                            };
+                            data.series = [
+                                {
+                                    name: "Porciento",
+                                    data: data3,
+                                }
+                            ]
+                            for (let index = 0; index < data.organismos.length; index++) {
+                if(!data3[index]) data3[index]=0
+            }
+                }
+                else {
+                    for (let index = 0; index < data.osdes.length; index++) {
+                        data.rows.forEach(element => {
+                            switch (data.indicador) {
+                                case "Coordinador": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.coordinador
+                                        }
+                                        else {
+                                            data1[index] += element.coordinador
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Diagnostico": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.diagnostico
+                                        }
+                                        else {
+                                            data1[index] += element.diagnostico
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Politica": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.politica
+                                        }
+                                        else {
+                                            data1[index] += element.politica
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Indicadores": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.indicadores
+                                        }
+                                        else {
+                                            data1[index] += element.indicadores
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Plan de accion": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.plan
+                                        }
+                                        else {
+                                            data1[index] += element.plan
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Legislacion": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.legislacion
+                                        }
+                                        else {
+                                            data1[index] += element.legislacion
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Plan de capacitacion": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.capacitacion
+                                        }
+                                        else {
+                                            data1[index] += element.capacitacion
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Acciones PML": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.acciones
+                                        }
+                                        else {
+                                            data1[index] += element.acciones
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Programa de gestion ambiental": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.programa
+                                        }
+                                        else {
+                                            data1[index] += element.programa
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "recursos financieros": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.recurso
+                                        }
+                                        else {
+                                            data1[index] += element.recurso
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Aprovechamiento Economico": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.aprovechamiento
+                                        }
+                                        else {
+                                            data1[index] += element.aprovechamiento
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Sistema de tratamiento": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.sistema
+                                        }
+                                        else {
+                                            data1[index] += element.sistema
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                                case "Carga contaminante": {
+                                    if (element.organismo == data.organismos[index]) {
+                                        if (!data1[index]) {
+                                            data1[index] = element.carga
+                                        }
+                                        else {
+                                            data1[index] += element.carga
+                                        }
+                                        if (!data2[index]) {
+                                            data2[index] = 1
+                                        }
+                                        else {
+                                            data2[index] += 1
+                                        }
+                                        data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                    }
+                                    break;
+                                }
+                            }
+                        });
+
+                    }
+                    data.chartOptions = {
+                                xaxis: {
+                                    categories: data.osdes
+                                }
+                            };
+                            data.series = [
+                                {
+                                    name: "Porciento",
+                                    data: data3,
+                                }
+                            ]
+                            for (let index = 0; index < data.osdes.length; index++) {
+                if(!data3[index]) data3[index]=0
+            }
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+}
+
+async function getopcion(params) {
+    getDesempeño()
+}
+
+</script>

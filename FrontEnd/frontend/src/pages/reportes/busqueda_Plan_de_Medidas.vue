@@ -440,29 +440,30 @@ async function getActacontrol(params) {
                 }
             }
 
-            let cumplidas_corto = 0, cumplidas_largo = 0, cumplidas_mediano = 0, medidas_corto = 0, medidas_largo = 0, medidas_mediano = 0, totalMedidas = 0, totalCumplidas = 0, porcientoCorto = 0, porcientoMedio = 0.00, porcientoLargo = 0.00, porcientoTotal = 0.00;
-            data.rows.forEach(element => {
-                // if(element.porcientoCorto=="NaN") element.porcientoCorto=0
-                // if(element.porcientoMedio=="NaN") element.porcientoMedio=0
-                // if(element.porcientoLargo=="NaN") element.porcientoLargo=0
-                // if(element.porcientoTotal=="NaN") element.porcientoTotal=0
-                cumplidas_corto += element.cumplidas_corto
-                cumplidas_largo += element.cumplidas_largo
-                cumplidas_mediano += element.cumplidas_mediano
-                medidas_corto += element.medidas_corto
-                medidas_mediano += element.medidas_mediano
-                medidas_largo += element.medidas_largo
-                totalMedidas += element.totalMedidas
-                totalCumplidas += element.totalCumplidas
-                porcientoCorto = ((cumplidas_corto / medidas_corto) * 100).toFixed(2)
-                porcientoMedio = ((cumplidas_mediano / medidas_mediano) * 100).toFixed(2)
-                porcientoLargo = ((cumplidas_largo / medidas_largo) * 100).toFixed(2)
-                porcientoTotal = ((totalCumplidas / totalMedidas) * 100).toFixed(2)
-            });
+            // let cumplidas_corto = 0, cumplidas_largo = 0, cumplidas_mediano = 0, medidas_corto = 0, medidas_largo = 0, medidas_mediano = 0, totalMedidas = 0, totalCumplidas = 0, porcientoCorto = 0, porcientoMedio = 0.00, porcientoLargo = 0.00, porcientoTotal = 0.00;
+            // data.rows.forEach(element => {
+            //     // if(element.porcientoCorto=="NaN") element.porcientoCorto=0
+            //     // if(element.porcientoMedio=="NaN") element.porcientoMedio=0
+            //     // if(element.porcientoLargo=="NaN") element.porcientoLargo=0
+            //     // if(element.porcientoTotal=="NaN") element.porcientoTotal=0
+            //     cumplidas_corto += element.cumplidas_corto
+            //     cumplidas_largo += element.cumplidas_largo
+            //     cumplidas_mediano += element.cumplidas_mediano
+            //     medidas_corto += element.medidas_corto
+            //     medidas_mediano += element.medidas_mediano
+            //     medidas_largo += element.medidas_largo
+            //     totalMedidas += element.totalMedidas
+            //     totalCumplidas += element.totalCumplidas
+            //     porcientoCorto = ((cumplidas_corto / medidas_corto) * 100).toFixed(2)
+            //     porcientoMedio = ((cumplidas_mediano / medidas_mediano) * 100).toFixed(2)
+            //     porcientoLargo = ((cumplidas_largo / medidas_largo) * 100).toFixed(2)
+            //     porcientoTotal = ((totalCumplidas / totalMedidas) * 100).toFixed(2)
+            // });
         })
         .catch(function (error) {
             console.log(error);
         });
+
     await api
         .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_cliente}`, {
             headers: {

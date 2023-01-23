@@ -89,7 +89,18 @@ const routes = [
       },
 
       //############################Histogramas############################
-      
+      {
+        path: "histogramas/indicadores_de_desempeño",
+        name:"indicadores_de_desempeño",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/indicadores_de_desempeño.vue"),
+      },
+      {
+        path: "histogramas/plan_de_medidas",
+        name:"plan_de_medidas",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/plan_de_medidas.vue"),
+      },
       {
         path: "histogramas/comparacion_cumplimento_medidas",
         name:"comparacion_cumplimento_medidas",

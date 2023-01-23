@@ -66,7 +66,7 @@
       <q-toolbar style="color: rgb(4, 48, 158)">
         <div class="col">
           <div class="row justify-center">
-            <div>SIGAE v2.0 copyright 2011-2023 - (21/01/2023)</div>
+            <div>SIGAE v2.0 copyright 2011-2023 - (22/01/2023)</div>
             <!-- <div>© 2022 Todos los derechos reservados</div> -->
             <!-- <div>Powered by Joven CLub</div> -->
           </div>
