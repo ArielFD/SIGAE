@@ -8,7 +8,10 @@
               <q-item-section>Plan de medidas</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'comparacion_cumplimento_medidas' }" class="text-black">
-              <q-item-section>Comparacion de cumplimientos de medidas</q-item-section>
+              <q-item-section>Comparacion de cumplimientos de medidas en Actas de Control</q-item-section>
+            </q-item>
+            <q-item clickable :to="{ name: 'comparacion_cumplimento_desempeño' }" class="text-black">
+              <q-item-section>Comparacion de cumplimientos de medidas en Plan de Enfrentamiento</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'indicadores_de_desempeño' }" class="text-black">
               <q-item-section>Indicadores de desempeño</q-item-section>

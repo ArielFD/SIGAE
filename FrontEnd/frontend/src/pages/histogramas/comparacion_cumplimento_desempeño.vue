@@ -2,15 +2,17 @@
     <div class="col-12 q-pa-md">
         <div class="row justify-between">
             <p class="col-6">
-                <label><b>Cumplimiento de planes de enfrentamiento:</b> </label> &nbsp;
+                <label><b>Comparacion del porciento de cumplimiento de medidas:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
                     label="OACE" color="secondary" />
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"
                     label="OSDE" color="secondary" />
             </p>
-            <div class="col-2">
+            <div class="col-3">
                 <div class="row">
-                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                    <q-input outlined dense v-model="data.fecha_anterior" type="number" label="Año 1"
+                        class="text-black q-pa-xs" style="width:100px" />
+                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año 2"
                         class="text-black q-pa-xs" style="width:100px" />
                     <q-btn flat round color="secondary" icon="search" class="text-black q-pa-xs"
                         @click="getEnfrentamiento()" />
@@ -41,6 +43,7 @@ onMounted(() => {
 
 let data = reactive({
     fecha_actual: new Date(),
+    fecha_anterior: "",
     organismo: "OACE",
     organismos: [],
     osdes: [],
@@ -90,6 +93,7 @@ let data = reactive({
 
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()
+    data.fecha_anterior = data.fecha_actual - 1
 }
 
 async function getOrganismos(params) {
@@ -134,7 +138,7 @@ async function getOSDE(params) {
 
 async function getEnfrentamiento(params) {
     data.rows = [];
-    let data1 = [], data2 = []
+    let data1 = [], data2 = [], data3 = [], data4 = []
 
     await api
         .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_actual}`, {
@@ -177,30 +181,14 @@ async function getEnfrentamiento(params) {
                             else {
                                 data2[index] = data2[index] + element.cumplidas
                             }
+                            data3[index] = (data2[index] / data1[index] * 100).toFixed(2)
                         }
                     });
                 }
 
                 for (let index = 0; index < data.organismos.length; index++) {
-                    if (!data1[index]) data1[index] = 0
-                    if (!data2[index]) data2[index] = 0
+                    if (!data3[index]) data3[index] = 0
                 }
-
-                data.chartOptions = {
-                    xaxis: {
-                        categories: data.organismos
-                    }
-                };
-                data.series = [
-                    {
-                        name: "Total de medidas",
-                        data: data1,
-                    },
-                    {
-                        name: "Cumplidas",
-                        data: data2,
-                    }
-                ]
             }
             else {
                 for (let index = 0; index < data.osdes.length; index++) {
@@ -218,36 +206,140 @@ async function getEnfrentamiento(params) {
                             else {
                                 data2[index] = data2[index] + element.cumplidas
                             }
+                            data3[index] = (data2[index] / data1[index] * 100).toFixed(2)
                         }
                     });
                 }
 
                 for (let index = 0; index < data.osdes.length; index++) {
-                    if (!data1[index]) data1[index] = 0
-                    if (!data2[index]) data2[index] = 0
+                    if (!data3[index]) data3[index] = 0
                 }
 
-                data.chartOptions = {
-                    xaxis: {
-                        categories: data.osdes
-                    }
-                };
-                data.series = [
-                    {
-                        name: "Total de medidas",
-                        data: data1,
-                    },
-                    {
-                        name: "Cumplidas",
-                        data: data2,
-                    }
-                ]
             }
 
         })
         .catch(function (error) {
             console.log(error);
         });
+
+    data1 = [], data2 = [], data.rows = []
+
+    await api
+        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_anterior}`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].attributes.entidad.data != null) {
+                    if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
+                        response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
+                    }
+                    data.rows.push({
+                        medidas: response.data.data[i].attributes.medidas,
+                        cumplidas: response.data.data[i].attributes.cumplidas,
+                        organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                        osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                    });
+
+                }
+            }
+
+
+            if (data.organismo == "OACE") {
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.organismos[index] == element.organismo) {
+                            if (!data1[index]) {
+                                data1[index] = element.medidas
+                            }
+                            else {
+                                data1[index] = data1[index] + element.medidas
+                            }
+                            if (!data2[index]) {
+                                data2[index] = element.cumplidas
+                            }
+                            else {
+                                data2[index] = data2[index] + element.cumplidas
+                            }
+                            data4[index] = (data2[index] / data1[index] * 100).toFixed(2)
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.organismos.length; index++) {
+                    if (!data4[index]) data4[index] = 0
+                }
+            }
+            else {
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.osdes[index] == element.osde) {
+                            if (!data1[index]) {
+                                data1[index] = element.medidas
+                            }
+                            else {
+                                data1[index] = data1[index] + element.medidas
+                            }
+                            if (!data2[index]) {
+                                data2[index] = element.cumplidas
+                            }
+                            else {
+                                data2[index] = data2[index] + element.cumplidas
+                            }
+                            data4[index] = (data2[index] / data1[index] * 100).toFixed(2)
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.osdes.length; index++) {
+                    if (!data4[index]) data4[index] = 0
+                }
+
+            }
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+        if (data.organismo == "OACE"){
+            data.chartOptions = {
+                    xaxis: {
+                        categories: data.organismos
+                    }
+                };
+                data.series = [
+                    {
+                        name: data.fecha_anterior,
+                        data: data4,
+                    },
+                    {
+                        name: data.fecha_actual,
+                        data: data3,
+                    }
+                ]
+        }else{
+            data.chartOptions = {
+                    xaxis: {
+                        categories: data.osdes
+                    }
+                };
+                data.series = [
+                    {
+                        name: data.fecha_anterior,
+                        data: data4,
+                    },
+                    {
+                        name: data.fecha_actual,
+                        data: data3,
+                    }
+                ]
+        }
+        
 
 }
 

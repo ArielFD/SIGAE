@@ -108,6 +108,12 @@ const routes = [
         component: () => import("pages/histogramas/comparacion_cumplimento_medidas.vue"),
       },
       {
+        path: "histogramas/comparacion_cumplimento_desempeño",
+        name:"comparacion_cumplimento_desempeño",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/comparacion_cumplimento_desempeño.vue"),
+      },
+      {
         path: "histogramas/comparacion_parametros_desempeño",
         name:"comparacion_parametros_desempeño",
         meta: { requireAuth: true },

@@ -51,14 +51,14 @@ let data = reactive({
     fecha_actual: new Date(),
     opcion: "OACE",
     rows: [],
-    organismos:[],
-    osdes:[],
+    organismos: [],
+    osdes: [],
 
     chartOptions: {
-        stroke:{
-            show:true,
-            width:5,
-            colors:['transparent']
+        stroke: {
+            show: true,
+            width: 5,
+            colors: ['transparent']
         },
         chart: {
             id: "basic-bar",
@@ -68,15 +68,15 @@ let data = reactive({
         },
         dataLabels: {
             enabled: true,
-            style:{
-                colors:['black']
+            style: {
+                colors: ['black']
             },
         },
-        colors: ['#C10015', '#0022ff','#35c609'],
+        colors: ['#C10015', '#0022ff', '#35c609'],
         xaxis: {
             categories: [],
-            labels:{
-                maxHeight:500,
+            labels: {
+                maxHeight: 500,
             }
         },
         yaxis: {
@@ -142,7 +142,7 @@ async function getOSDE(params) {
 
 async function getMedidas(params) {
     data.rows = [];
-    let data1=[],data2=[],data3=[]
+    let data1 = [], data2 = [], data3 = []
     let count = 1
     await api
         .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
@@ -155,148 +155,148 @@ async function getMedidas(params) {
             for (let i = 0; i < response.data.data.length; i++) {
                 //Unidad de Camiones # 1
                 if (response.data.data[i].attributes.entidad.data != null) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        if(!response.data.data[i].attributes.entidad.data.attributes.osde.data) response.data.data[i].attributes.entidad.data.attributes.osde.data={ attributes: { nombre: "-" } }
-                        data.rows.push({
-                            year: data.fecha_actual,
-                            name: count,
-                            id: response.data.data[i].id,
-                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
-                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
-                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
-                            medidas_corto: response.data.data[i].attributes.medidas_corto,
-                            medidas_largo: response.data.data[i].attributes.medidas_largo,
-                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
-                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
-                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
-                            porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
-                            porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
-                            porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
-                            porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
-                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
-                            osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
-                        });
-                    
+                    if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (!response.data.data[i].attributes.entidad.data.attributes.osde.data) response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
+                    data.rows.push({
+                        year: data.fecha_actual,
+                        name: count,
+                        id: response.data.data[i].id,
+                        cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
+                        cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
+                        cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
+                        medidas_corto: response.data.data[i].attributes.medidas_corto,
+                        medidas_largo: response.data.data[i].attributes.medidas_largo,
+                        medidas_mediano: response.data.data[i].attributes.medidas_mediano,
+                        totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
+                        totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
+                        porcientoCorto: ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2),
+                        porcientoMedio: (response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100,
+                        porcientoLargo: (response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100,
+                        porcientoTotal: ((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100,
+                        entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
+                        organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                        osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                    });
+
                 }
             }
 
             for (let index = 0; index < data.organismos.length; index++) {
                 data.rows.forEach(element => {
                     switch (data.opcion) {
-                        case "Totales":{
-                            if(element.organismo==data.organismos[index]){
-                                if(!data1[index]) {
-                                    data1[index]=element.totalMedidas
+                        case "Totales": {
+                            if (element.organismo == data.organismos[index]) {
+                                if (!data1[index]) {
+                                    data1[index] = element.totalMedidas
                                 }
-                                else{
-                                    data1[index]+=element.totalMedidas
+                                else {
+                                    data1[index] += element.totalMedidas
                                 }
-                                if(!data2[index]) {
-                                    data2[index]=element.totalCumplidas
+                                if (!data2[index]) {
+                                    data2[index] = element.totalCumplidas
                                 }
-                                else{
-                                    data2[index]+=element.totalCumplidas
+                                else {
+                                    data2[index] += element.totalCumplidas
                                 }
                                 // if(data2[index]/data1[index]) data.organismos[index]=data.organismos[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
                                 // else data.organismos[index]=data.organismos[index]+" 0%"
                             }
                             break;
-                        }   
-                        case "Corto":{
-                            if(element.organismo==data.organismos[index]){
-                                if(!data1[index]) {
-                                    data1[index]=element.medidas_corto
+                        }
+                        case "Corto": {
+                            if (element.organismo == data.organismos[index]) {
+                                if (!data1[index]) {
+                                    data1[index] = element.medidas_corto
                                 }
-                                else{
-                                    data1[index]+=element.medidas_corto
+                                else {
+                                    data1[index] += element.medidas_corto
                                 }
-                                if(!data2[index]) {
-                                    data2[index]=element.cumplidas_corto
+                                if (!data2[index]) {
+                                    data2[index] = element.cumplidas_corto
                                 }
-                                else{
-                                    data2[index]+=element.cumplidas_corto
-                                }
-                            }
-                            break;
-                        }   
-                        case "Mediano":{
-                            if(element.organismo==data.organismos[index]){
-                                if(!data1[index]) {
-                                    data1[index]=element.medidas_mediano
-                                }
-                                else{
-                                    data1[index]+=element.medidas_mediano
-                                }
-                                if(!data2[index]) {
-                                    data2[index]=element.cumplidas_mediano
-                                }
-                                else{
-                                    data2[index]+=element.cumplidas_mediano
+                                else {
+                                    data2[index] += element.cumplidas_corto
                                 }
                             }
                             break;
-                        }   
-                        case "Largo":{
-                            if(element.organismo==data.organismos[index]){
-                                if(!data1[index]) {
-                                    data1[index]=element.medidas_largo
+                        }
+                        case "Mediano": {
+                            if (element.organismo == data.organismos[index]) {
+                                if (!data1[index]) {
+                                    data1[index] = element.medidas_mediano
                                 }
-                                else{
-                                    data1[index]+=element.medidas_largo
+                                else {
+                                    data1[index] += element.medidas_mediano
                                 }
-                                if(!data2[index]) {
-                                    data2[index]=element.cumplidas_largo
+                                if (!data2[index]) {
+                                    data2[index] = element.cumplidas_mediano
                                 }
-                                else{
-                                    data2[index]+=element.cumplidas_largo
-                                }
-                            }
-                            break;
-                        }   
-                        case "OACE":{
-                            if(element.organismo==data.organismos[index]){
-                                if(!data1[index]) {
-                                    data1[index]=element.medidas_corto
-                                }
-                                else{
-                                    data1[index]+=element.medidas_corto
-                                }
-                                if(!data2[index]) {
-                                    data2[index]=element.medidas_mediano
-                                }
-                                else{
-                                    data2[index]+=element.medidas_mediano
-                                }
-                                if(!data3[index]) {
-                                    data3[index]=element.medidas_largo
-                                }
-                                else{
-                                    data3[index]+=element.medidas_largo
+                                else {
+                                    data2[index] += element.cumplidas_mediano
                                 }
                             }
                             break;
-                        }   
-                        case "OSDE":{
-                            if(element.osde==data.osdes[index]){
-                                if(!data1[index]) {
-                                    data1[index]=element.medidas_corto
+                        }
+                        case "Largo": {
+                            if (element.organismo == data.organismos[index]) {
+                                if (!data1[index]) {
+                                    data1[index] = element.medidas_largo
                                 }
-                                else{
-                                    data1[index]+=element.medidas_corto
+                                else {
+                                    data1[index] += element.medidas_largo
                                 }
-                                if(!data2[index]) {
-                                    data2[index]=element.cumplidas_corto
+                                if (!data2[index]) {
+                                    data2[index] = element.cumplidas_largo
                                 }
-                                else{
-                                    data2[index]+=element.cumplidas_corto
+                                else {
+                                    data2[index] += element.cumplidas_largo
                                 }
                             }
                             break;
-                        }   
+                        }
+                        case "OACE": {
+                            if (element.organismo == data.organismos[index]) {
+                                if (!data1[index]) {
+                                    data1[index] = element.medidas_corto
+                                }
+                                else {
+                                    data1[index] += element.medidas_corto
+                                }
+                                if (!data2[index]) {
+                                    data2[index] = element.medidas_mediano
+                                }
+                                else {
+                                    data2[index] += element.medidas_mediano
+                                }
+                                if (!data3[index]) {
+                                    data3[index] = element.medidas_largo
+                                }
+                                else {
+                                    data3[index] += element.medidas_largo
+                                }
+                            }
+                            break;
+                        }
+                        case "OSDE": {
+                            if (element.osde == data.osdes[index]) {
+                                if (!data1[index]) {
+                                    data1[index] = element.medidas_corto
+                                }
+                                else {
+                                    data1[index] += element.medidas_corto
+                                }
+                                if (!data2[index]) {
+                                    data2[index] = element.cumplidas_corto
+                                }
+                                else {
+                                    data2[index] += element.cumplidas_corto
+                                }
+                            }
+                            break;
+                        }
                     }
                 });
-                   
+
             }
 
             // for (let index = 0; index < data.organismos.length; index++) {
@@ -304,79 +304,79 @@ async function getMedidas(params) {
             //     if(!data2[index]) data2[index]=0
             //     if(!data3[index]) data3[index]=0
             // }
-            if(data.opcion=="Corto" || data.opcion=="Mediano" || data.opcion=="Largo" || data.opcion=="Totales" ){
+            if (data.opcion == "Corto" || data.opcion == "Mediano" || data.opcion == "Largo" || data.opcion == "Totales") {
                 data.chartOptions = {
-                                xaxis: {
-                                    categories: data.organismos
-                                }
-                            };
-                            data.series = [
-                                {
-                                    name: "Medidas",
-                                    data: data1,
-                                },
-                                {
-                                    name: "Cumplidas",
-                                    data: data2,
-                                }
-                            ]
-                            for (let index = 0; index < data.organismos.length; index++) {
-                if(!data1[index]) data1[index]=0
-                if(!data2[index]) data2[index]=0
-                if(!data3[index]) data3[index]=0
+                    xaxis: {
+                        categories: data.organismos
+                    }
+                };
+                data.series = [
+                    {
+                        name: "Medidas",
+                        data: data1,
+                    },
+                    {
+                        name: "Cumplidas",
+                        data: data2,
+                    }
+                ]
+                for (let index = 0; index < data.organismos.length; index++) {
+                    if (!data1[index]) data1[index] = 0
+                    if (!data2[index]) data2[index] = 0
+                    if (!data3[index]) data3[index] = 0
+                }
             }
-            }
-            else if(data.opcion=="OACE"){
+            else if (data.opcion == "OACE") {
                 data.chartOptions = {
-                                xaxis: {
-                                    categories: data.organismos
-                                }
-                            };
-                            data.series = [
-                                {
-                                    name: "Corto",
-                                    data: data1,
-                                },
-                                {
-                                    name: "Mediano",
-                                    data: data2,
-                                },
-                                {
-                                    name: "Largo",
-                                    data: data3,
-                                }
-                            ]
-                            for (let index = 0; index < data.organismos.length; index++) {
-                if(!data1[index]) data1[index]=0
-                if(!data2[index]) data2[index]=0
-                if(!data3[index]) data3[index]=0
+                    xaxis: {
+                        categories: data.organismos
+                    }
+                };
+                data.series = [
+                    {
+                        name: "Corto",
+                        data: data1,
+                    },
+                    {
+                        name: "Mediano",
+                        data: data2,
+                    },
+                    {
+                        name: "Largo",
+                        data: data3,
+                    }
+                ]
+                for (let index = 0; index < data.organismos.length; index++) {
+                    if (!data1[index]) data1[index] = 0
+                    if (!data2[index]) data2[index] = 0
+                    if (!data3[index]) data3[index] = 0
+                }
             }
-            }
-            else if(data.opcion=="OSDE"){
+            else if (data.opcion == "OSDE") {
                 data.chartOptions = {
-                                xaxis: {
-                                    categories: data.osdes
-                                }
-                            };
-                            data.series = [
-                                {
-                                    name: "Corto",
-                                    data: data1,
-                                },
-                                {
-                                    name: "Mediano",
-                                    data: data2,
-                                },
-                                {
-                                    name: "Largo",
-                                    data: data3,
-                                }
-                            ]
-                            for (let index = 0; index < data.osdes.length; index++) {
-                if(!data1[index]) data1[index]=0
-                if(!data2[index]) data2[index]=0
-                if(!data3[index]) data3[index]=0
-            }
+                    xaxis: {
+                        categories: data.osdes
+                    }
+                };
+                data.series = [
+                    {
+                        name: "Corto",
+                        data: data1,
+                    },
+                    {
+                        name: "Mediano",
+                        data: data2,
+                    },
+                    {
+                        name: "Largo",
+                        data: data3,
+                    }
+                ]
+                for (let index = 0; index < data.osdes.length; index++) {
+                    if (!data1[index]) data1[index] = 0
+                    if (!data2[index]) data2[index] = 0
+                    if (!data3[index]) data3[index] = 0
+                }
             }
         })
         .catch(function (error) {
