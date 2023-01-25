@@ -2,7 +2,7 @@
     <div class="col-12 q-pa-md">
         <div class="row justify-between">
             <p class="col-6">
-                <label><b>Comparacion del porciento de cumplimiento de medidas:</b> </label> &nbsp;
+                <label><b>Comparacion del porciento de cumplimiento de medidas en Planes de enfrentamiento:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
                     label="OACE" color="secondary" />
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"

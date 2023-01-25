@@ -2,7 +2,7 @@
     <div class="col-12 q-pa-md">
         <div class="row justify-between">
             <p class="col-6">
-                <label><b>Comparacion del porciento de cumplimiento de medidas:</b> </label> &nbsp;
+                <label><b>Desempeño ambiental por:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
                     label="OACE" color="secondary" />
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"
@@ -46,6 +46,11 @@ let data = reactive({
     rows: [],
 
     chartOptions: {
+        stroke: {
+            show: true,
+            width: 5,
+            colors: ['transparent']
+        },
         chart: {
             id: "basic-bar",
             animations: {
@@ -53,11 +58,17 @@ let data = reactive({
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                colors: ['black']
+            },
         },
         colors: ['#C10015', '#0022ff'],
         xaxis: {
-            categories: []
+            categories: [],
+            labels: {
+                maxHeight: 500,
+            }
         },
         yaxis: {
             maxValue: 100,
@@ -125,7 +136,8 @@ async function getEnfrentamiento(params) {
                             }
 
                             for (let index = 0; index < category.length; index++) {
-                                data4[index] = data1[index] / data2[index] * 100
+                                data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                if(data4[index]=='NaN') data4[index]=0
                             }
 
 
@@ -151,7 +163,8 @@ async function getEnfrentamiento(params) {
                             }
 
                             for (let index = 0; index < category.length; index++) {
-                                data4[index] = data1[index] / data2[index] * 100
+                                data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                if(data4[index]=='NaN') data4[index]=0
                             }
                         }
                     }
@@ -201,7 +214,8 @@ async function getEnfrentamiento(params) {
                             }
 
                             for (let index = 0; index < category.length; index++) {
-                                data3[index] = data1[index] / data2[index] * 100
+                                data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                if(data3[index]=='NaN') data3[index]=0
                             }
 
 
@@ -227,7 +241,8 @@ async function getEnfrentamiento(params) {
                             }
 
                             for (let index = 0; index < category.length; index++) {
-                                data3[index] = data1[index] / data2[index] * 100
+                                data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                                if(data3[index]=='NaN') data3[index]=0
                             }
                         }
                     }
@@ -237,7 +252,7 @@ async function getEnfrentamiento(params) {
                 console.log(error);
             });
     }
-
+    
     data.chartOptions = {
         xaxis: {
             categories: category

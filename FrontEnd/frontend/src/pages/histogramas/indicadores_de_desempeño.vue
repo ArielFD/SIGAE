@@ -148,7 +148,6 @@ async function getDesempeño(params) {
             })
             .then(function (response) {
                 console.log(response);
-                let data1 = [], data2 = []
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.entidad.data.length > 0) {
 

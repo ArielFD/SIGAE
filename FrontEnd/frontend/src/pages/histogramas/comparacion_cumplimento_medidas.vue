@@ -2,7 +2,7 @@
     <div class="col-12 q-pa-md">
         <div class="row justify-between">
             <p class="col-6">
-                <label><b>Comparacion del porciento de cumplimiento de medidas:</b> </label> &nbsp;
+                <label><b>Comparacion del porciento de cumplimiento de medidas en Actas de Control:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
                     label="OACE" color="secondary" />
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"
@@ -12,7 +12,7 @@
                 <div class="row">
                     <q-input outlined dense v-model="data.fecha_anterior" type="number" label="Año 1"
                         class="text-black q-pa-xs" style="width:100px" />
-                        <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año 2"
+                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año 2"
                         class="text-black q-pa-xs" style="width:100px" />
                     <q-btn flat round color="secondary" icon="search" class="text-black q-pa-xs"
                         @click="getEnfrentamiento()" />
@@ -37,15 +37,24 @@ const alerts = useAlertsRulesStore();
 
 onMounted(() => {
     getYear()
+    getOrganismos()
+    getOSDE()
 })
 
 let data = reactive({
     fecha_actual: new Date(),
-    fecha_anterior:"",
+    fecha_anterior: "",
     organismo: "OACE",
+    organismos: [],
+    osdes: [],
     rows: [],
 
     chartOptions: {
+        stroke: {
+            show: true,
+            width: 5,
+            colors: ['transparent']
+        },
         chart: {
             id: "basic-bar",
             animations: {
@@ -53,11 +62,17 @@ let data = reactive({
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                colors: ['black']
+            },
         },
         colors: ['#C10015', '#0022ff'],
         xaxis: {
-            categories: []
+            categories: [],
+            labels: {
+                maxHeight: 500,
+            }
         },
         yaxis: {
             maxValue: 100,
@@ -78,178 +93,253 @@ let data = reactive({
 
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()
-    data.fecha_anterior = data.fecha_actual-1
+    data.fecha_anterior = data.fecha_actual - 1
+}
+
+async function getOrganismos(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.organismos.push(response.data.data[i].attributes.organismo);
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
+
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/osdes`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.osdes.push(response.data.data[i].attributes.nombre);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 }
 
 async function getEnfrentamiento(params) {
     data.rows = [];
-    let count = 1
-    let category = []
-    let data1 = [], data2 = [],data3=[], data4=[]
+    let data1 = [], data2 = [], data3 = [], data4 = []
 
     await api
-        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_actual}`, {
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
         })
         .then(function (response) {
             console.log(response);
-            let data1 = [], data2 = []
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
-                    if (data.organismo == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
-                            response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
-                        }
-                        
-                        if(!category.includes(response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo)) category.push(response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo);
-                        
-                        for (let index = 0; index < category.length; index++) {
-                            if(category[index]==response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo){
-                                if(!data1[index]) {
-                                    data1[index]=response.data.data[i].attributes.medidas
-                                }
-                                else {
-                                    data1[index]=data1[index]+response.data.data[i].attributes.medidas
-                                }
-                                if(!data2[index]) {
-                                    data2[index]=response.data.data[i].attributes.cumplidas
-                                }
-                                else {
-                                    data2[index]=data2[index]+response.data.data[i].attributes.cumplidas
-                                }
-                            }
-                        }
-
-                        for (let index = 0; index < category.length; index++) {
-                            data4[index]=data2[index]/data1[index]*100  
-                        }
-                        
-                        
-                    } else if (data.organismo == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        if(!category.includes(response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre)) category.push(response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre);
-                        
-                        for (let index = 0; index < category.length; index++) {
-                            if(category[index]==response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre){
-                                if(!data1[index]) {
-                                    data1[index]=response.data.data[i].attributes.medidas
-                                }
-                                else {
-                                    data1[index]=data1[index]+response.data.data[i].attributes.medidas
-                                }
-                                if(!data2[index]) {
-                                    data2[index]=response.data.data[i].attributes.cumplidas
-                                }
-                                else {
-                                    data2[index]=data2[index]+response.data.data[i].attributes.cumplidas
-                                }
-                            }
-                        }
-
-                        for (let index = 0; index < category.length; index++) {
-                            data4[index]=data2[index]/data1[index]*100  
-                        }
+                    if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
+                        response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
                     }
+                    data.rows.push({
+                        medidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
+                        cumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
+                        organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                        osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                    });
+
                 }
             }
+
+
+            if (data.organismo == "OACE") {
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.organismos[index] == element.organismo) {
+                            if (!data1[index]) {
+                                data1[index] = element.medidas
+                            }
+                            else {
+                                data1[index] = data1[index] + element.medidas
+                            }
+                            if (!data2[index]) {
+                                data2[index] = element.cumplidas
+                            }
+                            else {
+                                data2[index] = data2[index] + element.cumplidas
+                            }
+                            data3[index] = (data2[index] / data1[index] * 100).toFixed(2)
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.organismos.length; index++) {
+                    if (!data3[index]) data3[index] = 0
+                }
+            }
+            else {
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.osdes[index] == element.osde) {
+                            if (!data1[index]) {
+                                data1[index] = element.medidas
+                            }
+                            else {
+                                data1[index] = data1[index] + element.medidas
+                            }
+                            if (!data2[index]) {
+                                data2[index] = element.cumplidas
+                            }
+                            else {
+                                data2[index] = data2[index] + element.cumplidas
+                            }
+                            data3[index] = (data2[index] / data1[index] * 100).toFixed(2)
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.osdes.length; index++) {
+                    if (!data3[index]) data3[index] = 0
+                }
+
+            }
+
         })
         .catch(function (error) {
             console.log(error);
         });
 
-        await api
-        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_anterior}`, {
+    data1 = [], data2 = [], data.rows = []
+
+    await api
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_anterior}`, {
             headers: {
                 Authorization: "Bearer " + auth.jwt,
             },
         })
         .then(function (response) {
             console.log(response);
-            let data1 = [], data2 = []
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
-                    if (data.organismo == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
-                            response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
-                        }
-                        
-                        if(!category.includes(response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo)) category.push(response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo);
-                        
-                        for (let index = 0; index < category.length; index++) {
-                            if(category[index]==response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo){
-                                if(!data1[index]) {
-                                    data1[index]=response.data.data[i].attributes.medidas
-                                }
-                                else {
-                                    data1[index]=data1[index]+response.data.data[i].attributes.medidas
-                                }
-                                if(!data2[index]) {
-                                    data2[index]=response.data.data[i].attributes.cumplidas
-                                }
-                                else {
-                                    data2[index]=data2[index]+response.data.data[i].attributes.cumplidas
-                                }
-                            }
-                        }
-
-                        for (let index = 0; index < category.length; index++) {
-                            data3[index]=data2[index]/data1[index]*100  
-                        }
-                        
-                        
-                    } else if (data.organismo == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        if(!category.includes(response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre)) category.push(response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre);
-                        
-                        for (let index = 0; index < category.length; index++) {
-                            if(category[index]==response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre){
-                                if(!data1[index]) {
-                                    data1[index]=response.data.data[i].attributes.medidas
-                                }
-                                else {
-                                    data1[index]=data1[index]+response.data.data[i].attributes.medidas
-                                }
-                                if(!data2[index]) {
-                                    data2[index]=response.data.data[i].attributes.cumplidas
-                                }
-                                else {
-                                    data2[index]=data2[index]+response.data.data[i].attributes.cumplidas
-                                }
-                            }
-                        }
-
-                        for (let index = 0; index < category.length; index++) {
-                            data3[index]=data2[index]/data1[index]*100  
-                        }
+                    if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
+                        response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
                     }
+                    data.rows.push({
+                        medidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
+                        cumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
+                        organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
+                        osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
+                    });
+
                 }
             }
 
-            
+
+            if (data.organismo == "OACE") {
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.organismos[index] == element.organismo) {
+                            if (!data1[index]) {
+                                data1[index] = element.medidas
+                            }
+                            else {
+                                data1[index] = data1[index] + element.medidas
+                            }
+                            if (!data2[index]) {
+                                data2[index] = element.cumplidas
+                            }
+                            else {
+                                data2[index] = data2[index] + element.cumplidas
+                            }
+                            data4[index] = (data2[index] / data1[index] * 100).toFixed(2)
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.organismos.length; index++) {
+                    if (!data4[index]) data4[index] = 0
+                }
+            }
+            else {
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.osdes[index] == element.osde) {
+                            if (!data1[index]) {
+                                data1[index] = element.medidas
+                            }
+                            else {
+                                data1[index] = data1[index] + element.medidas
+                            }
+                            if (!data2[index]) {
+                                data2[index] = element.cumplidas
+                            }
+                            else {
+                                data2[index] = data2[index] + element.cumplidas
+                            }
+                            data4[index] = (data2[index] / data1[index] * 100).toFixed(2)
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.osdes.length; index++) {
+                    if (!data4[index]) data4[index] = 0
+                }
+
+            }
+
         })
         .catch(function (error) {
             console.log(error);
         });
 
-        data.chartOptions = {
-                            xaxis: {
-                                categories: category
-                            }
-                        };
-                        data.series = [
-                            {
-                                name: data.fecha_anterior,
-                                data: data3,
-                            },
-                            {
-                                name: data.fecha_actual,
-                                data: data4,
-                            }
-                        ]
+        if (data.organismo == "OACE"){
+            data.chartOptions = {
+                    xaxis: {
+                        categories: data.organismos
+                    }
+                };
+                data.series = [
+                    {
+                        name: data.fecha_anterior,
+                        data: data4,
+                    },
+                    {
+                        name: data.fecha_actual,
+                        data: data3,
+                    }
+                ]
+        }else{
+            data.chartOptions = {
+                    xaxis: {
+                        categories: data.osdes
+                    }
+                };
+                data.series = [
+                    {
+                        name: data.fecha_anterior,
+                        data: data4,
+                    },
+                    {
+                        name: data.fecha_actual,
+                        data: data3,
+                    }
+                ]
+        }
+        
 
 }
 
