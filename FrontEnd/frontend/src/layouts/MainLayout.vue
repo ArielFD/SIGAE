@@ -124,6 +124,7 @@ onMounted(() => {
         localStorage.getItem("userData")
       ).rememberMe);
   }
+
   // var ip=require('ip')
   // console.log(ip.address());
   //console.log(local);
@@ -131,7 +132,7 @@ onMounted(() => {
   // var os=require('os')
   // var networkInterfaces=os.networkInterfaces()
   // console.log(networkInterfaces);
-
+  router.push("/Principal");
   auth.getLocalIP().then((ipAddr) => {
     console.log(ipAddr);
     auth.ip = ipAddr

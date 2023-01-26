@@ -1,5 +1,5 @@
 <template>
-  <div id="content" class="col-11">
+  <div id="content" class="col-12">
     <!-- <button @click="Import">Importar</button> -->
     <q-card class="my-card q-ma-md bg-primary" id="card" bordered>
       <q-card-section>
@@ -16,7 +16,7 @@
                   </template>
                 </q-input>
               </div>
-              <q-btn color="secondary" icon-right="archive" label="Exportar a Ecxel" no-caps @click="exportTable" />
+              <q-btn color="secondary" icon-right="archive" label="Exportar a Ecxel" no-caps @click="exportTable" :to="{ name: 'test' } " target='_blank'/>
               <q-btn color="secondary" label="Cambiar el nombre de la Entidad" no-caps @click="editNombre" />
               <q-dialog v-model="data.cardCambiar">
                 <q-card class="my-card bg-primary" style="width: 400px" flat bordered>
@@ -411,6 +411,9 @@ function wrapCsvValue(val, formatFn, row) {
 }
 
 function exportTable() {
+  data.rows.forEach(element => {
+    console.log(element);
+  });
   // naive encoding to csv format
   const content = [columns.map(col => wrapCsvValue(col.label))].concat(
     data.rows.map(row => columns.map(col => wrapCsvValue(

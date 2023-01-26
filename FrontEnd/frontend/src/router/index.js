@@ -26,14 +26,17 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE)
   })
 
-  Router.beforeEach(async (to, from,next) => {
-    const auth = useAuthStore()
-    if (to.matched.some(record => record.meta.requireAuth) && auth.jwt === null) {
-      next({ name: 'Interfaz_principal', query: { next: to.fullPath } })
-    } else {
-      next()
-    }
-  })
+  // Router.beforeEach(async (to, from,next) => {
+  //   const auth = useAuthStore()
+  //   console.log("accesed 1");
+  //   next({ name: 'Interfaz_principal', query: { next: to.fullPath } })
+  //   if (to.matched.some(record => record.meta.requireAuth) && auth.jwt == null) {
+  //     console.log("accesed 2");
+  //     next({ name: 'Interfaz_principal', query: { next: to.fullPath } })
+  //   } else {
+  //     next()
+  //   }
+  // })
 
   return Router
 })

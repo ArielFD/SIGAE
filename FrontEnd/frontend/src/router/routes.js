@@ -203,11 +203,12 @@ const routes = [
       }
     ],
   },
-  // {
-  //   path: "/login",
-  //   name:'Login',
-  //   component: () => import("pages/Autentificación_al_sistema.vue"),
-  // },
+  {
+    path: "/test",
+    name:'test',
+    meta: { requireAuth: true },
+    component: () => import("src/pages/test_.vue"),
+  },
 
   // Always leave this as last one,
   // but you can also remove it

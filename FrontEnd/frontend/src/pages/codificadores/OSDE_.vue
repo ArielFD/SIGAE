@@ -8,48 +8,53 @@
         </q-table>
       </q-card-section>
 
-      <q-card-actions class="justify-end">
-        <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
-        <q-dialog v-model="data.cardCreate">
-          <q-card class="my-card bg-primary">
-            <q-card-section>
-              <div class="text-h6">Nuevo OSDE</div>
-            </q-card-section>
-            <form @submit.prevent.stop="onCreate">
-              <q-card-section class="q-pa-sm">
-                <q-input outlined dense v-model="data.nameOSDE" label="Nombre del OSDE" class="my-input" lazy-rules
-                  :rules="alerts.inputRules" ref="nameOSDE" />
+      <q-card-actions class="justify-between">
+        <div class="col-3 q-ml-md">
+          <q-btn no-caps class="text-white bg-secondary" icon="arrow_left" :to="{ name: 'organismo' }" >Atras</q-btn>
+        </div>
+        <div class="col-7">
+          <q-btn no-caps class="text-white bg-secondary  q-ma-xs" @click="data.cardCreate = true">Insertar</q-btn>
+          <q-dialog v-model="data.cardCreate">
+            <q-card class="my-card bg-primary">
+              <q-card-section>
+                <div class="text-h6">Nuevo OSDE</div>
               </q-card-section>
-
-              <q-separator />
-
-              <q-card-actions align="right">
-                <q-btn flat color="secondary" label="Crear" type="submit" />
-              </q-card-actions>
-            </form>
-          </q-card>
-        </q-dialog>
-        <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
-        <q-dialog v-model="data.cardEdit">
-          <q-card class="my-card bg-primary">
-            <q-card-section>
-              <div class="text-h6">Editar OSDE</div>
-            </q-card-section>
-            <form @submit.prevent.stop="onEdit">
-              <q-card-section class="q-pa-sm">
-                <q-input outlined dense v-model="data.osdeEdit" label="Nombre del OSDE" class="my-input" lazy-rules
-                  :rules="alerts.inputRules" ref="osdeEdit" />
+              <form @submit.prevent.stop="onCreate">
+                <q-card-section class="q-pa-sm">
+                  <q-input outlined dense v-model="data.nameOSDE" label="Nombre del OSDE" class="my-input" lazy-rules
+                    :rules="alerts.inputRules" ref="nameOSDE" />
+                </q-card-section>
+  
+                <q-separator />
+  
+                <q-card-actions align="right">
+                  <q-btn flat color="secondary" label="Crear" type="submit" />
+                </q-card-actions>
+              </form>
+            </q-card>
+          </q-dialog>
+          <q-btn no-caps class="text-white bg-secondary  q-ma-xs" @click="editFields">Editar</q-btn>
+          <q-dialog v-model="data.cardEdit">
+            <q-card class="my-card bg-primary">
+              <q-card-section>
+                <div class="text-h6">Editar OSDE</div>
               </q-card-section>
-
-              <q-separator />
-
-              <q-card-actions align="right">
-                <q-btn flat color="secondary" label="Editar" type="submit" />
-              </q-card-actions>
-            </form>
-          </q-card>
-        </q-dialog>
-        <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
+              <form @submit.prevent.stop="onEdit">
+                <q-card-section class="q-pa-sm">
+                  <q-input outlined dense v-model="data.osdeEdit" label="Nombre del OSDE" class="my-input" lazy-rules
+                    :rules="alerts.inputRules" ref="osdeEdit" />
+                </q-card-section>
+  
+                <q-separator />
+  
+                <q-card-actions align="right">
+                  <q-btn flat color="secondary" label="Editar" type="submit" />
+                </q-card-actions>
+              </form>
+            </q-card>
+          </q-dialog>
+          <q-btn no-caps class="text-white bg-secondary  q-ma-xs" @click="Delete">Eliminar</q-btn>
+        </div>
       </q-card-actions>
     </q-card>
   </div>
