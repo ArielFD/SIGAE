@@ -35,9 +35,6 @@
                       @click="auth.isPwd = !auth.isPwd" />
                   </template>
                 </q-input>
-                <div>
-                  <q-checkbox v-model="auth.rememberMe" label="Recordarme" color="secondary" />
-                </div>
               </q-card-section>
 
               <q-separator dark />
@@ -114,15 +111,11 @@ onMounted(() => {
     localStorage.setItem("fallo", "0");
   }
   if (
-    localStorage.getItem("userData") &&
-    JSON.parse(localStorage.getItem("userData")).rememberMe
-  ) {
+    localStorage.getItem("userData") != "null") {
+      console.log("Aqui");
     (auth.jwt = localStorage.getItem("jwt")),
       (auth.email = JSON.parse(localStorage.getItem("userData")).email),
-      (auth.password = JSON.parse(localStorage.getItem("userData")).password),
-      (auth.rememberMe = JSON.parse(
-        localStorage.getItem("userData")
-      ).rememberMe);
+      (auth.password = JSON.parse(localStorage.getItem("userData")).password);
   }
 
   // var ip=require('ip')
@@ -179,13 +172,11 @@ function getRol(params) {
 }
 
 function cerrarSesion(params) {
-  auth.jwt = ''
+  auth.jwt = '',
+  auth.email="",
+  auth.password="",
   localStorage.setItem("jwt", '');
-  if (JSON.parse(
-    localStorage.getItem("userData")
-  ).rememberMe == false) {
-    localStorage.setItem("userData", null);
-  }
+  localStorage.setItem("userData", null);
   router.push("/Principal");
   getRol()
 }
@@ -204,7 +195,6 @@ async function Login() {
       auth.jwt = response.data.jwt;
       auth.user = response.data.user;
       auth.user.password = auth.password;
-      auth.user.rememberMe = auth.rememberMe;
       localStorage.setItem("jwt", response.data.jwt);
       localStorage.setItem("userData", JSON.stringify(auth.user));
       localStorage.setItem("fallo", "0");
@@ -228,7 +218,7 @@ async function Login() {
 }
 
 function clear(params) {
-  (auth.email = ""), (auth.password = ""), (auth.rememberMe = false);
+  (auth.email = ""), (auth.password = "")
 }
 
 function onLogin() {

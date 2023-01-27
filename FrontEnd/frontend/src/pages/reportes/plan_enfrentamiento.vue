@@ -43,7 +43,6 @@
 </template>
   
 <script setup>
-import histograma from "./histogramas_planEnfrentamiento.vue"
 import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
@@ -230,11 +229,7 @@ onMounted(() => {
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -256,11 +251,7 @@ async function getOrganismos(params) {
 async function getOSDE(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/osdes`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/osdes`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -283,11 +274,7 @@ async function getEnfrentamiento(params) {
     data.rows = [];
     let count = 1
     await api
-        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde`)
         .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
@@ -370,6 +357,7 @@ async function getEnfrentamiento(params) {
                             oace: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
                         });
+                        if (data.rows[i]) {
                         Object.keys(data.rows[i]).forEach(function (key) {
                             if (data.rows[i][key] === true) {
                                 data.rows[i][key] = "si"
@@ -377,6 +365,7 @@ async function getEnfrentamiento(params) {
                                 data.rows[i][key] = "no"
                             }
                         })
+                    }
                         data.histogramOptions.year1 = data.rows
                         count++
                     }

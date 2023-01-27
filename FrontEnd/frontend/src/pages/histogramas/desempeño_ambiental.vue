@@ -36,7 +36,9 @@ const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 
 onMounted(() => {
-    getYear()
+    getYear(),
+    getOrganismos(),
+    getOSDE()
 })
 
 let data = reactive({
@@ -44,6 +46,8 @@ let data = reactive({
     fecha_anterior: "",
     organismo: "OACE",
     rows: [],
+    osdes: [],
+    organismos: [],
 
     chartOptions: {
         stroke: {
@@ -92,182 +96,227 @@ function getYear(params) {
     data.fecha_anterior = data.fecha_actual - 1
 }
 
+async function getOrganismos(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.organismos.push(response.data.data[i].attributes.organismo);
+                }
+            })
+            .catch(function (error) {
+                console.log(error.response);
+            });
+    }
+}
+
+async function getOSDE(params) {
+    for (let index = 1; index < 2; index++) {
+        await api
+            .get(`/osdes`)
+            .then(function (response) {
+                //console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    data.osdes.push(response.data.data[i].attributes.nombre);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+}
+
 async function getEnfrentamiento(params) {
     data.rows = [];
     let count = 1
     let category = []
     let data1 = [], data2 = [], data3 = [], data4 = []
-    for (let index = 1; index < 10; index++) {
-        await api
-            .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                console.log(response);
-                let data1 = [], data2 = []
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (data.organismo == "OACE" && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0) {
 
-                            if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
-                                response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
+    await api
+        .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`)
+        .then(function (response) {
+            console.log(response);
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].attributes.entidad.data.length > 0) {
+                    if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
+                        response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
+                    }
+                    data.rows.push({
+                        total: response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores,
+                        organismo: response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo,
+                        osde: response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre
+                    })
+                }
+            }
+            if (data.organismo == "OACE") {
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.organismos[index] == element.organismo) {
+                            if (!data1[index]) {
+                                data1[index] = element.total
                             }
-
-                            if (!category.includes(response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo)) category.push(response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo);
-
-                            for (let index = 0; index < category.length; index++) {
-                                if (category[index] == response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo) {
-                                    if (!data1[index]) {
-                                        data1[index] = response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    else {
-                                        data1[index] = data1[index] + response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    if (!data2[index]) {
-                                        data2[index] = 13
-                                    }
-                                    else {
-                                        data2[index] = data2[index] + 13
-                                    }
-                                }
+                            else {
+                                data1[index] = data1[index] + element.total
                             }
-
-                            for (let index = 0; index < category.length; index++) {
-                                data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                                if(data4[index]=='NaN') data4[index]=0
+                            if (!data2[index]) {
+                                data2[index] = 13
                             }
-
-
-                        } else if (data.organismo == 'OSDE' && response.data.data[i].attributes.entidad.data[0].attributes.osde.data != null) {
-                            if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            if (!category.includes(response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre)) category.push(response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre);
-
-                            for (let index = 0; index < category.length; index++) {
-                                if (category[index] == response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre) {
-                                    if (!data1[index]) {
-                                        data1[index] = response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    else {
-                                        data1[index] = data1[index] + response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    if (!data2[index]) {
-                                        data2[index] = 13
-                                    }
-                                    else {
-                                        data2[index] = data2[index] + 13
-                                    }
-                                }
-                            }
-
-                            for (let index = 0; index < category.length; index++) {
-                                data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                                if(data4[index]=='NaN') data4[index]=0
+                            else {
+                                data2[index] = data2[index] + 13
                             }
                         }
-                    }
+                    });
                 }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
 
-    for (let index = 1; index < 10; index++) {
-        await api
-            .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_anterior}`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                console.log(response);
-                let data1 = [], data2 = []
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        if (data.organismo == "OACE" && response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length > 0) {
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                    if (data4[index] == 'NaN') data4[index] = 0
+                }
 
-                            if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
-                                response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
+
+            } else {
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.osdes[index] == element.osde) {
+                            if (!data1[index]) {
+                                data1[index] = element.total
                             }
-
-                            if (!category.includes(response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo)) category.push(response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo);
-
-                            for (let index = 0; index < category.length; index++) {
-                                if (category[index] == response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo) {
-                                    if (!data1[index]) {
-                                        data1[index] = response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    else {
-                                        data1[index] = data1[index] + response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    if (!data2[index]) {
-                                        data2[index] = 13
-                                    }
-                                    else {
-                                        data2[index] = data2[index] + 13
-                                    }
-                                }
+                            else {
+                                data1[index] = data1[index] + element.total
                             }
-
-                            for (let index = 0; index < category.length; index++) {
-                                data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                                if(data3[index]=='NaN') data3[index]=0
+                            if (!data2[index]) {
+                                data2[index] = 13
                             }
-
-
-                        } else if (data.organismo == 'OSDE' && response.data.data[i].attributes.entidad.data[0].attributes.osde.data != null) {
-                            if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                            if (!category.includes(response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre)) category.push(response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre);
-
-                            for (let index = 0; index < category.length; index++) {
-                                if (category[index] == response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre) {
-                                    if (!data1[index]) {
-                                        data1[index] = response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    else {
-                                        data1[index] = data1[index] + response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores
-                                    }
-                                    if (!data2[index]) {
-                                        data2[index] = 13
-                                    }
-                                    else {
-                                        data2[index] = data2[index] + 13
-                                    }
-                                }
-                            }
-
-                            for (let index = 0; index < category.length; index++) {
-                                data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                                if(data3[index]=='NaN') data3[index]=0
+                            else {
+                                data2[index] = data2[index] + 13
                             }
                         }
-                    }
+                    });
                 }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                    if (data4[index] == 'NaN') data4[index] = 0
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    data1 = [], data2 = [], data.rows = []
+
+    await api
+        .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_anterior}`)
+        .then(function (response) {
+            console.log(response);
+            let data1 = [], data2 = []
+            for (let i = 0; i < response.data.data.length; i++) {
+                if (response.data.data[i].attributes.entidad.data.length > 0) {
+                    if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
+                        response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
+                    }
+                    data.rows.push({
+                        total: response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores,
+                        organismo: response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo,
+                        osde: response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre
+                    })
+                }
+            }
+            if (data.organismo == "OACE") {
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.organismos[index] == element.organismo) {
+                            if (!data1[index]) {
+                                data1[index] = element.total
+                            }
+                            else {
+                                data1[index] = data1[index] + element.total
+                            }
+                            if (!data2[index]) {
+                                data2[index] = 13
+                            }
+                            else {
+                                data2[index] = data2[index] + 13
+                            }
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.organismos.length; index++) {
+                    data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                    if (data3[index] == 'NaN') data3[index] = 0
+                }
+
+
+            } else {
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data.rows.forEach(element => {
+                        if (data.osdes[index] == element.osde) {
+                            if (!data1[index]) {
+                                data1[index] = element.total
+                            }
+                            else {
+                                data1[index] = data1[index] + element.total
+                            }
+                            if (!data2[index]) {
+                                data2[index] = 13
+                            }
+                            else {
+                                data2[index] = data2[index] + 13
+                            }
+                        }
+                    });
+                }
+
+                for (let index = 0; index < data.osdes.length; index++) {
+                    data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
+                    if (data3[index] == 'NaN') data3[index] = 0
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
+    if (data.organismo == "OACE") {
+        data.chartOptions = {
+            xaxis: {
+                categories: data.organismos
+            }
+        };
+        data.series = [
+            {
+                name: data.fecha_anterior,
+                data: data3,
+            },
+            {
+                name: data.fecha_actual,
+                data: data4,
+            }
+        ]
+    } else {
+        data.chartOptions = {
+            xaxis: {
+                categories: data.osdes
+            }
+        };
+        data.series = [
+            {
+                name: data.fecha_anterior,
+                data: data3,
+            },
+            {
+                name: data.fecha_actual,
+                data: data4,
+            }
+        ]
     }
-    
-    data.chartOptions = {
-        xaxis: {
-            categories: category
-        }
-    };
-    data.series = [
-        {
-            name: data.fecha_anterior,
-            data: data3,
-        },
-        {
-            name: data.fecha_actual,
-            data: data4,
-        }
-    ]
+
 
 }
 

@@ -95,11 +95,7 @@ function getYear(params) {
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -115,11 +111,7 @@ async function getOrganismos(params) {
 async function getOSDE(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/osdes`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/osdes`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -137,11 +129,7 @@ async function getEnfrentamiento(params) {
     let data1 = [], data2 = []
 
     await api
-        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_actual}`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {

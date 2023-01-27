@@ -10,7 +10,7 @@
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
                             <div class="col-3 text-h6">
-                                <q-btn flat label="Plan de medidas"  class="col-1  q-pa-xs"
+                                    <q-btn flat label="Plan de medidas"  class="col-1  q-pa-xs"
                                         @click="auth.printMode = !auth.printMode" v-if="auth.printMode == true" />
                                     <q-btn flat label="Plan de medidas" icon="print" class="col-1  q-pa-xs"
                                         @click="auth.printMode = !auth.printMode" v-else />
@@ -280,11 +280,7 @@ onMounted(() => {
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -306,11 +302,7 @@ async function getOrganismos(params) {
 async function getOSDE(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/osdes`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/osdes`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -331,11 +323,7 @@ async function getOSDE(params) {
 
 function getEntidad(params) {
     api
-        .get(`/entidads?filters[activo][$eq]=s`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
+        .get(`/entidads?filters[activo][$eq]=s`).then(function (response) {
             ////console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.entidades.push({
@@ -362,11 +350,7 @@ async function getActacontrol(params) {
 
     let count = 1
     await api
-        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
             //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
@@ -470,11 +454,7 @@ async function getActacontrol(params) {
         });
 
     await api
-        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_cliente}`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_cliente}`)
         .then(function (response) {
             //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {

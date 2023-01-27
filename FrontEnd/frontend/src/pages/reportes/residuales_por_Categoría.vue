@@ -228,11 +228,7 @@ onMounted(() => {
 async function getOSDE(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/osdes`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/osdes`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -254,11 +250,7 @@ async function getOSDE(params) {
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -279,11 +271,7 @@ async function getOrganismos(params) {
 
 function getCategoria(params) {
     api
-        .get(`/categorias`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
+        .get(`/categorias`).then(function (response) {
             //console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 data.categorias.push({
@@ -304,11 +292,7 @@ async function getActacontrol(params) {
     data.rows = [];
     let count = 1
     await api
-        .get(`/actacontrols?populate[0]=entidad.organismo&populate[1]=residuals.categorias&populate[2]=entidad.osde&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/actacontrols?populate[0]=entidad.organismo&populate[1]=residuals.categorias&populate[2]=entidad.osde&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {

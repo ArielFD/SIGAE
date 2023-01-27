@@ -3,7 +3,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Entidades" dense :rows="data.rows"
-                    :columns="data.columns" row-key="name" v-model:pagination="pagination" >
+                    :columns="data.columns" row-key="name" v-model:pagination="pagination">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-between">
                             <div class="col-3 text-h6">Entidades</div>
@@ -256,11 +256,7 @@ function cerradas(params) {
     let count = 1
     for (let index = 1; index < 3; index++) {
         api
-            .get(`/entidads?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&filters[activo][$eq]=c`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/entidads?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&filters[activo][$eq]=c`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -285,124 +281,119 @@ function cerradas(params) {
     }
 }
 
+function entidadesHistorial() {
+    return new Promise(resolve => {
+        let count = 1
+            api
+                .get(`/entidads?populate=%2A&filters[activo][$eq]=s`)
+                .then(function (response) {
+                    //console.log(response);
+                    for (let i = 0; i < response.data.data.length; i++) {
+                        if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
+                        if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
+                        if (response.data.data[i].attributes.salida.data == null) response.data.data[i].attributes.salida.data = { attributes: { salida: "-" } }
+                        if (response.data.data[i].attributes.prioridad.data == null) response.data.data[i].attributes.prioridad.data = { attributes: { prioridad: "-" } }
+                        if (response.data.data[i].attributes.osde.data == null) response.data.data[i].attributes.osde.data = { attributes: { nombre: "-" } }
+                        let temp = []
+                        let nombresAnteriores = ""
+                        if (response.data.data[i].attributes.referencia != null && response.data.data[i].attributes.referencia != "-") { temp = (response.data.data[i].attributes.referencia).match(/\d+/g) }
+
+                        data.rows.push({
+                            name: count,
+                            id: response.data.data[i].id,
+                            nombreActual: response.data.data[i].attributes.entidad,
+                            referencia: temp.join(","),
+                            nombresAnterior: nombresAnteriores
+                        });
+                        count++
+                    }
+                    resolve(data.rows)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        
+    })
+}
+
 async function historial(params) {
     console.log("-".match(/\d+/g));
 
     data.rows = [];
     data.columns = columnsHistorial
     let count = 1
-    for (let index = 1; index < 3; index++) {
-        api
-            .get(`/entidads?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&filters[activo][$eq]=s`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
-                    if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
-                    if (response.data.data[i].attributes.salida.data == null) response.data.data[i].attributes.salida.data = { attributes: { salida: "-" } }
-                    if (response.data.data[i].attributes.prioridad.data == null) response.data.data[i].attributes.prioridad.data = { attributes: { prioridad: "-" } }
-                    if (response.data.data[i].attributes.osde.data == null) response.data.data[i].attributes.osde.data = { attributes: { nombre: "-" } }
-                    let temp = []
-                    let nombresAnteriores = ""
-                    if (response.data.data[i].attributes.referencia != null && response.data.data[i].attributes.referencia != "-") { temp = (response.data.data[i].attributes.referencia).match(/\d+/g) }
 
-                    data.rows.push({
-                        name: count,
-                        id: response.data.data[i].id,
-                        nombreActual: response.data.data[i].attributes.entidad,
-                        referencia: temp.join(","),
-                        nombresAnterior: nombresAnteriores
+    let entidades = await entidadesHistorial()
+
+    entidades.forEach(element => {
+        if(element.referencia!="") {
+            //element.referencia.split(",");
+            // console.log(element.referencia.split(",").length);
+            for (let index = 0; index < element.referencia.split(",").length; index++) {
+                api
+                    .get(`/entidads/${element.referencia.split(",")[index]}`).then(function (response) {
+                        // console.log(response);
+                        if (element.nombresAnterior == "" ) element.nombresAnterior = element.nombresAnterior.concat(response.data.data.attributes.entidad)
+                        else element.nombresAnterior = element.nombresAnterior.concat(" , " + response.data.data.attributes.entidad)
+                    }).catch(function (error) {
+                        console.log(error);
                     });
-                    count++
-                }
-                data.rows.forEach(element => {
-                    //element.referencia.split(",");
-                    console.log(element.referencia.split(",").length);
-                    for (let index = 0; index < element.referencia.split(",").length; index++) {
-                        api
-                            .get(`/entidads/${element.referencia.split(",")[index]}`, {
-                                headers: {
-                                    Authorization: "Bearer " + auth.jwt,
-                                },
-                            }).then(function (response) {
-                                // console.log(response);
-                                if (index == 0) element.nombresAnterior = element.nombresAnterior.concat(response.data.data.attributes.entidad)
-                                else element.nombresAnterior = element.nombresAnterior.concat(" , " + response.data.data.attributes.entidad)
-                            }).catch(function (error) {
-                                console.log(error);
-                            });
-                    }
-
-
-                });
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+            }
+        }
+    });
 }
 
 function entidadesActivas() {
     return new Promise(resolve => {
         let count = 1
         api
-        .get(`/entidads?populate[0]=organismo&populate[1]=municipio&[activo][$eq]=s`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
-            //console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }
-                data.rows.push({
-                    name: count,
-                    id: response.data.data[i].id,
-                    entidad: response.data.data[i].attributes.entidad,
-                    organismo: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
-                    municipio: response.data.data[i].attributes.municipio.data[0].attributes.municipio,
-                    director: response.data.data[i].attributes.nomb_director,
-                    telefono: response.data.data[i].attributes.num_telefono,
-                    coordinador: response.data.data[i].attributes.nomb_coordinador
-                })
-                count++
-            }
-            resolve(data.rows)
+            .get(`/entidads?filters[activo][$eq]=s&populate[0]=organismo&populate[1]=municipio`).then(function (response) {
+                console.log(response);
+                for (let i = 0; i < response.data.data.length; i++) {
+                    if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
+                    if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }
+                    data.rows.push({
+                        name: count,
+                        id: response.data.data[i].id,
+                        entidad: response.data.data[i].attributes.entidad,
+                        organismo: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
+                        municipio: response.data.data[i].attributes.municipio.data[0].attributes.municipio,
+                        director: response.data.data[i].attributes.nomb_director,
+                        telefono: response.data.data[i].attributes.num_telefono,
+                        coordinador: response.data.data[i].attributes.nomb_coordinador
+                    })
+                    count++
+                }
+                resolve(data.rows)
 
-        }).catch(function (error) {
-            console.log(error);
-        });
+            }).catch(function (error) {
+                console.log(error);
+            });
     })
 }
 
 async function noVisitadas(params) {
     data.rows = [];
     data.columns = columnsENoVisitadas
-    
+
     let entidades = await entidadesActivas()
-   
+
     let temp = []
     api
-        .get(`/actacontrols?populate[0]=entidad&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/actacontrols?populate[0]=entidad&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) temp.push(response.data.data[i].attributes.entidad.data.attributes.entidad)
             }
             console.log(temp);
-            for (let index = 0; index < temp.length; index++) {
+            let unique = [...new Set(temp)]
+
+            for (let index = 0; index < unique.length; index++) {
                 entidades.forEach((element, indexF) => {
-                    console.log(element.entidad);
-                    if (element.entidad == temp[index]) {
-                        console.log("Entra");
+                    // console.log(element.entidad);
+                    if (element.entidad == unique[index]) {
+                        // console.log("Entra");
                         entidades.splice(indexF, 1)
                     }
                 });
@@ -423,12 +414,8 @@ async function ministerio(params) {
     let count = 1
     let organismo = ""
     api
-        .get(`/entidads?populate[0]=organismo&populate[1]=municipio&filters[activo][$eq]=s&sort[0]=organismo.organismo%3Aasc`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
-            //console.log(response);
+        .get(`/entidads?populate[0]=organismo&populate[1]=municipio&filters[activo][$eq]=s&sort[0]=organismo.organismo%3Aasc`).then(function (response) {
+            console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                 if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }

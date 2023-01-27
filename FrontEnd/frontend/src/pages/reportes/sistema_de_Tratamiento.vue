@@ -197,11 +197,7 @@ async function getActacontrol(params) {
     data.rows = [];
     let count = 1
     await api
-        .get(`/actacontrols?populate[0]=sis_tratamiento&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        })
+        .get(`/actacontrols?populate[0]=sis_tratamiento&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
@@ -254,11 +250,7 @@ async function getActacontrol(params) {
 async function getOrganismos(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -280,11 +272,7 @@ async function getOrganismos(params) {
 async function getOSDE(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/osdes`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/osdes`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
@@ -306,11 +294,7 @@ async function getOSDE(params) {
 async function getPrioridad(params) {
     for (let index = 1; index < 2; index++) {
         await api
-            .get(`/prioridads`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
+            .get(`/prioridads`)
             .then(function (response) {
                 //console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {

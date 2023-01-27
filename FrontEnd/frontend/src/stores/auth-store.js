@@ -5,7 +5,6 @@ export const useAuthStore = defineStore({
   id: "auth",
   state: () => ({
     jwt: null,
-    rememberMe: false,
     email: "",
     password: "",
     isPwd: true,
