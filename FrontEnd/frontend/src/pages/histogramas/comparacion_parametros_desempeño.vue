@@ -2,7 +2,7 @@
     <div class="col-12 q-pa-md">
         <div class="row justify-center">
             <p class="col-2">
-                <label><b>Comparacion de Indicadores de desempeño:</b> </label> &nbsp;
+                <label><b>Comparacion de parametros de desempeño:</b> </label> &nbsp;
             </p>
             <div class="col-3">
                 <div class="row justify-start">
@@ -371,6 +371,11 @@ async function getDesempeño(params) {
 
     }
 
+    for (let index = 0; index < data.indicadores.length; index++) {
+        if (!data3[index]) data3[index] = 0
+        if (data3[index] == 'NaN') data3[index] = 0
+    }
+
     data1 = [], data2 = [], data.rows = []
 
     for (let index = 1; index < 10; index++) {
@@ -614,6 +619,11 @@ async function getDesempeño(params) {
 
         });
 
+    }
+
+    for (let index = 0; index < data.indicadores.length; index++) {
+        if (!data4[index]) data4[index] = 0
+        if (data4[index] == 'NaN') data4[index] = 0
     }
 
     data.chartOptions = {

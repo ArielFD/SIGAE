@@ -36,9 +36,7 @@
                             <div class="col-3">
                                 <div class="row justify-start">
                                     <q-input outlined dense v-model="data.fecha_actual" type="number"
-                                        label="Año a buscar" class="col-4 text-black q-pa-xs" v-if="auth.printMode == false"/>
-                                    <q-input outlined dense v-model="data.fecha_cliente" type="number"
-                                        label="Año a comparar" class="col-4 text-black q-pa-xs" v-if="auth.printMode == false"/>
+                                        label="Año" class="col-4 text-black q-pa-xs" v-if="auth.printMode == false"/>
                                     <q-btn flat round color="secondary" icon="search" class="col-1 text-black q-pa-xs"
                                         @click="getActacontrol()" v-if="auth.printMode == false"/>
                                     

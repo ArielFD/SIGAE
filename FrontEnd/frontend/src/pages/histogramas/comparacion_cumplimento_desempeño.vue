@@ -176,6 +176,7 @@ async function getEnfrentamiento(params) {
 
                 for (let index = 0; index < data.organismos.length; index++) {
                     if (!data3[index]) data3[index] = 0
+                    if (data3[index] == 'NaN') data3[index] = 0
                 }
             }
             else {
@@ -201,6 +202,7 @@ async function getEnfrentamiento(params) {
 
                 for (let index = 0; index < data.osdes.length; index++) {
                     if (!data3[index]) data3[index] = 0
+                    if (data3[index] == 'NaN') data3[index] = 0
                 }
 
             }
@@ -256,6 +258,7 @@ async function getEnfrentamiento(params) {
 
                 for (let index = 0; index < data.organismos.length; index++) {
                     if (!data4[index]) data4[index] = 0
+                    if (data4[index] == 'NaN') data4[index] = 0
                 }
             }
             else {
@@ -281,6 +284,7 @@ async function getEnfrentamiento(params) {
 
                 for (let index = 0; index < data.osdes.length; index++) {
                     if (!data4[index]) data4[index] = 0
+                    if (data4[index] == 'NaN') data4[index] = 0
                 }
 
             }

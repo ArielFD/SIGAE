@@ -407,26 +407,27 @@ async function getDesempeño(params) {
 
                     }
                     data.chartOptions = {
-                                xaxis: {
-                                    categories: data.organismos
-                                }
-                            };
-                            data.series = [
-                                {
-                                    name: "Porciento",
-                                    data: data3,
-                                }
-                            ]
-                            for (let index = 0; index < data.organismos.length; index++) {
-                if(!data3[index]) data3[index]=0
-            }
+                        xaxis: {
+                            categories: data.organismos
+                        }
+                    };
+                    data.series = [
+                        {
+                            name: "Porciento",
+                            data: data3,
+                        }
+                    ]
+                    for (let index = 0; index < data.organismos.length; index++) {
+                        if (!data3[index]) data3[index] = 0
+                        if (data3[index] == 'NaN') data3[index] = 0
+                    }
                 }
                 else {
                     for (let index = 0; index < data.osdes.length; index++) {
                         data.rows.forEach(element => {
                             switch (data.indicador) {
                                 case "Coordinador": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.coordinador
                                         }
@@ -444,7 +445,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Diagnostico": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.diagnostico
                                         }
@@ -462,7 +463,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Politica": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.politica
                                         }
@@ -480,7 +481,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Indicadores": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.indicadores
                                         }
@@ -498,7 +499,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Plan de accion": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.plan
                                         }
@@ -516,7 +517,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Legislacion": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.legislacion
                                         }
@@ -534,7 +535,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Plan de capacitacion": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.capacitacion
                                         }
@@ -552,7 +553,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Acciones PML": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.acciones
                                         }
@@ -570,7 +571,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Programa de gestion ambiental": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.programa
                                         }
@@ -588,7 +589,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "recursos financieros": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.recurso
                                         }
@@ -606,7 +607,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Aprovechamiento Economico": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.aprovechamiento
                                         }
@@ -624,7 +625,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Sistema de tratamiento": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.sistema
                                         }
@@ -642,7 +643,7 @@ async function getDesempeño(params) {
                                     break;
                                 }
                                 case "Carga contaminante": {
-                                    if (element.organismo == data.organismos[index]) {
+                                    if (element.osde == data.osdes[index]) {
                                         if (!data1[index]) {
                                             data1[index] = element.carga
                                         }
@@ -664,19 +665,20 @@ async function getDesempeño(params) {
 
                     }
                     data.chartOptions = {
-                                xaxis: {
-                                    categories: data.osdes
-                                }
-                            };
-                            data.series = [
-                                {
-                                    name: "Porciento",
-                                    data: data3,
-                                }
-                            ]
-                            for (let index = 0; index < data.osdes.length; index++) {
-                if(!data3[index]) data3[index]=0
-            }
+                        xaxis: {
+                            categories: data.osdes
+                        }
+                    };
+                    data.series = [
+                        {
+                            name: "Porciento",
+                            data: data3,
+                        }
+                    ]
+                    for (let index = 0; index < data.osdes.length; index++) {
+                        if (!data3[index]) data3[index] = 0
+                        if (data3[index] == 'NaN') data3[index] = 0
+                    }
                 }
             })
             .catch(function (error) {

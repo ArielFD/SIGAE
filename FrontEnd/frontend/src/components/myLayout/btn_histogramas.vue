@@ -20,7 +20,7 @@
               <q-item-section>Comparacion de parametros de desempeño</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'coordinadores_ambientales' }" class="text-black">
-              <q-item-section>Coordinadores ambientales</q-item-section>
+              <q-item-section>Comparacion por Indicadores de desempeño</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'desempeño_ambiental' }" class="text-black">
                 <q-item-section>Desempeño ambiental</q-item-section>
