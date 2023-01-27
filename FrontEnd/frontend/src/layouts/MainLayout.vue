@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated v-if="auth.printMode == false">
       <q-toolbar class="no-padding">
         <q-img src="~assets/Layout_/baner_1.png" class="banner" />
         <q-img src="~assets/Layout_/baner_2.png" class="banner" />
@@ -62,7 +62,7 @@
       </q-toolbar> -->
     </q-header>
 
-    <q-footer elevated>
+    <q-footer elevated v-if="auth.printMode == false">
       <q-toolbar style="color: rgb(4, 48, 158)">
         <div class="col">
           <div class="row justify-center">

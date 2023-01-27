@@ -1,17 +1,25 @@
 <template>
     <div class="col-12">
+        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <q-img src="~assets/Layout_/baner_1.png" class="banner" />
+        </div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" v-model:selected="selected" v-model:pagination="pagination">
+                    :columns="columns" row-key="name" v-model:selected="selected" v-model:pagination="pagination" :hide-bottom="auth.printMode">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-start">
-                            <div class="col-3 text-h6">Plan de medidas</div>
-                            <div class="col-2">
+                            <div class="col-3 text-h6">
+                                <q-btn flat label="Plan de medidas"  class="col-1  q-pa-xs"
+                                        @click="auth.printMode = !auth.printMode" v-if="auth.printMode == true" />
+                                    <q-btn flat label="Plan de medidas" icon="print" class="col-1  q-pa-xs"
+                                        @click="auth.printMode = !auth.printMode" v-else />
+                            </div>
+                            <div class="col-2" v-if="auth.printMode == false">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Busqueda por:" />
                             </div>
-                            <div class="col-4" v-if="data.opcion == 'Entidad'">
+                            <div class="col-4" v-if="data.opcion == 'Entidad' && auth.printMode == false">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelEntidad" :options="optionsEntidad" @filter="filterFnEntidad"
                                     label="Entidad" />
@@ -26,17 +34,14 @@
                                     v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde" label="OSDE" />
                             </div>
                             <div class="col-3">
-                                <div class="row justify-center">
+                                <div class="row justify-start">
                                     <q-input outlined dense v-model="data.fecha_actual" type="number"
-                                        label="Año a buscar" class="col-4 text-black q-pa-xs" />
+                                        label="Año a buscar" class="col-4 text-black q-pa-xs" v-if="auth.printMode == false"/>
                                     <q-input outlined dense v-model="data.fecha_cliente" type="number"
-                                        label="Año a comparar" class="col-4 text-black q-pa-xs" />
+                                        label="Año a comparar" class="col-4 text-black q-pa-xs" v-if="auth.printMode == false"/>
                                     <q-btn flat round color="secondary" icon="search" class="col-1 text-black q-pa-xs"
-                                        @click="getActacontrol()" />
-                                    <q-btn flat round color="secondary" icon="bar_chart" class="col-1  q-pa-xs"
-                                        @click="data.histograma = !data.histograma" v-if="data.histograma == true" />
-                                    <q-btn flat round color="red" icon="bar_chart" class="col-1  q-pa-xs"
-                                        @click="data.histograma = !data.histograma" v-else />
+                                        @click="getActacontrol()" v-if="auth.printMode == false"/>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -44,12 +49,14 @@
                 </q-table>
             </q-card-section>
         </q-card>
-        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma == true"></histograma>
+        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <p>_______________________________________</p>
+            <p>Firma de la Direccion</p>
+        </div>
     </div>
 </template>
 
 <script setup>
-import histograma from "./histogramas_planAccion.vue"
 import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
@@ -204,7 +211,6 @@ let data = reactive({
 
     fecha_actual: new Date(),
     fecha_cliente: "",
-    histograma: false
 });
 
 function getYear(params) {
@@ -347,7 +353,6 @@ function getEntidad(params) {
 }
 
 async function getActacontrol(params) {
-    data.histograma=false
     data.histogramOptions = {
         year1: [],
         year2: [],
@@ -521,3 +526,8 @@ async function getActacontrol(params) {
 
 </script>
 
+<style lang="sass" scoped>
+.banner
+  max-width: 500px
+  max-height: 100px
+</style>

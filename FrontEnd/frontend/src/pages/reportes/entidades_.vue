@@ -3,7 +3,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Entidades" dense :rows="data.rows"
-                    :columns="data.columns" row-key="name" v-model:pagination="pagination">
+                    :columns="data.columns" row-key="name" v-model:pagination="pagination" >
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-between">
                             <div class="col-3 text-h6">Entidades</div>

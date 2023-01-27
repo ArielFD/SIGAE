@@ -11,6 +11,7 @@ export const useAuthStore = defineStore({
     isPwd: true,
     user: null,
     ip: "",
+    printMode:false
   }),
   getters: {
     // doubleCount: (state) => state.counter * 2,
