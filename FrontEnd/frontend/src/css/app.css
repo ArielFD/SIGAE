@@ -1,1 +1,7 @@
 /* app global css */
+/* <style lang="sass" scoped> */
+.banner{
+    max-width: 120px;
+    max-height: 120px
+}
+/* </style> */

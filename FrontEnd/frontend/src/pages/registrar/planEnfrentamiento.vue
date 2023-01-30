@@ -6,7 +6,7 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
-                    v-model:selected="selected" v-model:pagination="pagination" />
+                    v-model:selected="selected" v-model:pagination="pagination" wrap-cells/>
             </q-card-section>
 
             <q-card-actions class="justify-end">

@@ -1,13 +1,28 @@
 <template>
     <div class="col-12">
+        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
+        </div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" selection="multiple" v-model:selected="selected"
-                    v-model:pagination="pagination">
+                    v-model:pagination="pagination" wrap-cells>
                     <template v-slot:top>
-                        <div style="width: 100%" class="row justify-start">
-                            <div class="col-3 text-h6">Plan de enfrentamiento</div>
+                        <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
+                            <div class="col-3 text-h6">
+                                <q-btn flat :label="data.titulo" class="col-1  q-pa-xs"
+                                    @click="auth.printMode = !auth.printMode" />
+                            </div>
+                        </div>
+                        <div style="width: 100%" class="row justify-start" v-else>
+                            <div class="col-3 text-h6" v-if="auth.jwt">
+                                <q-btn flat label="Plan de enfrentamiento" icon="print" class="col-1  q-pa-xs"
+                                    @click="auth.printMode = !auth.printMode" v-if="data.titulo=='' ? !disable:disable"/>
+                            </div>
+                            <div class="col-3 text-h6" v-else>
+                                <q-btn flat label="Plan de enfrentamiento" class="col-1  q-pa-xs" />
+                            </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Busqueda por:" />
@@ -27,10 +42,6 @@
                                         class="col-6 text-black q-pa-xs" /> -->
                                     <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
                                         @click="getEnfrentamiento()" />
-                                    <q-btn flat round color="secondary" icon="bar_chart" class="col-2  q-pa-xs"
-                                        @click="data.histograma = !data.histograma" v-if="data.histograma == true" />
-                                    <q-btn flat round color="red" icon="bar_chart" class="col-2  q-pa-xs"
-                                        @click="data.histograma = !data.histograma" v-else />
                                 </div>
                             </div>
                         </div>
@@ -38,7 +49,10 @@
                 </q-table>
             </q-card-section>
         </q-card>
-        <histograma class="q-pa-md" :dataHistogram="data.histogramOptions" v-if="data.histograma == true"></histograma>
+        <div class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <p>_______________________________________</p>
+            <p>Director de Gestion Ambiental</p>
+        </div>
     </div>
 </template>
   
@@ -110,13 +124,6 @@ const columns = [
         field: "incumplidas",
         sortable: true,
     },
-    // {
-    //     name: "sistTrat",
-    //     align: "center",
-    //     label: "Sistema u Organo de tratamiento",
-    //     field: "sistTrat",
-    //     sortable: true,
-    // },
     {
         name: "funcionaBien",
         align: "center",
@@ -170,6 +177,7 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
+    titulo:"Plan de enfrentamiento",
     temp: false,
     rows: [],
     rows1: [],
@@ -179,12 +187,6 @@ let data = reactive({
 
     organismos: [],
     osdes: [],
-
-    histogramOptions: {
-        year1: [],
-    },
-
-    histograma: false
 });
 
 function filterFnOsde(val, update) {
@@ -285,7 +287,7 @@ async function getEnfrentamiento(params) {
                             console.log("Entra");
                             response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
                         }
-                        console.log(response);
+                        // console.log(response);
                         data.rows.push({
                             name: count,
                             id: response.data.data[i].id,
@@ -324,7 +326,6 @@ async function getEnfrentamiento(params) {
                                 }
                             })
                         }
-                        data.histogramOptions.year1 = data.rows
                         count++
                     } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -366,7 +367,6 @@ async function getEnfrentamiento(params) {
                             }
                         })
                     }
-                        data.histogramOptions.year1 = data.rows
                         count++
                     }
                 }

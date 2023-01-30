@@ -1,6 +1,21 @@
 <template>
     <div class="col-12 q-pa-md">
-        <div class="row justify-between">
+        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
+        </div>
+        <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
+            <div class="col-2 text-h6">
+                <q-btn flat :label="data.titulo" class="col-1  q-pa-xs"
+                    @click="auth.printMode = !auth.printMode" />
+            </div>
+        </div>
+        <div class="row justify-between" v-else>
+            <div class="col-1 text-h6" v-if="auth.jwt">
+                <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
+            </div>
+            <div class="col-3 text-h6" v-else>
+                <q-btn flat class="col-1  q-pa-xs" />
+            </div>
             <p class="col-6">
                 <label><b>Desempeño ambiental por:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
@@ -21,6 +36,10 @@
         </div>
         <apexcharts width="100%" height="350" type="bar" :options="data.chartOptions" :series="data.series">
         </apexcharts>
+        <div class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <p>_______________________________________</p>
+            <p>Director de Gestion Ambiental</p>
+        </div>
     </div>
 </template>
 
@@ -42,6 +61,7 @@ onMounted(() => {
 })
 
 let data = reactive({
+    titulo: "Histograma de desempeño ambiental ",
     fecha_actual: new Date(),
     fecha_anterior: "",
     organismo: "OACE",

@@ -1,11 +1,11 @@
 <template>
-  <div class="col-11">
+  <div class="col-12">
     <q-slide-transition duration="1000" appear="true">
       <q-card class="my-card q-ma-md bg-primary" bordered>
         <q-card-section>
           <q-table class="my-sticky-header-table" :rows="data.rows" :columns="columns" dense row-key="name"
             :selected-rows-label="getSelectedString" selection="multiple" v-model:selected="selected"
-            v-model:pagination="pagination" :filter="filter">
+            v-model:pagination="pagination" :filter="filter" wrap-cells>
             <template v-slot:top>
               <div style="width: 100%" class="row justify-between">
                 <div class="col-3 text-h6">Actas de Control</div>

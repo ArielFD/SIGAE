@@ -2,8 +2,8 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated v-if="auth.printMode == false">
       <q-toolbar class="no-padding">
-        <q-img src="~assets/Layout_/baner_1.png" class="banner" />
-        <q-img src="~assets/Layout_/baner_2.png" class="banner" />
+        <q-img src="~assets/Layout_/baner_1.png" class="banner1" />
+        <q-img src="~assets/Layout_/baner_2.png" class="banner1" />
       </q-toolbar>
       <q-toolbar class="row no-padding glossy justify-between" style="background-color: rgb(32, 105, 126)">
         <div>
@@ -107,6 +107,7 @@ let data = reactive({
 })
 
 onMounted(() => {
+  test()
   if (!localStorage.getItem("fallo")) {
     localStorage.setItem("fallo", "0");
   }
@@ -134,6 +135,24 @@ onMounted(() => {
   getRol()
 })
 
+function test(params) {
+  const data=[
+    {
+    asd:"1",
+    lineasDeCodigo:100
+  },{
+    asd:"2",
+    lineasDeCodigo:200
+  },{
+    asd:"3",
+    lineasDeCodigo:300
+  }
+]
+
+const datasalidas=data.map(salida=>salida.lineasDeCodigo).reduce((totalLineas,lineas)=>totalLineas+lineas)
+
+console.log(datasalidas);
+}
 function getRol(params) {
   if (auth.jwt == "" || auth.jwt == null) {
     data.admin = false
@@ -237,7 +256,7 @@ function onLogin() {
 </script>
 
 <style lang="sass" scoped>
-.banner
+.banner1
   height: 100%
   max-height: 120px
 .my-card

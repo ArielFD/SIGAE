@@ -4,7 +4,7 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows"
                     :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
-                    v-model:selected="selected" v-model:pagination="pagination" :filter="filter">
+                    v-model:selected="selected" v-model:pagination="pagination" :filter="filter" wrap-cells>
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-between">
                             <div class="col-3 text-h6">Desempeño ambiental</div>

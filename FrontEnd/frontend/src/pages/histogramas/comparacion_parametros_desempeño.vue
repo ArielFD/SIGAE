@@ -1,6 +1,21 @@
 <template>
     <div class="col-12 q-pa-md">
-        <div class="row justify-center">
+        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
+        </div>
+        <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
+            <div class="col-2 text-h6">
+                <q-btn flat :label="data.titulo" class="col-1  q-pa-xs"
+                    @click="auth.printMode = !auth.printMode" />
+            </div>
+        </div>
+        <div class="row justify-center" v-else>
+            <div class="col-1 text-h6" v-if="auth.jwt">
+                <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
+            </div>
+            <div class="col-3 text-h6" v-else>
+                <q-btn flat class="col-1  q-pa-xs" />
+            </div>
             <p class="col-2">
                 <label><b>Comparacion de parametros de desempeño:</b> </label> &nbsp;
             </p>
@@ -17,6 +32,10 @@
         </div>
         <apexcharts width="100%" height="350" type="bar" :options="data.chartOptions" :series="data.series">
         </apexcharts>
+        <div class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <p>_______________________________________</p>
+            <p>Director de Gestion Ambiental</p>
+        </div>
     </div>
 </template>
 
@@ -38,6 +57,7 @@ onMounted(() => {
 })
 
 let data = reactive({
+    titulo: "Histograma de comparacion de parametros de desempeño ",
     fecha_actual: new Date(),
     fecha_anterior: "",
     indicadores: ["Coordinador", "Diagnostico", "Politica", "Indicadores", "Plan de accion", "Legislacion", "Plan de capacitacion", "Acciones PML", "Programa de gestion ambiental", "recursos financieros", "Aprovechamiento Economico", "Sistema de tratamiento", "Carga contaminante"],

@@ -1,12 +1,27 @@
 <template>
     <div class="col-12">
+        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
+        </div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" v-model:pagination="pagination">
+                    :columns="columns" row-key="name" v-model:pagination="pagination" wrap-cells>
                     <template v-slot:top>
-                        <div style="width: 100%" class="row justify-between">
-                            <div class="col-3 text-h6">Desempeño Ambiental</div>
+                        <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
+                            <div class="col-3 text-h6">
+                                <q-btn flat :label="data.titulo + data.fecha_actual" class="col-1  q-pa-xs"
+                                    @click="auth.printMode = !auth.printMode" />
+                            </div>
+                        </div>
+                        <div style="width: 100%" class="row justify-between" v-else>
+                            <div class="col-3 text-h6" v-if="auth.jwt">
+                                <q-btn flat label="Desempeño ambiental" icon="print" class="col-1  q-pa-xs"
+                                    @click="auth.printMode = !auth.printMode" />
+                            </div>
+                            <div class="col-3 text-h6" v-else>
+                                <q-btn flat label="PDesempeño ambiental" class="col-1  q-pa-xs" />
+                            </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Busqueda por:" />
@@ -39,6 +54,10 @@
                 </q-table>
             </q-card-section>
         </q-card>
+        <div class="text-center q-mt-xl" v-if="auth.printMode == true">
+            <p>_______________________________________</p>
+            <p>Director de Gestion Ambiental</p>
+        </div>
     </div>
 </template>
 
@@ -191,6 +210,7 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
+    titulo:"Desempeño ambiental ",
     rows: [],
     organismos: [],
     osdes: [],
