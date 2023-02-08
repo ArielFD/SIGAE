@@ -7,7 +7,7 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" selection="multiple" v-model:selected="selected"
-                    v-model:pagination="pagination" wrap-cells>
+                    v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-3 text-h6">

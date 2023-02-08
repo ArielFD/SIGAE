@@ -4,7 +4,7 @@
         <q-card-section>
           <q-table
             title="Prioridads"
-            :rows="data.rows"
+            :rows="dataStore.prioridad"
             :columns="columns"
             row-key="name"
             dense
@@ -107,7 +107,9 @@
   import { useAuthStore } from "src/stores/auth-store";
   import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
   import { useQuasar } from "quasar";
+  import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
   const pagination = ref({
     sortBy: "desc",
     descending: false,
@@ -248,32 +250,26 @@ const prioridadEdit = ref(null);
   function getPrioridads(params) {
     console.log(auth.jwt);
     api
-      .get("/prioridads", {
+      .get("/getPrioridad", {
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },
       })
       .then(function (response) {
         //console.log(response);
-        data.rows = [];
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.rows.push({
-            name: i + 1,
-            id: response.data.data[i].id,
-            Nombre: response.data.data[i].attributes.prioridad,
-          });
-        }
+        dataStore.prioridad = response.data
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   }
+  
   function getSelectedString() {
     return selected.value.length === 0
       ? ""
       : `${selected.value.length} record${
           selected.value.length > 1 ? "s" : ""
-        } selected of ${data.rows.length}`;
+        } selected of ${dataStore.prioridad.length}`;
   }
 
   function onCreate() {

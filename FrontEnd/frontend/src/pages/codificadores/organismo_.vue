@@ -132,30 +132,16 @@ onMounted(() => {
 function getOSDEs(params) {
   data.osdes = []
   api
-    .get("/osdes?populate=%2A", {
+    .get("/getOsdes", {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },
     })
     .then(function (response) {
-      for (let i = 0; i < response.data.data.length; i++) {
-        if (response.data.data[i].attributes.oace.data == null) {
-          data.osdes.push({
-            id: response.data.data[i].id,
-            Nombre: response.data.data[i].attributes.nombre,
-          });
-        }
-        else {
-          data.osdes.push({
-            id: response.data.data[i].id,
-            Nombre: response.data.data[i].attributes.nombre,
-            Oace: response.data.data[i].attributes.oace.data.attributes.organismo
-          });
-        }
-      }
+      data.osdes=response.data
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -269,33 +255,16 @@ function Delete(params) {
 
 function getOrganismos(params) {
   api
-    .get("/organismos?populate=%2A", {
+    .get("/getOrganismosOsde", {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },
     })
     .then(function (response) {
-      data.rows = [];
-      for (let i = 0; i < response.data.data.length; i++) {
-        let arr = []
-        let arrEdit = []
-        for (let index = 0; index < response.data.data[i].attributes.osdes.data.length; index++) {
-          const element = response.data.data[i].attributes.osdes.data[index].attributes.nombre;
-          const id = response.data.data[i].attributes.osdes.data[index].id;
-          arr.push(element)
-          arrEdit.push({ id })
-        }
-        data.rows.push({
-          name: i + 1,
-          id: response.data.data[i].id,
-          Nombre: response.data.data[i].attributes.organismo,
-          Osde: arr.join(", "),
-          arrOsde: arrEdit
-        });
-      }
+      data.rows=response.data
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 function getSelectedString() {

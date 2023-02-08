@@ -88,7 +88,9 @@ import { useQuasar } from "quasar";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const auth = useAuthStore();
 const alertRules = useAlertsRulesStore();
 const router = useRouter();
@@ -107,52 +109,145 @@ let data = reactive({
 })
 
 onMounted(() => {
-  test()
   if (!localStorage.getItem("fallo")) {
     localStorage.setItem("fallo", "0");
   }
   if (
     localStorage.getItem("userData") != "null") {
-      console.log("Aqui");
-    (auth.jwt = localStorage.getItem("jwt")),
+    (auth.jwt = localStorage.getItem("jwt")), (auth.user = JSON.parse(localStorage.getItem("userData"))),
       (auth.email = JSON.parse(localStorage.getItem("userData")).email),
       (auth.password = JSON.parse(localStorage.getItem("userData")).password);
   }
 
-  // var ip=require('ip')
-  // console.log(ip.address());
-  //console.log(local);
-
-  // var os=require('os')
-  // var networkInterfaces=os.networkInterfaces()
-  // console.log(networkInterfaces);
   router.push("/Principal");
   auth.getLocalIP().then((ipAddr) => {
     console.log(ipAddr);
     auth.ip = ipAddr
   });
-  console.log(auth.jwt);
+
   getRol()
+  getOrganismos()
+  getCategorias()
+  getUnidades()
+  getEstados()
+  getMunicipios()
+  getPrioridads()
+  getSalidas()
+  getOSDEs()
 })
 
-function test(params) {
-  const data=[
-    {
-    asd:"1",
-    lineasDeCodigo:100
-  },{
-    asd:"2",
-    lineasDeCodigo:200
-  },{
-    asd:"3",
-    lineasDeCodigo:300
+function getSalidas(params) {
+    api
+      .get("/getSalidas", {
+        headers: {
+          Authorization: "Bearer " + auth.jwt,
+        },
+      })
+      .then(function (response) {
+        // console.log(response);
+        dataStore.salida = response.data
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
-]
 
-const datasalidas=data.map(salida=>salida.lineasDeCodigo).reduce((totalLineas,lineas)=>totalLineas+lineas)
+function getPrioridads(params) {
+    api
+      .get("/getPrioridad", {
+        headers: {
+          Authorization: "Bearer " + auth.jwt,
+        },
+      })
+      .then(function (response) {
+        //console.log(response);
+        dataStore.prioridad = response.data
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
-console.log(datasalidas);
+function getMunicipios(params) {
+  api
+    .get("/getMunicipios", {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      //console.log(response);
+      dataStore.municipio = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
+
+function getEstados(params) {
+  api
+    .get("/getEstados", {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      //console.log(response);
+      dataStore.estado = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function getOSDEs(params) {
+  api
+    .get("/getOsdes", {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      dataStore.osde=response.data
+    })
+    .catch(function (error) {
+      console.log(error.response);
+    });
+}
+
+async function getOrganismos(params) {
+  await api
+    .get(`/getOrganismos`)
+    .then(function (response) {
+      dataStore.organismo = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function getCategorias(params) {
+  api
+    .get("/getCategoria")
+    .then(function (response) {
+      dataStore.categoria = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+function getUnidades(params) {
+  api
+    .get("/getUnidades")
+    .then(function (response) {
+      dataStore.unidad = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
 function getRol(params) {
   if (auth.jwt == "" || auth.jwt == null) {
     data.admin = false
@@ -168,7 +263,7 @@ function getRol(params) {
         },
       })
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         if (
           response.data.role.name === "Administrador") {
           data.admin = true
@@ -192,9 +287,9 @@ function getRol(params) {
 
 function cerrarSesion(params) {
   auth.jwt = '',
-  auth.email="",
-  auth.password="",
-  localStorage.setItem("jwt", '');
+    auth.email = "",
+    auth.password = "",
+    localStorage.setItem("jwt", '');
   localStorage.setItem("userData", null);
   router.push("/Principal");
   getRol()

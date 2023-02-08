@@ -35,9 +35,6 @@
   </template>
   
   <script setup>
-    function test(params) {
-      console.log("test");
-    }
   const props = defineProps({
     bool: {
       type: Boolean,

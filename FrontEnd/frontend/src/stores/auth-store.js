@@ -10,14 +10,13 @@ export const useAuthStore = defineStore({
     isPwd: true,
     user: null,
     ip: "",
-    printMode:false
+    printMode:false,
   }),
   getters: {
     // doubleCount: (state) => state.counter * 2,
   },
   actions: {
     async postTraza(params1, params2) {
-   
       const data = {
         data: {
           fecha: new Date().toISOString(),

@@ -4,7 +4,7 @@
         <q-card-section>
           <q-table
             title="Periodo de Salida"
-            :rows="data.rows"
+            :rows="dataStore.salida"
             :columns="columns"
             row-key="name"
             dense
@@ -103,7 +103,9 @@
   import { useAuthStore } from "src/stores/auth-store";
   import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
   import { useQuasar } from "quasar";
+  import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
   const pagination = ref({
     sortBy: "desc",
     descending: false,
@@ -242,34 +244,27 @@ const salidaEdit = ref(null);
   }
   
   function getSalidas(params) {
-    console.log(auth.jwt);
     api
-      .get("/salidas", {
+      .get("/getSalidas", {
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },
       })
       .then(function (response) {
         console.log(response);
-        data.rows = [];
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.rows.push({
-            name: i + 1,
-            id: response.data.data[i].id,
-            Nombre: response.data.data[i].attributes.salida,
-          });
-        }
+        dataStore.salida = response.data
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   }
+  
   function getSelectedString() {
     return selected.value.length === 0
       ? ""
       : `${selected.value.length} record${
           selected.value.length > 1 ? "s" : ""
-        } selected of ${data.rows.length}`;
+        } selected of ${dataStore.salida.length}`;
   }
 
   function onCreate() {

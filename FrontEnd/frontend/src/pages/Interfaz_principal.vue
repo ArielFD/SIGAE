@@ -30,12 +30,12 @@
 <script setup>
 import { onMounted, reactive } from "vue";
 import { useAuthStore } from "src/stores/auth-store";
+import { api } from "boot/axios.js";
 
 const auth = useAuthStore();
 onMounted(() => {
-
+  
 });
-
 </script>
 
 <style lang="sass" scoped>

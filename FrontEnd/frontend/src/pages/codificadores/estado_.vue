@@ -4,7 +4,7 @@
       <q-card-section>
         <q-table
           title="Estados"
-          :rows="data.rows"
+          :rows="dataStore.estado"
           :columns="columns"
           row-key="name"
           dense
@@ -100,7 +100,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
   sortBy: "desc",
   descending: false,
@@ -123,10 +125,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "Nombre",
+    name: "estado",
     align: "center",
-    label: "Nombre",
-    field: "Nombre",
+    label: "Estado",
+    field: "estado",
     sortable: true,
   },
 ];
@@ -149,7 +151,7 @@ onMounted(() => {
 });
 
 function editFields(params) {
-  (data.estadoEdit = selected.value[0].Nombre), (data.cardEdit = true);
+  (data.estadoEdit = selected.value[0].estado), (data.cardEdit = true);
 }
 
 function Edit(params) {
@@ -236,34 +238,27 @@ function Delete(params) {
 }
 
 function getEstados(params) {
-  console.log(auth.jwt);
   api
-    .get("/estados", {
+    .get("/getEstados", {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },
     })
     .then(function (response) {
       //console.log(response);
-      data.rows = [];
-      for (let i = 0; i < response.data.data.length; i++) {
-        data.rows.push({
-          name: i + 1,
-          id: response.data.data[i].id,
-          Nombre: response.data.data[i].attributes.estado,
-        });
-      }
+      dataStore.estado=response.data
     })
     .catch(function (error) {
       console.log(error.response);
     });
 }
+
 function getSelectedString() {
   return selected.value.length === 0
     ? ""
     : `${selected.value.length} record${
         selected.value.length > 1 ? "s" : ""
-      } selected of ${data.rows.length}`;
+      } selected of ${dataStore.estado.length}`;
 }
 
 function onCreate() {

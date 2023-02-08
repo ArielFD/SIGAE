@@ -6,7 +6,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" v-model:pagination="pagination" wrap-cells>
+                    :columns="columns" row-key="name" v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-3 text-h6">
@@ -44,10 +44,6 @@
                                     <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
                                         @click="getDesempeño()" />
                                 </div>
-                            </div>
-                            <div>
-                                <q-btn color="secondary" icon-right="archive" class="col-2 q-pa-xs" no-caps
-                                    @click="exportTable" />
                             </div>
                         </div>
                     </template>
@@ -228,52 +224,6 @@ onMounted(() => {
         getOSDE()
 });
 
-function wrapCsvValue(val, formatFn, row) {
-    let formatted = formatFn !== void 0
-        ? formatFn(val, row)
-        : val
-
-    formatted = formatted === void 0 || formatted === null
-        ? ''
-        : String(formatted)
-
-    formatted = formatted.split('"').join('""')
-    /**
-     * Excel accepts \n and \r in strings, but some other CSV parsers do not
-     * Uncomment the next two lines to escape new lines
-     */
-    // .split('\n').join('\\n')
-    // .split('\r').join('\\r')
-
-    return `"${formatted}"`
-}
-
-function exportTable() {
-    // naive encoding to csv format
-    const content = [columns.map(col => wrapCsvValue(col.label))].concat(
-        data.rows.map(row => columns.map(col => wrapCsvValue(
-            typeof col.field === 'function'
-                ? col.field(row)
-                : row[col.field === void 0 ? col.name : col.field],
-            col.format,
-            row
-        )).join(','))
-    ).join('\r\n')
-
-    const status = exportFile(
-        'table-export.csv',
-        content,
-        'text/csv'
-    )
-
-    if (status !== true) {
-        $q.notify({
-            message: 'Browser denied file download...',
-            color: 'negative',
-            icon: 'warning'
-        })
-    }
-}
 
 function getYear(params) {
     data.fecha_actual = data.fecha_actual.getFullYear()

@@ -76,7 +76,6 @@ function backup(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
       if(response.data=="Backup Completed"){
         alertRules.alerts[1].message = "Backup realizado con exito!!!";
         $q.notify(alertRules.alerts[1]);

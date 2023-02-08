@@ -13,9 +13,6 @@
             <div class="col-1 text-h6" v-if="auth.jwt">
                 <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
             </div>
-            <div class="col-3 text-h6" v-else>
-                <q-btn flat class="col-1  q-pa-xs" />
-            </div>
             <p class="col-6">
                 <label><b>Desempeño ambiental por:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
@@ -49,8 +46,9 @@ import apexcharts from "vue3-apexcharts";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
-//   let temp=console.log.bind(console);
-//   const props=defineProps(["dataHistogram"])
+import { useDataStore } from "src/stores/data-store";
+
+const dataStore = useDataStore();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 
@@ -117,189 +115,34 @@ function getYear(params) {
 }
 
 async function getOrganismos(params) {
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.organismos.push(response.data.data[i].attributes.organismo);
-                }
-            })
-            .catch(function (error) {
-                console.log(error.response);
-            });
-    }
+    dataStore.organismo.forEach(element => {
+        data.organismos.push(element.organismo);
+    });
 }
 
 async function getOSDE(params) {
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/osdes`)
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.osdes.push(response.data.data[i].attributes.nombre);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    dataStore.osde.forEach(element => {
+        data.osdes.push(element.Nombre);
+    });
 }
 
 async function getEnfrentamiento(params) {
     data.rows = [];
-    let count = 1
-    let category = []
-    let data1 = [], data2 = [], data3 = [], data4 = []
+    let data3 = [], data4 = []
 
     await api
-        .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`)
+        .get(`/getdesempenoComparacion?filters[0]=${data.fecha_actual}&filters[1]=${data.organismo}&filters[2]=${data.organismos}&filters[3]=${data.osdes}`)
         .then(function (response) {
-            console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                if (response.data.data[i].attributes.entidad.data.length > 0) {
-                    if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                    if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
-                        response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
-                    }
-                    data.rows.push({
-                        total: response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores,
-                        organismo: response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo,
-                        osde: response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre
-                    })
-                }
-            }
-            if (data.organismo == "OACE") {
-                for (let index = 0; index < data.organismos.length; index++) {
-                    data.rows.forEach(element => {
-                        if (data.organismos[index] == element.organismo) {
-                            if (!data1[index]) {
-                                data1[index] = element.total
-                            }
-                            else {
-                                data1[index] = data1[index] + element.total
-                            }
-                            if (!data2[index]) {
-                                data2[index] = 13
-                            }
-                            else {
-                                data2[index] = data2[index] + 13
-                            }
-                        }
-                    });
-                }
-
-                for (let index = 0; index < data.organismos.length; index++) {
-                    data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                    if (data4[index] == 'NaN') data4[index] = 0
-                }
-
-
-            } else {
-                for (let index = 0; index < data.osdes.length; index++) {
-                    data.rows.forEach(element => {
-                        if (data.osdes[index] == element.osde) {
-                            if (!data1[index]) {
-                                data1[index] = element.total
-                            }
-                            else {
-                                data1[index] = data1[index] + element.total
-                            }
-                            if (!data2[index]) {
-                                data2[index] = 13
-                            }
-                            else {
-                                data2[index] = data2[index] + 13
-                            }
-                        }
-                    });
-                }
-
-                for (let index = 0; index < data.osdes.length; index++) {
-                    data4[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                    if (data4[index] == 'NaN') data4[index] = 0
-                }
-            }
-        })
-        .catch(function (error) {
+            data4=response.data
+        }).catch(function (error) {
             console.log(error);
         });
 
-    data1 = [], data2 = [], data.rows = []
-
-    await api
-        .get(`/desempenoambientals?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_anterior}`)
+        await api
+        .get(`/getdesempenoComparacion?filters[0]=${data.fecha_anterior}&filters[1]=${data.organismo}&filters[2]=${data.organismos}&filters[3]=${data.osdes}`)
         .then(function (response) {
-            console.log(response);
-            let data1 = [], data2 = []
-            for (let i = 0; i < response.data.data.length; i++) {
-                if (response.data.data[i].attributes.entidad.data.length > 0) {
-                    if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                    if (response.data.data[i].attributes.entidad.data[0].attributes.osde.data == null) {
-                        response.data.data[i].attributes.entidad.data[0].attributes.osde.data = { attributes: { nombre: "-" } }
-                    }
-                    data.rows.push({
-                        total: response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores,
-                        organismo: response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0].attributes.organismo,
-                        osde: response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre
-                    })
-                }
-            }
-            if (data.organismo == "OACE") {
-                for (let index = 0; index < data.organismos.length; index++) {
-                    data.rows.forEach(element => {
-                        if (data.organismos[index] == element.organismo) {
-                            if (!data1[index]) {
-                                data1[index] = element.total
-                            }
-                            else {
-                                data1[index] = data1[index] + element.total
-                            }
-                            if (!data2[index]) {
-                                data2[index] = 13
-                            }
-                            else {
-                                data2[index] = data2[index] + 13
-                            }
-                        }
-                    });
-                }
-
-                for (let index = 0; index < data.organismos.length; index++) {
-                    data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                    if (data3[index] == 'NaN') data3[index] = 0
-                }
-
-
-            } else {
-                for (let index = 0; index < data.osdes.length; index++) {
-                    data.rows.forEach(element => {
-                        if (data.osdes[index] == element.osde) {
-                            if (!data1[index]) {
-                                data1[index] = element.total
-                            }
-                            else {
-                                data1[index] = data1[index] + element.total
-                            }
-                            if (!data2[index]) {
-                                data2[index] = 13
-                            }
-                            else {
-                                data2[index] = data2[index] + 13
-                            }
-                        }
-                    });
-                }
-
-                for (let index = 0; index < data.osdes.length; index++) {
-                    data3[index] = (data1[index] / data2[index] * 100).toFixed(2)
-                    if (data3[index] == 'NaN') data3[index] = 0
-                }
-            }
-        })
-        .catch(function (error) {
+            data3=response.data
+        }).catch(function (error) {
             console.log(error);
         });
 

@@ -10,28 +10,29 @@
           <div class="text-h6">Nuevo Residual</div>
         </q-card-section>
         <form @submit.prevent.stop="onCreate">
-        <q-card-section class="row q-pa-sm">
-          <q-select class="col-6 q-pa-sm text-black" dense outlined v-model="data.categoria" :options="data.category"
-            label="Categoria" lazy-rules :rules="alerts.inputRules" ref="categoria"/>
-          <q-input class="col-6 q-pa-sm text-black" outlined dense v-model="data.tipoResidual" label="Tipo de residual"
-            lazy-rules :rules="alerts.inputRules" ref="tipoResidual"/>
-          <q-input class="col-6 q-pa-sm text-black" outlined dense v-model="data.cantidadGenerada"
-            label="Cantidad generada" lazy-rules :rules="alerts.inputRules" ref="cantidadGenerada"/>
-          <q-select class="col-6 q-pa-sm text-black" dense outlined v-model="data.unidad" :options="data.unid"
-            label="Unidad" lazy-rules :rules="alerts.inputRules" ref="unidad"/>
-          <q-input outlined dense v-model="data.disposicionFinal" label="Disposicion final"
-            class="col-12 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="disposicionFinal"/>
-          <q-input outlined dense v-model="data.aprovechamiento" label="Aprovechamiento economico"
-            class="col-10 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="aprovechamiento"/>
-          <q-input outlined dense v-model="data.fecha" type="date" class="col-8 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="fecha"/>
-        </q-card-section>
+          <q-card-section class="row q-pa-sm">
+            <q-select class="col-6 q-pa-sm text-black" dense outlined v-model="data.categoria" :options="data.category"
+              label="Categoria" lazy-rules :rules="alerts.inputRules" ref="categoria" />
+            <q-input class="col-6 q-pa-sm text-black" outlined dense v-model="data.tipoResidual"
+              label="Tipo de residual" lazy-rules :rules="alerts.inputRules" ref="tipoResidual" />
+            <q-input class="col-6 q-pa-sm text-black" outlined dense v-model="data.cantidadGenerada"
+              label="Cantidad generada" lazy-rules :rules="alerts.inputRules" ref="cantidadGenerada" />
+            <q-select class="col-6 q-pa-sm text-black" dense outlined v-model="data.unidad" :options="data.unid"
+              label="Unidad" lazy-rules :rules="alerts.inputRules" ref="unidad" />
+            <q-input outlined dense v-model="data.disposicionFinal" label="Disposicion final"
+              class="col-12 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="disposicionFinal" />
+            <q-input outlined dense v-model="data.aprovechamiento" label="Aprovechamiento economico"
+              class="col-10 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="aprovechamiento" />
+            <q-input outlined dense v-model="data.fecha" type="date" class="col-8 q-pa-sm text-black" lazy-rules
+              :rules="alerts.inputRules" ref="fecha" />
+          </q-card-section>
 
-        <q-separator />
+          <q-separator />
 
-        <q-card-actions align="right">
-          <q-btn flat color="secondary" label="Crear" type="submit" />
-        </q-card-actions>
-      </form>
+          <q-card-actions align="right">
+            <q-btn flat color="secondary" label="Crear" type="submit" />
+          </q-card-actions>
+        </form>
       </q-card>
     </q-dialog>
     <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="Delete">Eliminar</q-btn>
@@ -44,7 +45,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const emit = defineEmits(["addId"])
 const props = defineProps(["idResidual"])
 
@@ -106,6 +109,7 @@ onMounted(() => {
       data.arrIdResidual.push(element.id)
     });
   }
+
   getCategorias()
   getUnidades()
   getResidual(data.arrIdResidual)
@@ -134,7 +138,6 @@ function Create() {
       tipo_residual: data.tipoResidual
     },
   };
-  console.log(dataRest);
 
   const authorization = {
     headers: {
@@ -145,7 +148,6 @@ function Create() {
   api
     .post("/residuals", dataRest, authorization)
     .then(function (response) {
-      console.log(response);
       data.cardCreate = false
       alerts.alerts[1].message = "Aprovechamiento creado";
       $q.notify(alerts.alerts[1]);
@@ -156,7 +158,7 @@ function Create() {
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo creando el Aprovechamiento";
       $q.notify(alerts.alerts[0]);
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -169,7 +171,6 @@ function Delete(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
       alerts.alerts[1].message = "Aprovechamiento eliminado";
       $q.notify(alerts.alerts[1]);
       for (let index = 0; index < data.arrIdResidual.length; index++) {
@@ -188,79 +189,33 @@ function Delete(params) {
 }
 
 function getCategorias(params) {
-  api
-    .get("/categorias", {
-      headers: {
-        Authorization: "Bearer " + auth.jwt,
-      },
-    })
-    .then(function (response) {
-      console.log(response);
-      for (let i = 0; i < response.data.data.length; i++) {
-        data.categorias.push({
-          id: response.data.data[i].id,
-          categoria: response.data.data[i].attributes.categoria,
-        });
-      }
-      data.categorias.forEach(element => {
-        data.category.push(element.categoria)
-      });
-    })
-    .catch(function (error) {
-      console.log(error.response);
-    });
+  data.categorias = dataStore.categoria
+  data.categorias.forEach(element => {
+    data.category.push(element.categoria)
+  });
 }
 
 function getUnidades(params) {
-  api
-    .get("/unidads", {
-      headers: {
-        Authorization: "Bearer " + auth.jwt,
-      },
-    })
-    .then(function (response) {
-      console.log(response);
-      for (let i = 0; i < response.data.data.length; i++) {
-        data.unidades.push({
-          id: response.data.data[i].id,
-          unidad: response.data.data[i].attributes.unidad,
-        });
-      }
-      data.unidades.forEach(element => {
-        data.unid.push(element.unidad)
-      });
-    })
-    .catch(function (error) {
-      console.log(error.response);
-    });
+  data.unidades = dataStore.unidad
+  data.unidades.forEach(element => {
+    data.unid.push(element.unidad)
+  });
 }
 
 function getResidual(params) {
   data.rows = []
   for (let index = 0; index < params.length; index++) {
     api
-      .get(`/residuals/${params[index]}?populate=%2A`, {
+      .get(`/getResidualId/${params[index]}`, {
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },
       })
       .then(function (response) {
-        console.log(response);
-        if (response.data.data.attributes.categorias.data.length == 0) response.data.data.attributes.categorias.data.push({ attributes: { categoria: "-" } })
-        if (response.data.data.attributes.unidads.data.length == 0) response.data.data.attributes.unidads.data.push({ attributes: { unidad: "-" } })
-        data.rows.push({
-          name: response.data.data.attributes.categorias.data[0].attributes.categoria,
-          id: params[index],
-          unidad: response.data.data.attributes.unidads.data[0].attributes.unidad,
-          aprovechamiento: response.data.data.attributes.aprovechamiento_cant,
-          cantidadGenerada: response.data.data.attributes.cantidad,
-          disposicionFinal: response.data.data.attributes.disposicion,
-          fecha: response.data.data.attributes.fecha_residual,
-          tipoResidual: response.data.data.attributes.tipo_residual
-        });
+        data.rows.push(response.data)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
 
   }
@@ -282,7 +237,7 @@ function onCreate() {
   fecha.value.validate();
   tipoResidual.value.validate();
 
-  if (categoria.value.hasError || unidad.value.hasError ||  aprovechamiento.value.hasError || cantidadGenerada.value.hasError || disposicionFinal.value.hasError || fecha.value.hasError || tipoResidual.value.hasError) {
+  if (categoria.value.hasError || unidad.value.hasError || aprovechamiento.value.hasError || cantidadGenerada.value.hasError || disposicionFinal.value.hasError || fecha.value.hasError || tipoResidual.value.hasError) {
     alerts.alerts[0].message = "Rellene todo los campos obligatorios";
     $q.notify(alerts.alerts[0]);
     // form has error

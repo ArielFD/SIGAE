@@ -1,17 +1,21 @@
 import { defineStore } from "pinia";
+import { api } from "boot/axios.js";
 
 export const useDataStore = defineStore({
-  id: "layout",
+  id: "data",
   state: () => ({
-    insertarActa: false,
-    mostrarActa: false,
-    editarActa: false,
-    estado: [],
-
-    //######################Organismo#######################
+    organismo: [],
+    estado:[],
+    municipio:[],
+    organismo:[],
+    osde:[],
+    oace:[],
+    salida:[],
+    prioridad:[],
+    unidad:[],
+    categoria:[]
   }),
   getters: {
-    // doubleCount: (state) => state.counter * 2,
   },
   actions: {
   },

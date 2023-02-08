@@ -1,6 +1,6 @@
 <template>
     <div class="col-12 q-pa-md">
-        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+        <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
         </div>
         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
@@ -12,9 +12,6 @@
         <div class="row justify-between" v-else>
             <div class="col-1 text-h6" v-if="auth.jwt">
                 <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
-            </div>
-            <div class="col-3 text-h6" v-else>
-                <q-btn flat class="col-1  q-pa-xs" />
             </div>
             <p class="col-6">
                 <label><b>Cumplimiento de planes de enfrentamiento:</b> </label> &nbsp;
@@ -47,8 +44,9 @@ import apexcharts from "vue3-apexcharts";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
-//   let temp=console.log.bind(console);
-//   const props=defineProps(["dataHistogram"])
+import { useDataStore } from "src/stores/data-store";
+
+const dataStore = useDataStore();
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 
@@ -113,149 +111,45 @@ function getYear(params) {
 }
 
 async function getOrganismos(params) {
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.organismos.push(response.data.data[i].attributes.organismo);
-                }
-            })
-            .catch(function (error) {
-                console.log(error.response);
-            });
-    }
+    dataStore.organismo.forEach(element => {
+        data.organismos.push(element.organismo);
+    });
 }
 
 async function getOSDE(params) {
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/osdes`)
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.osdes.push(response.data.data[i].attributes.nombre);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    dataStore.osde.forEach(element => {
+        data.osdes.push(element.Nombre);
+    });
 }
 
 async function getEnfrentamiento(params) {
     data.rows = [];
-    let data1 = [], data2 = []
+    let data1 = [], data2 = [], data3 = []
 
     await api
-        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_actual}`)
+        .get(`/getPlanEnfrentamientoCumplimiento?filters[0]=${data.fecha_actual}&filters[1]=${data.organismo}&filters[2]=${data.organismos}&filters[3]=${data.osdes}`)
         .then(function (response) {
-            console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                if (response.data.data[i].attributes.entidad.data != null) {
-                    if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                    if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
-                        response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
-                    }
-                    data.rows.push({
-                        medidas: response.data.data[i].attributes.medidas,
-                        cumplidas: response.data.data[i].attributes.cumplidas,
-                        organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
-                        osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
-                    });
-
-                }
-            }
-
-
-            if (data.organismo == "OACE") {
-                for (let index = 0; index < data.organismos.length; index++) {
-                    data.rows.forEach(element => {
-                        if (data.organismos[index] == element.organismo) {
-                            if (!data1[index]) {
-                                data1[index] = element.medidas
-                            }
-                            else {
-                                data1[index] = data1[index] + element.medidas
-                            }
-                            if (!data2[index]) {
-                                data2[index] = element.cumplidas
-                            }
-                            else {
-                                data2[index] = data2[index] + element.cumplidas
-                            }
-                        }
-                    });
-                }
-
-                for (let index = 0; index < data.organismos.length; index++) {
-                    if (!data1[index]) data1[index] = 0
-                    if (!data2[index]) data2[index] = 0
-                }
-
-                data.chartOptions = {
-                    xaxis: {
-                        categories: data.organismos
-                    }
-                };
-                data.series = [
-                    {
-                        name: "Total de medidas",
-                        data: data1,
-                    },
-                    {
-                        name: "Cumplidas",
-                        data: data2,
-                    }
-                ]
-            }
-            else {
-                for (let index = 0; index < data.osdes.length; index++) {
-                    data.rows.forEach(element => {
-                        if (data.osdes[index] == element.osde) {
-                            if (!data1[index]) {
-                                data1[index] = element.medidas
-                            }
-                            else {
-                                data1[index] = data1[index] + element.medidas
-                            }
-                            if (!data2[index]) {
-                                data2[index] = element.cumplidas
-                            }
-                            else {
-                                data2[index] = data2[index] + element.cumplidas
-                            }
-                        }
-                    });
-                }
-
-                for (let index = 0; index < data.osdes.length; index++) {
-                    if (!data1[index]) data1[index] = 0
-                    if (!data2[index]) data2[index] = 0
-                }
-
-                data.chartOptions = {
-                    xaxis: {
-                        categories: data.osdes
-                    }
-                };
-                data.series = [
-                    {
-                        name: "Total de medidas",
-                        data: data1,
-                    },
-                    {
-                        name: "Cumplidas",
-                        data: data2,
-                    }
-                ]
-            }
-
-        })
-        .catch(function (error) {
+            data1 = response.data[0].data1;
+            data2 = response.data[1].data2;
+        }).catch(function (error) {
             console.log(error);
         });
+
+    data.chartOptions = {
+        xaxis: {
+            categories: data.organismos
+        }
+    };
+    data.series = [
+        {
+            name: "Total de medidas",
+            data: data1,
+        },
+        {
+            name: "Cumplidas",
+            data: data2,
+        }
+    ]
 
 }
 

@@ -4,7 +4,7 @@
       <q-card-section>
         <q-table
           title="Categorias"
-          :rows="data.rows"
+          :rows="dataStore.categoria"
           :columns="columns"
           row-key="name"
           dense
@@ -103,7 +103,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
   sortBy: "desc",
   descending: false,
@@ -126,10 +128,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "Nombre",
+    name: "categoria",
     align: "center",
-    label: "Nombre",
-    field: "Nombre",
+    label: "Categoria",
+    field: "categoria",
     sortable: true,
   },
 ];
@@ -152,7 +154,7 @@ onMounted(() => {
 });
 
 function editFields(params) {
-  (data.categoriaEdit = selected.value[0].Nombre), (data.cardEdit = true);
+  (data.categoriaEdit = selected.value[0].categoria), (data.cardEdit = true);
 }
 
 function Edit(params) {
@@ -243,24 +245,17 @@ function Delete(params) {
 
 function getCategorias(params) {
   api
-    .get("/categorias", {
+    .get("/getCategoria", {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },
     })
     .then(function (response) {
-      //console.log(response);
-      data.rows = [];
-      for (let i = 0; i < response.data.data.length; i++) {
-        data.rows.push({
-          name: i + 1,
-          id: response.data.data[i].id,
-          Nombre: response.data.data[i].attributes.categoria,
-        });
-      }
+      // console.log(response);
+      dataStore.categoria=response.data
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -269,7 +264,7 @@ function getSelectedString() {
     ? ""
     : `${selected.value.length} record${
         selected.value.length > 1 ? "s" : ""
-      } selected of ${data.rows.length}`;
+      } selected of ${dataStore.categoria.length}`;
 }
 
 function onCreate() {

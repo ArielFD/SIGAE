@@ -66,6 +66,7 @@
 import { onMounted, reactive, ref } from "vue";
 import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
+import { useDataStore } from "src/stores/data-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 
 const pagination = ref({
@@ -75,6 +76,7 @@ const pagination = ref({
     rowsPerPage: 17,
 });
 
+const dataStore = useDataStore()
 const auth = useAuthStore();
 const alerts = useAlertsRulesStore();
 const selected = ref([]);
@@ -278,154 +280,65 @@ onMounted(() => {
 
 
 async function getOrganismos(params) {
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`)
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.organismos.push({
-                        id: response.data.data[i].id,
-                        organismo: response.data.data[i].attributes.organismo
-                    });
-                }
-                data.organismos.forEach(element => {
-                    stringOptionsOrganismo.push(element.organismo)
-                });
-            })
-            .catch(function (error) {
-                console.log(error.response);
-            });
-    }
+    dataStore.organismo.forEach(element => {
+        stringOptionsOrganismo.push(element.organismo)
+    });
+    // await api
+    //     .get(`/getOrganismos`)
+    //     .then(function (response) {
+    //         console.log(response);
+    //         data.organismos=response.data
+    //         data.organismos.forEach(element => {
+    //             stringOptionsOrganismo.push(element.organismo)
+    //         });
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     });
 }
 
 async function getOSDE(params) {
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/osdes`)
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.osdes.push({
-                        id: response.data.data[i].id,
-                        osde: response.data.data[i].attributes.nombre
-                    });
-                }
-                data.osdes.forEach(element => {
-                    stringOptionsOsde.push(element.osde)
-                });
-            })
-            .catch(function (error) {
-                console.log(error.response);
+    await api
+        .get(`/getOsdes`)
+        .then(function (response) {
+            data.osdes = response.data
+            data.osdes.forEach(element => {
+                stringOptionsOsde.push(element.nombre)
             });
-    }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+
 }
 
-function getEntidad(params) {
+async function getEntidad(params) {
     api
-        .get(`/entidads?filters[activo][$eq]=s`).then(function (response) {
-            ////console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                data.entidades.push({
-                    nombre: response.data.data[i].attributes.entidad,
-                    id: response.data.data[i].id
-                }
-                )
-            }
+        .get(`/getEntidades`).then(function (response) {
+            // console.log(response);
+            data.entidades = response.data
             data.entidades.forEach(element => {
-                stringOptionsEntidad.push(element.nombre)
+                stringOptionsEntidad.push(element.entidad)
             });
         }).catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
 }
 
 async function getActacontrol(params) {
     data.rows = [];
 
-    let count = 1
-    await api
-        .get(`/actacontrols?populate[entidad][populate][0]=organismo&populate[entidad][populate][1]=osde&filters[fechavisita][$containsi]=${data.fecha_actual}`)
-        .then(function (response) {
-            //console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                let porcientoCortos = 0, porcientoMedios = 0, porcientoLargos = 0, porcientoTotales = 0
-                porcientoCortos = response.data.data[i].attributes.medidas_corto == 0 ?  parseFloat(0).toFixed(2) : ((response.data.data[i].attributes.cumplidas_corto / response.data.data[i].attributes.medidas_corto) * 100).toFixed(2)
-                porcientoMedios = response.data.data[i].attributes.medidas_mediano == 0 ? parseFloat(0).toFixed(2) : ((response.data.data[i].attributes.cumplidas_mediano / response.data.data[i].attributes.medidas_mediano) * 100).toFixed(2)
-                porcientoLargos = response.data.data[i].attributes.medidas_largo == 0 ? parseFloat(0).toFixed(2) : ((response.data.data[i].attributes.cumplidas_largo / response.data.data[i].attributes.medidas_largo) * 100).toFixed(2)
-                porcientoTotales = (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano) == 0 ? parseFloat(0).toFixed(2) : (((response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano) / (response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano)) * 100).toFixed(2)
-                if (response.data.data[i].attributes.entidad.data != null) {
-                    if (data.opcion == 'Entidad' && response.data.data[i].attributes.entidad.data.attributes.entidad == modelEntidad.value) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        data.rows.push({
-                            year: data.fecha_actual,
-                            name: count,
-                            id: response.data.data[i].id,
-                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
-                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
-                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
-                            medidas_corto: response.data.data[i].attributes.medidas_corto,
-                            medidas_largo: response.data.data[i].attributes.medidas_largo,
-                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
-                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
-                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
-                            porcientoCorto: porcientoCortos,
-                            porcientoMedio: porcientoMedios,
-                            porcientoLargo: porcientoLargos,
-                            porcientoTotal: porcientoTotales,
-                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
-                        });
-                        count++
-                    } else if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        data.rows.push({
-                            year: data.fecha_actual,
-                            name: count,
-                            id: response.data.data[i].id,
-                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
-                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
-                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
-                            medidas_corto: response.data.data[i].attributes.medidas_corto,
-                            medidas_largo: response.data.data[i].attributes.medidas_largo,
-                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
-                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
-                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
-                            porcientoCorto: porcientoCortos,
-                            porcientoMedio: porcientoMedios,
-                            porcientoLargo: porcientoLargos,
-                            porcientoTotal: porcientoTotales,
-                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
-                        });
-                        count++
-                    } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
-                        if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                        data.rows.push({
-                            year: data.fecha_actual,
-                            name: count,
-                            id: response.data.data[i].id,
-                            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
-                            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
-                            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
-                            medidas_corto: response.data.data[i].attributes.medidas_corto,
-                            medidas_largo: response.data.data[i].attributes.medidas_largo,
-                            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
-                            totalMedidas: response.data.data[i].attributes.medidas_corto + response.data.data[i].attributes.medidas_largo + response.data.data[i].attributes.medidas_mediano,
-                            totalCumplidas: response.data.data[i].attributes.cumplidas_largo + response.data.data[i].attributes.cumplidas_corto + response.data.data[i].attributes.cumplidas_mediano,
-                            porcientoCorto: porcientoCortos,
-                            porcientoMedio: porcientoMedios,
-                            porcientoLargo: porcientoLargos,
-                            porcientoTotal: porcientoTotales,
-                            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                            organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo
-                        });
-                        count++
-                    }
-                }
-            }
-        })
-        .catch(function (error) {
+    const dataRest = {
+        fecha: data.fecha_actual,
+        opcion: data.opcion,
+        modelo: modelEntidad.value
+    }
+
+    api
+        .get(`/getActacontrol?filters[0]=${data.fecha_actual}&filters[1]=${data.opcion}&filters[2]=${modelEntidad.value}&filters[3]=${modelOrganismo.value}&filters[4]=${modelOsde.value}`).then(function (response) {
+            // console.log(response);
+            data.rows = response.data
+        }).catch(function (error) {
             console.log(error);
         });
 }

@@ -6,7 +6,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" v-model:pagination="pagination" wrap-cells>
+                    :columns="columns" row-key="name" v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-3 text-h6">
