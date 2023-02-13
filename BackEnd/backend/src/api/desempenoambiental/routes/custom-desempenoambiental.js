@@ -43,6 +43,27 @@ module.exports = {
           prefix: "",
           description: "This is a test endpoint",
         }
-      }
+      },
+      {
+        method: 'GET',
+        path: '/getDesempenoData',
+        handler: 'desempenoambiental.getDesempenoData',
+        config: {
+            auth:false,
+          policies: [],
+          prefix: "",
+          description: "This is a test endpoint",
+        }
+      },
+      {
+        method: 'GET',
+        path: '/getDesempenoId/:desempeno_id',
+        handler: 'desempenoambiental.getDesempenoId',
+        config: {
+          policies: [],
+          prefix: "",
+          description: "This is a test endpoint",
+        }
+      },
     ]
   }

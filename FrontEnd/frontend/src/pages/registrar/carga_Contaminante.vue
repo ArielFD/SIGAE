@@ -1,10 +1,10 @@
 <template>
-    <div  class="col-12">
+    <div class="col-12">
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Carga contaminante" dense :rows="data.rows" :columns="columns"
-                    row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
-                    v-model:selected="selected" v-model:pagination="pagination" wrap-cells/>
+                <q-table class="my-sticky-header-table" title="Carga contaminante" dense :rows="data.rows"
+                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
+                    v-model:selected="selected" v-model:pagination="pagination" wrap-cells />
             </q-card-section>
 
             <q-card-actions class="justify-end">
@@ -19,50 +19,51 @@
 
                         <q-separator />
                         <form @submit.prevent.stop="onCreate">
-                        <q-card-section>
-                            <div>
-                                <div class="row">
-                                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
-                                        outlined v-model="model" :options="options" @filter="filterFn"
-                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modelo"/>
-                                    <q-input outlined dense v-model="data.año" type="number" hint="Año" class="col-2" />
+                            <q-card-section>
+                                <div>
+                                    <div class="row">
+                                        <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
+                                            outlined v-model="model" :options="options" @filter="filterFn"
+                                            label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modelo" />
+                                        <q-input outlined dense v-model="data.año" type="number" hint="Año"
+                                            class="col-2" />
+                                    </div>
+                                    <div class="column items-start">
+                                        <q-input outlined dense v-model="data._DB05" type="number" label="DB0₅(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._DQ0" type="number" label="DQ0(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._PT" type="number" label="PT(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._NTK" type="number" label="NTK(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._ST" type="number" label="ST(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._SSED" type="number" label="S.SED(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._PH" type="number" label="pH(U)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._TEMP" type="number" label="TEMP(⁰C)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._COND" type="number" label="COND(µS/cm)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data.Hidrocarburos" type="number"
+                                            label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data.Flujo" type="number" label="Flujo(m³/día)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data.Grasas" type="number"
+                                            label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
+                                    </div>
                                 </div>
-                                <div class="column items-start">
-                                    <q-input outlined dense v-model="data._DB05" type="number" label="DB0₅(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._DQ0" type="number" label="DQ0(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PT" type="number" label="PT(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._NTK" type="number" label="NTK(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._ST" type="number" label="ST(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._SSED" type="number" label="S.SED(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PH" type="number" label="pH(U)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._TEMP" type="number" label="TEMP(⁰C)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._COND" type="number" label="COND(µS/cm)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.Hidrocarburos" type="number"
-                                        label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.Flujo" type="number" label="Flujo(m³/día)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.Grasas" type="number"
-                                        label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
-                                </div>
-                            </div>
-                        </q-card-section>
+                            </q-card-section>
 
-                        <q-separator dark />
+                            <q-separator dark />
 
-                        <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
-                            <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
-                        </q-card-actions>
-                    </form>
+                            <q-card-actions class="justify-end">
+                                <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                            </q-card-actions>
+                        </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
@@ -76,49 +77,50 @@
 
                         <q-separator />
                         <form @submit.prevent.stop="onEdit">
-                        <q-card-section>
-                            <div>
-                                <div class="row">
-                                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
-                                        outlined v-model="data.entidadEdit" :options="options" @filter="filterFn"
-                                        label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modeloEdit"/>
-                                    <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año" class="col-2" />
+                            <q-card-section>
+                                <div>
+                                    <div class="row">
+                                        <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense
+                                            outlined v-model="data.entidadEdit" :options="options" @filter="filterFn"
+                                            label="Entidad" lazy-rules :rules="alerts.inputRules" ref="modeloEdit" />
+                                        <q-input outlined dense v-model="data.añoEdit" type="number" hint="Año"
+                                            class="col-2" />
+                                    </div>
+                                    <div class="column items-start">
+                                        <q-input outlined dense v-model="data._DB05Edit" type="number"
+                                            label="DB0₅(mg/l)" class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._DQ0Edit" type="number" label="DQ0(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._PTEdit" type="number" label="PT(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._NTKEdit" type="number" label="NTK(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._STEdit" type="number" label="ST(mg/l)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._SSEDEdit" type="number"
+                                            label="S.SED(mg/l)" class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._PHEdit" type="number" label="pH(U)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._TEMPEdit" type="number" label="TEMP(⁰C)"
+                                            class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data._CONDEdit" type="number"
+                                            label="COND(µS/cm)" class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data.HidrocarburosEdit" type="number"
+                                            label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data.FlujoEdit" type="number"
+                                            label="Flujo(m³/día)" class="col-2 q-pa-xs" />
+                                        <q-input outlined dense v-model="data.GrasasEdit" type="number"
+                                            label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
+                                    </div>
                                 </div>
-                                <div class="column items-start">
-                                    <q-input outlined dense v-model="data._DB05Edit" type="number" label="DB0₅(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._DQ0Edit" type="number" label="DQ0(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PTEdit" type="number" label="PT(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._NTKEdit" type="number" label="NTK(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._STEdit" type="number" label="ST(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._SSEDEdit" type="number" label="S.SED(mg/l)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._PHEdit" type="number" label="pH(U)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._TEMPEdit" type="number" label="TEMP(⁰C)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data._CONDEdit" type="number" label="COND(µS/cm)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.HidrocarburosEdit" type="number"
-                                        label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.FlujoEdit" type="number" label="Flujo(m³/día)"
-                                        class="col-2 q-pa-xs" />
-                                    <q-input outlined dense v-model="data.GrasasEdit" type="number"
-                                        label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
-                                </div>
-                            </div>
-                        </q-card-section>
+                            </q-card-section>
 
-                        <q-separator dark />
+                            <q-separator dark />
 
-                        <q-card-actions class="justify-end">
-                            <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
-                        </q-card-actions>
-                    </form>
+                            <q-card-actions class="justify-end">
+                                <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
+                            </q-card-actions>
+                        </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="Delete">Eliminar</q-btn>
@@ -133,12 +135,14 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
-  sortBy: "desc",
-  descending: false,
-  page: 1,
-  rowsPerPage: 17,
+    sortBy: "desc",
+    descending: false,
+    page: 1,
+    rowsPerPage: 17,
 });
 
 const $q = useQuasar();
@@ -270,7 +274,7 @@ let data = reactive({
     Hidrocarburos: "0",
     Flujo: "0",
     Grasas: "0",
-    año:"0",
+    año: "0",
 
     _DB05Edit: "0",
     _DQ0Edit: "0",
@@ -284,32 +288,32 @@ let data = reactive({
     HidrocarburosEdit: "0",
     FlujoEdit: "0",
     GrasasEdit: "0",
-    añoEdit:"0",
-    entidadEdit:"",
+    añoEdit: "0",
+    entidadEdit: "",
 
     entidades: [],
-    tempEntidad:"",
-    identidadEdit:"",
+    tempEntidad: "",
+    identidadEdit: "",
 
     cardEdit: false,
     cardCreate: false,
 });
 
 function filterFn(val, update) {
-  if (val === '') {
+    if (val === '') {
+        update(() => {
+            options.value = stringOptions
+
+            // here you have access to "ref" which
+            // is the Vue reference of the QSelect
+        })
+        return
+    }
+
     update(() => {
-      options.value = stringOptions
-
-      // here you have access to "ref" which
-      // is the Vue reference of the QSelect
+        const needle = val.toLowerCase()
+        options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
     })
-    return
-  }
-
-  update(() => {
-    const needle = val.toLowerCase()
-    options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-  })
 }
 
 onMounted(() => {
@@ -325,43 +329,44 @@ function getYear(params) {
 
 function editFields(params) {
     (data._DB05Edit = selected.value[0].DB05),
-    (data._DQ0Edit = selected.value[0].DQ0),
-    (data._PTEdit = selected.value[0].PT),
-    (data._NTKEdit = selected.value[0].NTK),
-    (data._STEdit = selected.value[0].STE),
-    (data._SSEDEdit = selected.value[0].S_SED),
-    (data._PHEdit = selected.value[0].PH),
-    (data._TEMPEdit = selected.value[0].TEMP),
-    (data._CONDEdit = selected.value[0].COND),
-    (data.HidrocarburosEdit = selected.value[0].Hidrocarburos),
-    (data.FlujoEdit = selected.value[0].Flujo),
-    (data.GrasasEdit = selected.value[0].Grasas_aceites),
-    (data.añoEdit = selected.value[0].anno),
-    (data.entidadEdit = selected.value[0].entidad),
-    (data.cardEdit = true);
+        (data._DQ0Edit = selected.value[0].DQ0),
+        (data._PTEdit = selected.value[0].PT),
+        (data._NTKEdit = selected.value[0].NTK),
+        (data._STEdit = selected.value[0].STE),
+        (data._SSEDEdit = selected.value[0].S_SED),
+        (data._PHEdit = selected.value[0].PH),
+        (data._TEMPEdit = selected.value[0].TEMP),
+        (data._CONDEdit = selected.value[0].COND),
+        (data.HidrocarburosEdit = selected.value[0].Hidrocarburos),
+        (data.FlujoEdit = selected.value[0].Flujo),
+        (data.GrasasEdit = selected.value[0].Grasas_aceites),
+        (data.añoEdit = selected.value[0].anno),
+        (data.entidadEdit = selected.value[0].entidad),
+        (data.cardEdit = true);
 }
 
 function Edit(params) {
     data.entidades.forEach(element => {
-        if (element.nombre == data.entidadEdit) {
-        data.identidadEdit = [{ id: element.id }]}
-  });
+        if (element.entidad == data.entidadEdit) {
+            data.identidadEdit = [{ id: element.id }]
+        }
+    });
 
     const dataRest = {
         data: {
-            COND:data._CONDEdit,
-            DB05:data._DB05Edit,
-            DQ0:data._DQ0Edit,
-            Flujo:data.FlujoEdit,
-            Grasas_aceites:data.GrasasEdit,
-            Hidrocarburos:data.HidrocarburosEdit,
-            NTK:data._NTKEdit,
-            PH:data._PHEdit,
-            PT:data._PTEdit,
-            ST:data._STEdit,
-            S_SED:data._SSEDEdit,
-            TEMP:data._TEMPEdit,
-            anno:data.añoEdit,
+            COND: data._CONDEdit,
+            DB05: data._DB05Edit,
+            DQ0: data._DQ0Edit,
+            Flujo: data.FlujoEdit,
+            Grasas_aceites: data.GrasasEdit,
+            Hidrocarburos: data.HidrocarburosEdit,
+            NTK: data._NTKEdit,
+            PH: data._PHEdit,
+            PT: data._PTEdit,
+            ST: data._STEdit,
+            S_SED: data._SSEDEdit,
+            TEMP: data._TEMPEdit,
+            anno: data.añoEdit,
             entidad: data.identidadEdit,
         },
     };
@@ -377,40 +382,40 @@ function Edit(params) {
         .then(function (response) {
             ////console.log(response);
             data.cardEdit = false
-      alerts.alerts[1].message = "Carga contaminate editada";
-      $q.notify(alerts.alerts[1]);
-      auth.postTraza("Carga contaminate editada", "Satisfactorio")
+            alerts.alerts[1].message = "Carga contaminate editada";
+            $q.notify(alerts.alerts[1]);
+            auth.postTraza("Carga contaminate editada", "Satisfactorio")
             getContaminantes();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo editando la Carga contaminate";
-      $q.notify(alerts.alerts[0]);
-      auth.postTraza("Carga contaminate editada", "Fallo")
+            $q.notify(alerts.alerts[0]);
+            auth.postTraza("Carga contaminate editada", "Fallo")
             console.log(error.response);
         });
 
-        selected.value = []
+    selected.value = []
 }
 
 function Create() {
     data.entidades.forEach(element => {
-    if (element.nombre == model.value) data.tempEntidad = [{ id: element.id }]
-  });
+        if (element.entidad == model.value) data.tempEntidad = [{ id: element.id }]
+    });
     const dataRest = {
         data: {
-            COND:data._COND,
-            DB05:data._DB05,
-            DQ0:data._DQ0,
-            Flujo:data.Flujo,
-            Grasas_aceites:data.Grasas,
-            Hidrocarburos:data.Hidrocarburos,
-            NTK:data._NTK,
-            PH:data._PH,
-            PT:data._PT,
-            ST:data._ST,
-            S_SED:data._SSED,
-            TEMP:data._TEMP,
-            anno:data.año,
+            COND: data._COND,
+            DB05: data._DB05,
+            DQ0: data._DQ0,
+            Flujo: data.Flujo,
+            Grasas_aceites: data.Grasas,
+            Hidrocarburos: data.Hidrocarburos,
+            NTK: data._NTK,
+            PH: data._PH,
+            PT: data._PT,
+            ST: data._ST,
+            S_SED: data._SSED,
+            TEMP: data._TEMP,
+            anno: data.año,
             entidad: data.tempEntidad,
         },
     };
@@ -420,21 +425,21 @@ function Create() {
             Authorization: `Bearer ${auth.jwt}`,
         },
     };
-    
+
     api
         .post("/cargacontaminantes", dataRest, authorization)
         .then(function (response) {
             ////console.log(response);
             data.cardCreate = false
-      alerts.alerts[1].message = "Carga contaminate creada";
-      $q.notify(alerts.alerts[1]);
-      auth.postTraza("Carga contaminate creada", "Satisfactorio")
+            alerts.alerts[1].message = "Carga contaminate creada";
+            $q.notify(alerts.alerts[1]);
+            auth.postTraza("Carga contaminate creada", "Satisfactorio")
             getContaminantes();
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando la Carga contaminate";
-      $q.notify(alerts.alerts[0]);
-      auth.postTraza("Carga contaminate creada", "Fallo")
+            $q.notify(alerts.alerts[0]);
+            auth.postTraza("Carga contaminate creada", "Fallo")
             console.log(error.response);
         });
 
@@ -450,14 +455,14 @@ function Delete(params) {
             })
             .then(function (response) {
                 alerts.alerts[1].message = "Carga contaminate eliminada";
-      $q.notify(alerts.alerts[1]);
-      auth.postTraza("Carga contaminate eliminada", "Satisfactorio")
+                $q.notify(alerts.alerts[1]);
+                auth.postTraza("Carga contaminate eliminada", "Satisfactorio")
                 getContaminantes()
             })
             .catch(function (error) {
                 alerts.alerts[0].message = "Fallo eliminando la Carga contaminate";
-      $q.notify(alerts.alerts[0]);
-      auth.postTraza("Carga contaminate eliminada", "Fallo")
+                $q.notify(alerts.alerts[0]);
+                auth.postTraza("Carga contaminate eliminada", "Fallo")
                 console.log(error);
             });
 
@@ -466,69 +471,27 @@ function Delete(params) {
 }
 
 function getEntidad(params) {
-    api
-        .get(`/entidads?filters[activo][$eq]=s`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
-            ////console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                data.entidades.push({
-                    nombre: response.data.data[i].attributes.entidad,
-                    id: response.data.data[i].id
-                }
-                )
-            }
-            data.entidades.forEach(element => {
-                stringOptions.push(element.nombre)
-            });
-        }).catch(function (error) {
-            console.log(error.response);
-        });
+    data.entidades = dataStore.entidad
+    data.entidades.forEach(element => {
+        stringOptions.push(element.entidad)
+    });
 }
 
 async function getContaminantes(params) {
+    selected.value = []
     data.rows = [];
-    let count = 1
-    for (let index = 1; index < 3; index++) {
-        await api
-            .get(`/cargacontaminantes?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                ////console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if(response.data.data[i].attributes.entidad.data.length>0){
-                    data.rows.push({
-                        name: count,
-                        id: response.data.data[i].id,
-                        entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
-                        DB05: response.data.data[i].attributes.DB05,
-                        DQ0: response.data.data[i].attributes.DQ0,
-                        Flujo: response.data.data[i].attributes.Flujo,
-                        Grasas_aceites: response.data.data[i].attributes.Grasas_aceites,
-                        Hidrocarburos: response.data.data[i].attributes.Hidrocarburos,
-                        NTK: response.data.data[i].attributes.NTK,
-                        PH: response.data.data[i].attributes.PH,
-                        PIB: response.data.data[i].attributes.PIB,
-                        PT: response.data.data[i].attributes.PT,
-                        ST: response.data.data[i].attributes.ST,
-                        S_SED: response.data.data[i].attributes.S_SED,
-                        TEMP: response.data.data[i].attributes.TEMP,
-                        anno: response.data.data[i].attributes.anno,
-                        COND: response.data.data[i].attributes.COND
-                    });
-                }
-                    count++
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+
+    await api
+        .get(`/getCargacontaminante`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            data.rows = response.data
+        }).catch(function (error) {
+            console.log(error);
+        });
 }
 
 function getSelectedString() {
@@ -539,27 +502,27 @@ function getSelectedString() {
 }
 
 function onCreate() {
-  modelo.value.validate();
+    modelo.value.validate();
 
-  if (modelo.value.hasError) {
-    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
-    $q.notify(alerts.alerts[0]);
-    // form has error
-  } else {
-    Create();
-  }
+    if (modelo.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    } else {
+        Create();
+    }
 }
 
 function onEdit() {
-  modeloEdit.value.validate();
+    modeloEdit.value.validate();
 
-  if (modeloEdit.value.hasError) {
-    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
-    $q.notify(alerts.alerts[0]);
-    // form has error
-  } else {
-    Edit();
-  }
+    if (modeloEdit.value.hasError) {
+        alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+        $q.notify(alerts.alerts[0]);
+        // form has error
+    } else {
+        Edit();
+    }
 }
 
 </script>

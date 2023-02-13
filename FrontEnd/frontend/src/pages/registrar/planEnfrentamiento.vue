@@ -452,7 +452,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
     sortBy: "desc",
     descending: false,
@@ -668,7 +670,7 @@ function editFields(params) {
 
 function Edit(params) {
     data.entidades.forEach(element => {
-        if (element.nombre == data.entidadEdit) data.identidadEdit = { id: element.id }
+        if (element.entidad == data.entidadEdit) data.identidadEdit = { id: element.id }
     });
     const dataRest = {
         data: {
@@ -735,7 +737,7 @@ function Edit(params) {
 
 function Create() {
     data.entidades.forEach(element => {
-        if (element.nombre == model.value) data.tempEntidad = { id: element.id }
+        if (element.entidad == model.value) data.tempEntidad = { id: element.id }
     });
     const dataRest = {
         data: {
@@ -820,85 +822,24 @@ function Delete(params) {
 }
 
 function getEntidad(params) {
-    api
-        .get(`/entidads?filters[activo][$eq]=s`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
-            ////console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                data.entidades.push({
-                    nombre: response.data.data[i].attributes.entidad,
-                    id: response.data.data[i].id
-                }
-                )
-            }
-            data.entidades.forEach(element => {
-                stringOptions.push(element.nombre)
+        data.entidades=dataStore.entidad
+        data.entidades.forEach(element => {
+                stringOptions.push(element.entidad)
             });
-        }).catch(function (error) {
-            console.log(error.response);
-        });
 }
 
 async function getEnfrentamiento(params) {
     data.rows = [];
-    let count = 1
-    for (let index = 1; index < 2; index++) {
-        await api
-            .get(`/plan-enfrentamientos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    data.rows.push({
-                        name: count,
-                        id: response.data.data[i].id,
-                        entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-                        desechos: response.data.data[i].attributes.desechos,
-                        inversiones: response.data.data[i].attributes.inversiones,
-                        licencia: response.data.data[i].attributes.licencia,
-                        observaciones: response.data.data[i].attributes.observaciones,
-                        permiso: response.data.data[i].attributes.permiso,
-                        plan: response.data.data[i].attributes.plan,
-                        sistema: response.data.data[i].attributes.sistema,
-                        trampa: response.data.data[i].attributes.trampa,
-                        medidas: response.data.data[i].attributes.medidas,
-                        cumplidas: response.data.data[i].attributes.cumplidas,
-                        evaluadas: response.data.data[i].attributes.evaluadas,
-                        incumplidas: response.data.data[i].attributes.incumplidas,
-                        cuerpoReceptor: response.data.data[i].attributes.cuerpoReceptor,
-                        descripcion: response.data.data[i].attributes.descripcion,
-                        marchaAcorde: response.data.data[i].attributes.marchaAcorde,
-                        nombreLicencia: response.data.data[i].attributes.nombreLicencia,
-                        nombrePermiso: response.data.data[i].attributes.nombrePermiso,
-                        observacionesDesechos: response.data.data[i].attributes.observacionesDesechos,
-                        fecha: response.data.data[i].attributes.fecha,
-                        monitoreo: false,
-                        tratamiento: false,
-                        funcionamiento: ""
-                    });
-                    Object.keys(data.rows[i]).forEach(function (key) {
-                        if (data.rows[i][key] === true) {
-                            data.rows[i][key] = "si"
-                        } else if (data.rows[i][key] === false) {
-                            data.rows[i][key] = "no"
-                        }
-                    })
-                    count++
-                }
-                data.rows.forEach(element => {
+    await api
+        .get(`/getPlanEnfrentamientoData`)
+        .then(function (response) {
+            data.rows=response.data
+            data.rows.forEach(element => {
                     getContaminantes(element)
                 });
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+        }).catch(function (error) {
+            console.log(error);
+        });
 }
 
 async function getContaminantes(params) {

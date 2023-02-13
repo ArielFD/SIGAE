@@ -13,7 +13,8 @@ export const useDataStore = defineStore({
     salida:[],
     prioridad:[],
     unidad:[],
-    categoria:[]
+    categoria:[],
+    entidad:[]
   }),
   getters: {
   },

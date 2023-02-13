@@ -9,7 +9,6 @@ const { createCoreController } = require('@strapi/strapi').factories;
 module.exports = createCoreController("api::residual.residual", ({ strapi }) => ({
     async getResidualId(ctx) {
       const {residual_id} = ctx.params;
-      console.log(residual_id);
       let residual = await strapi.db
         .query("api::residual.residual")
         .findOne({

@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-table title="Tabla de Aprovechamiento de Residuales" dense :rows="data.rows" :columns="columns" row-key="name"
       selection="single" v-model:selected="selected" />
-
+    {{ data.arrIdResidual }}
     <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="data.cardCreate = true">Agregar</q-btn>
     <q-dialog v-model="data.cardCreate">
       <q-card class="my-card bg-primary" style="width:300px">
@@ -48,7 +48,7 @@ import { useQuasar } from "quasar";
 import { useDataStore } from "src/stores/data-store";
 
 const dataStore = useDataStore();
-const emit = defineEmits(["addId"])
+const emit = defineEmits(["addId","deleteId"])
 const props = defineProps(["idResidual"])
 
 const $q = useQuasar();
@@ -105,9 +105,9 @@ let data = reactive({
 })
 onMounted(() => {
   if (props.idResidual) {
-    props.idResidual.forEach(element => {
-      data.arrIdResidual.push(element.id)
-    });
+    for (let index = 0; index < props.idResidual.length; index++) {
+      data.arrIdResidual.push(props.idResidual[index]) 
+    }
   }
 
   getCategorias()
@@ -124,7 +124,7 @@ function Create() {
   });
 
   data.unidades.forEach(element => {
-    if (element.unidad == data.unidad) tempUnid = element.id
+    if (element.Nombre == data.unidad) tempUnid = element.id
   });
 
   const dataRest = {
@@ -172,13 +172,14 @@ function Delete(params) {
     })
     .then(function (response) {
       alerts.alerts[1].message = "Aprovechamiento eliminado";
-      $q.notify(alerts.alerts[1]);
       for (let index = 0; index < data.arrIdResidual.length; index++) {
         if (tempId == data.arrIdResidual[index]) {
           data.arrIdResidual.splice(index, 1)
+          emit('deleteId', index)
         }
       }
       getResidual(data.arrIdResidual)
+      $q.notify(alerts.alerts[1]);
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando el Aprovechamiento";
@@ -190,16 +191,16 @@ function Delete(params) {
 
 function getCategorias(params) {
   data.categorias = dataStore.categoria
-  data.categorias.forEach(element => {
-    data.category.push(element.categoria)
-  });
+      data.categorias.forEach(element => {
+        data.category.push(element.categoria)
+      });
 }
 
 function getUnidades(params) {
   data.unidades = dataStore.unidad
-  data.unidades.forEach(element => {
-    data.unid.push(element.unidad)
-  });
+      data.unidades.forEach(element => {
+        data.unid.push(element.Nombre)
+      });
 }
 
 function getResidual(params) {

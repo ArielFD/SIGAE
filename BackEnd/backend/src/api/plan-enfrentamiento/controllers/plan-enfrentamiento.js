@@ -204,5 +204,57 @@ module.exports = createCoreController(
   
         return data3;
       },
+      
+      async getPlanEnfrentamientoData(ctx) {
+        let data = ctx.query.filters;
+        let enfrentamiento = await strapi.db
+          .query("api::plan-enfrentamiento.plan-enfrentamiento")
+          .findMany({
+            populate: true
+          });
+  
+        let rows=[]
+          let count=1
+
+        for (let i = 0; i < enfrentamiento.length; i++) {
+            rows.push({
+                name: count,
+                id: enfrentamiento[i].id,
+                entidad: enfrentamiento[i].entidad.entidad,
+                desechos: enfrentamiento[i].desechos,
+                inversiones: enfrentamiento[i].inversiones,
+                licencia: enfrentamiento[i].licencia,
+                observaciones: enfrentamiento[i].observaciones,
+                permiso: enfrentamiento[i].permiso,
+                plan: enfrentamiento[i].plan,
+                sistema: enfrentamiento[i].sistema,
+                trampa: enfrentamiento[i].trampa,
+                medidas: enfrentamiento[i].medidas,
+                cumplidas: enfrentamiento[i].cumplidas,
+                evaluadas: enfrentamiento[i].evaluadas,
+                incumplidas: enfrentamiento[i].incumplidas,
+                cuerpoReceptor: enfrentamiento[i].cuerpoReceptor,
+                descripcion: enfrentamiento[i].descripcion,
+                marchaAcorde: enfrentamiento[i].marchaAcorde,
+                nombreLicencia: enfrentamiento[i].nombreLicencia,
+                nombrePermiso: enfrentamiento[i].nombrePermiso,
+                observacionesDesechos: enfrentamiento[i].observacionesDesechos,
+                fecha: enfrentamiento[i].fecha,
+                monitoreo: false,
+                tratamiento: false,
+                funcionamiento: ""
+            });
+            Object.keys(rows[i]).forEach(function (key) {
+                if (rows[i][key] === true) {
+                    rows[i][key] = "si"
+                } else if (rows[i][key] === false) {
+                    rows[i][key] = "no"
+                }
+            })
+            count++
+        }
+  
+        return rows;
+      },
   })
 );

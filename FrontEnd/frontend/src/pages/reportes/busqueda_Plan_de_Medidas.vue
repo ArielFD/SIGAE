@@ -298,31 +298,15 @@ async function getOrganismos(params) {
 }
 
 async function getOSDE(params) {
-    await api
-        .get(`/getOsdes`)
-        .then(function (response) {
-            data.osdes = response.data
-            data.osdes.forEach(element => {
-                stringOptionsOsde.push(element.nombre)
+    dataStore.osde.forEach(element => {
+                stringOptionsOsde.push(element.Nombre)
             });
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
 }
 
 async function getEntidad(params) {
-    api
-        .get(`/getEntidades`).then(function (response) {
-            // console.log(response);
-            data.entidades = response.data
-            data.entidades.forEach(element => {
+    dataStore.entidad.forEach(element => {
                 stringOptionsEntidad.push(element.entidad)
             });
-        }).catch(function (error) {
-            console.log(error);
-        });
 }
 
 async function getActacontrol(params) {

@@ -109,15 +109,15 @@ let data = reactive({
 })
 
 onMounted(() => {
-  if (!localStorage.getItem("fallo")) {
-    localStorage.setItem("fallo", "0");
-  }
-  if (
-    localStorage.getItem("userData") != "null") {
-    (auth.jwt = localStorage.getItem("jwt")), (auth.user = JSON.parse(localStorage.getItem("userData"))),
-      (auth.email = JSON.parse(localStorage.getItem("userData")).email),
-      (auth.password = JSON.parse(localStorage.getItem("userData")).password);
-  }
+  // if (!localStorage.getItem("fallo")) {
+  //   localStorage.setItem("fallo", "0");
+  // }
+  // if (
+  //   localStorage.getItem("userData") != "null") {
+  //   (auth.jwt = localStorage.getItem("jwt")), (auth.user = JSON.parse(localStorage.getItem("userData"))),
+  //     (auth.email = JSON.parse(localStorage.getItem("userData")).email),
+  //     (auth.password = JSON.parse(localStorage.getItem("userData")).password);
+  // }
 
   router.push("/Principal");
   auth.getLocalIP().then((ipAddr) => {
@@ -134,7 +134,24 @@ onMounted(() => {
   getPrioridads()
   getSalidas()
   getOSDEs()
+  getEntidades()
 })
+
+function getEntidades(params) {
+    api
+      .get("/getEntidades", {
+        headers: {
+          Authorization: "Bearer " + auth.jwt,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        dataStore.entidad = response.data
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
 function getSalidas(params) {
     api
@@ -176,7 +193,7 @@ function getMunicipios(params) {
       },
     })
     .then(function (response) {
-      //console.log(response);
+      console.log(response);
       dataStore.municipio = response.data
     })
     .catch(function (error) {
@@ -223,6 +240,7 @@ async function getOrganismos(params) {
     })
     .catch(function (error) {
       console.log(error);
+      if(!error.response) alert("Conexion perdida con el servidor")
     });
 }
 
@@ -241,6 +259,7 @@ function getUnidades(params) {
   api
     .get("/getUnidades")
     .then(function (response) {
+      console.log(response);
       dataStore.unidad = response.data
     })
     .catch(function (error) {
@@ -309,23 +328,24 @@ async function Login() {
       auth.jwt = response.data.jwt;
       auth.user = response.data.user;
       auth.user.password = auth.password;
-      localStorage.setItem("jwt", response.data.jwt);
-      localStorage.setItem("userData", JSON.stringify(auth.user));
-      localStorage.setItem("fallo", "0");
+      // localStorage.setItem("jwt", response.data.jwt);
+      // localStorage.setItem("userData", JSON.stringify(auth.user));
+      // localStorage.setItem("fallo", "0");
       router.push("/Principal");
       auth.postTraza("Login", "Satisfactorio")
       getRol()
     })
     .catch(function (error) {
-      console.log(error);
+      console.log(error.response);
+      if(!error.response) alert("Conexion perdida con el servidor")
       auth.postTraza("Login", "Fallo en la Operacion")
-      let temp = parseInt(localStorage.getItem("fallo"));
-      temp++;
-      localStorage.setItem("fallo", temp);
-      if (temp > 5) {
-        data.fallo = true;
-        resetTimeOut();
-      }
+      // let temp = parseInt(localStorage.getItem("fallo"));
+      // temp++;
+      // localStorage.setItem("fallo", temp);
+      // if (temp > 5) {
+      //   data.fallo = true;
+      //   resetTimeOut();
+      // }
       alertRules.alerts[0].message = "Credenciales incorrectas";
       $q.notify(alertRules.alerts[0]);
     });

@@ -34,7 +34,7 @@
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
-                                <q-item-label><b>Nuevo: "Desempeño Ambiental" {{ data.tempEntidad }}</b></q-item-label>
+                                <q-item-label><b>Nuevo: "Desempeño Ambiental"</b></q-item-label>
                             </q-item-section>
                         </q-item>
 
@@ -281,7 +281,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
     sortBy: "desc",
     descending: false,
@@ -498,17 +500,10 @@ onMounted(() => {
 });
 
 watch(() => model.value, (value) => {
-    console.log(value);
-    // data.rowsAnt.forEach(element => {
-    //     console.log(value);
-    //     console.log(element.entidad);
-    //     //if(element.entidad==value) 
-    // });
     let temp = ""
     data.entidades.forEach(element => {
-        if (element.nombre == model.value) temp = element.id
+        if (element.entidad == model.value) temp = element.id
     });
-    console.log(temp);
     getDesempeñoID(temp)
 })
 
@@ -540,7 +535,7 @@ function editFields(params) {
 
 function Edit(params) {
     data.entidades.forEach(element => {
-        if (element.nombre == data.entidadEdit) {
+        if (element.entidad == data.entidadEdit) {
             data.identidadEdit = [{ id: element.id }]
         }
     });
@@ -675,141 +670,45 @@ function Delete(params) {
 }
 
 function getEntidad(params) {
-    api
-        .get(`/entidads?filters[activo][$eq]=s`, {
-            headers: {
-                Authorization: "Bearer " + auth.jwt,
-            },
-        }).then(function (response) {
-            ////////console.log(response);
-            for (let i = 0; i < response.data.data.length; i++) {
-                data.entidades.push({
-                    nombre: response.data.data[i].attributes.entidad,
-                    id: response.data.data[i].id
-                }
-                )
-            }
-            data.entidades.forEach(element => {
-                stringOptions.push(element.nombre)
+        data.entidades=dataStore.entidad
+        data.entidades.forEach(element => {
+                stringOptions.push(element.entidad)
             });
-        }).catch(function (error) {
-            console.log(error.response);
-        });
 }
 
 async function getDesempeño(params) {
     data.rows = [];
-    let count = 1
-    for (let index = 1; index < 10; index++) {
-        await api
-            .get(`/desempenoambientals?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual}`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-            .then(function (response) {
-                //console.log(response);
-                for (let i = 0; i < response.data.data.length; i++) {
-                    if (response.data.data[i].attributes.entidad.data.length > 0) {
-                        data.rows.push({
-                            name: count.toString(),
-                            id: response.data.data[i].id,
-                            entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
-                            coordinador: response.data.data[i].attributes.exist_coordinador,
-                            diagnostico: response.data.data[i].attributes.exist_diagnostico,
-                            politica: response.data.data[i].attributes.exist_politica,
-                            indicadores: response.data.data[i].attributes.exist_indicadores,
-                            plan: response.data.data[i].attributes.exist_plan_accion,
-                            legislacion: response.data.data[i].attributes.exist_legislacion,
-                            capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
-                            acciones: response.data.data[i].attributes.exist_accionespml,
-                            programa: response.data.data[i].attributes.exist_program_gestionambiental,
-                            recurso: response.data.data[i].attributes.exist_recurso_financiero,
-                            aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
-                            sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
-                            anno: response.data.data[i].attributes.anno,
-                            carga: response.data.data[i].attributes.disminucion_carga_contaminante,
-                            observaciones: response.data.data[i].attributes.observaciones,
-                            total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
-                        });
-                        Object.keys(data.rows[i]).forEach(function (key) {
-                            if (data.rows[i][key] != null || data.rows[i][key] != undefined) {
-                                if (data.rows[i][key] === 1) {
-                                    data.rows[i][key] = "si"
-                                } else if (data.rows[i][key] === 0) {
-                                    data.rows[i][key] = "no"
-                                }
-                            }
-                        })
-                    }
-                    count++
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+    await api
+        .get(`/getDesempenoData?filters[0]=${data.fecha_actual}`)
+        .then(function (response) {
+            data.rows=response.data
+        }).catch(function (error) {
+            console.log(error);
+        });
 }
 
 async function getDesempeñoID(params) {
+    console.log(params);
     data.rowsAnt = [];
     let count = 1
     let encontrado = true
     let annos = 0
     do {
-        for (let index = 1; index < 10; index++) {
-            await api
-                .get(`/desempenoambientals?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&sort[0]=anno%3Adesc&filters[anno][$containsi]=${data.fecha_actual - annos}`, {
+        await api
+        .get(`/getDesempenoId/${params}?filters[0]=${data.fecha_actual-annos}`, {
                     headers: {
                         Authorization: "Bearer " + auth.jwt,
                     },
                 })
-                .then(function (response) {
-                    //console.log(response);
-                    for (let i = 0; i < response.data.data.length; i++) {
-                        if (response.data.data[i].attributes.entidad.data.length > 0 && response.data.data[i].attributes.entidad.data[0].id == params) {
-                            encontrado = false
-                            data.rowsAnt.push({
-                                name: count.toString(),
-                                id: response.data.data[i].id,
-                                entidad: response.data.data[i].attributes.entidad.data[0].attributes.entidad,
-                                coordinador: response.data.data[i].attributes.exist_coordinador,
-                                diagnostico: response.data.data[i].attributes.exist_diagnostico,
-                                politica: response.data.data[i].attributes.exist_politica,
-                                indicadores: response.data.data[i].attributes.exist_indicadores,
-                                plan: response.data.data[i].attributes.exist_plan_accion,
-                                legislacion: response.data.data[i].attributes.exist_legislacion,
-                                capacitacion: response.data.data[i].attributes.exist_plan_capacitacion,
-                                acciones: response.data.data[i].attributes.exist_accionespml,
-                                programa: response.data.data[i].attributes.exist_program_gestionambiental,
-                                recurso: response.data.data[i].attributes.exist_recurso_financiero,
-                                aprovechamiento: response.data.data[i].attributes.aprovechamiento_economico,
-                                sistema: response.data.data[i].attributes.exist_sistem_tratamiento,
-                                anno: response.data.data[i].attributes.anno,
-                                carga: response.data.data[i].attributes.disminucion_carga_contaminante,
-                                observaciones: response.data.data[i].attributes.observaciones,
-                                total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
-                            });
-                            // Object.keys(data.rowsAnt[i]).forEach(function (key) {
-                            //     if (data.rowsAnt[i][key] != null || data.rowsAnt[i][key] != undefined) {
-                            //         if (data.rowsAnt[i][key] === 1) {
-                            //             data.rowsAnt[i][key] = "si"
-                            //         } else if (data.rowsAnt[i][key] === 0) {
-                            //             data.rowsAnt[i][key] = "no"
-                            //         }
-                            //     }
-                            // })
-                        }
-                        count++
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        }
+        .then(function (response) {
+            data.rowsAnt=response.data
+            if(data.rowsAnt.length>0) encontrado=false
+        }).catch(function (error) {
+            console.log(error);
+        });
+
         annos++
         if (annos == 5) break;
-        console.log(annos);
     } while (encontrado);
 }
 

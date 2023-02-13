@@ -28,7 +28,7 @@
         </q-card-section>
 
         <q-card-actions class="justify-end">
-          <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
+          <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true; clear(); data.id_Residual=[]">Insertar</q-btn>
           <q-dialog v-model="data.cardCreate">
             <q-card class="my-card bg-primary" flat bordered style="width: 100%">
               <q-item>
@@ -157,7 +157,7 @@
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_mediano
-" label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
+                      " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
                       <q-input outlined dense v-model="data.cumplidas_mediano" label="Cumplidas a mediano"
                         class="q-pa-sm" type="number" style="max-width: 300px" />
                     </div>
@@ -188,7 +188,7 @@
                 <q-checkbox v-model="data.aprovechamiento" color="secondary" label="Aprovechamiento de residuales"
                   true-value="si" false-value="no" class="full-width justify-center" />
 
-                <aprovechamiento v-if="data.aprovechamiento == 'si'" @addId='addingId'
+                <aprovechamiento v-if="data.aprovechamiento == 'si'" @addId='addingId' @deleteId='deleteId'
                   :idResidual="data.id_ResidualEdit" />
 
                 <q-separator dark />
@@ -208,7 +208,7 @@
                   <q-item-label><b>Editar: "Acta de Control"</b></q-item-label>
                 </q-item-section>
               </q-item>
-
+{{ selected }}
               <q-separator />
               <form @submit.prevent.stop="onEdit">
                 <q-card-section>
@@ -329,7 +329,7 @@
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_medianoEdit
-" label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
+                      " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
                       <q-input outlined dense v-model="data.cumplidas_medianoEdit" label="Cumplidas a mediano"
                         class="q-pa-sm" type="number" style="max-width: 300px" />
                     </div>
@@ -360,7 +360,7 @@
                 <q-checkbox v-model="data.aprovechamientoEdit" color="secondary" label="Aprovechamiento de residuales"
                   true-value="si" false-value="no" class="full-width justify-center" />
 
-                <aprovechamiento v-if="data.aprovechamientoEdit == 'si'" @addId='addingId'
+                <aprovechamiento v-if="data.aprovechamientoEdit == 'si'" @addId='addingId' @deleteId='deleteId'
                   :idResidual="data.id_ResidualEdit" />
 
                 <q-separator dark />
@@ -385,7 +385,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
   sortBy: "desc",
   descending: false,
@@ -532,8 +534,8 @@ let data = reactive({
   estadoBien: "0",
   estadoMal: "0",
   estadoRegular: "0",
-  politica: "no",
-  diagnostico: "no",
+  politica: "No",
+  diagnostico: "No",
 
   atendido_por: "",
   comision_control: "",
@@ -543,7 +545,6 @@ let data = reactive({
   cumplidas_largo: "0",
   cumplidas_mediano: "0",
   deficiencias: "",
-  diagnostico: "no",
   fechavisita: "",
   medidas_corto: "0",
   medidas_largo: "0",
@@ -562,8 +563,8 @@ let data = reactive({
   estadoBienEdit: "0",
   estadoMalEdit: "0",
   estadoRegularEdit: "0",
-  politicaEdit: "no",
-  diagnosticoEdit: "no",
+  politicaEdit: "No",
+  diagnosticoEdit: "No",
 
   atendido_porEdit: "",
   comision_controlEdit: "",
@@ -596,6 +597,7 @@ let data = reactive({
 });
 
 function clear(params) {
+  model.value="",
   data.tratamiento = "no"
   data.idoniedad = ""
   data.estadoTecnico = ""
@@ -605,8 +607,8 @@ function clear(params) {
   data.estadoBien = "0"
   data.estadoMal = "0",
     data.estadoRegular = "0"
-  data.politica = "no"
-  data.diagnostico = "no"
+  data.politica = "No"
+  data.diagnostico = "No"
 
   data.atendido_por = ""
   data.comision_control = ""
@@ -616,7 +618,6 @@ function clear(params) {
   data.cumplidas_largo = "0"
   data.cumplidas_mediano = "0"
   data.deficiencias = ""
-  data.diagnostico = "no"
   data.fechavisita = ""
   data.medidas_corto = "0"
   data.medidas_largo = "0"
@@ -624,50 +625,52 @@ function clear(params) {
   data.observaciones = ""
   data.politica_ambiental = ""
   data.recomendaciones = ""
-  data.aprovechamiento = "no"
+  data.aprovechamiento = "no",
+  data.id_ResidualEdit=[]
 }
 
-watch(() => model.value, (value) => {
-  clear()
-  data.entidades.forEach(element => {
-    if (element.nombre == value) {
-      const actualYear = new Date()
-      api
-        .get(`/actacontrols?populate=%2A&filters[fechavisita][$containsi]=${actualYear.getFullYear().toString()}&sort[0]=fechavisita%3Adesc`, {
-          headers: {
-            Authorization: "Bearer " + auth.jwt,
-          },
-        }).then(function (response) {
-          //console.log(response);
-          for (let i = 0; i < response.data.data.length; i++) {
-            if (response.data.data[i].attributes.entidad.data.id == element.id) {
-              data.medidas_corto = response.data.data[i].attributes.medidas_corto
-              data.medidas_largo = response.data.data[i].attributes.medidas_largo
-              data.medidas_mediano = response.data.data[i].attributes.medidas_mediano
-              data.cumplidas_corto = response.data.data[i].attributes.cumplidas_corto
-              data.cumplidas_largo = response.data.data[i].attributes.cumplidas_largo
-              data.cumplidas_mediano = response.data.data[i].attributes.cumplidas_mediano
-              let residuales = "no"
-              let element = [];
-              for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-                element.push(response.data.data[i].attributes.residuals.data[index].id)
-              }
-              if (element.length > 0) residuales = "si"
-              data.ResidualAntiguo = element
-              for (let index = 0; index < data.ResidualAntiguo.length; index++) {
-                data.id_ResidualEdit.push({ id: data.ResidualAntiguo[index] })
-              }
-              data.aprovechamiento = residuales
-              break;
-            }
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  });
-})
+// watch(() => model.value, (value) => {
+//   clear()
+//   data.id_ResidualEdit=[]
+//   data.entidades.forEach(element => {
+//     if (element.nombre == value) {
+//       const actualYear = new Date()
+//       api
+//         .get(`/actacontrols?populate=%2A&filters[fechavisita][$containsi]=${actualYear.getFullYear().toString()}&sort[0]=fechavisita%3Adesc`, {
+//           headers: {
+//             Authorization: "Bearer " + auth.jwt,
+//           },
+//         }).then(function (response) {
+//           //console.log(response);
+//           for (let i = 0; i < response.data.data.length; i++) {
+//             if (response.data.data[i].attributes.entidad.data.id == element.id) {
+//               data.medidas_corto = response.data.data[i].attributes.medidas_corto
+//               data.medidas_largo = response.data.data[i].attributes.medidas_largo
+//               data.medidas_mediano = response.data.data[i].attributes.medidas_mediano
+//               data.cumplidas_corto = response.data.data[i].attributes.cumplidas_corto
+//               data.cumplidas_largo = response.data.data[i].attributes.cumplidas_largo
+//               data.cumplidas_mediano = response.data.data[i].attributes.cumplidas_mediano
+//               let residuales = "no"
+//               let element = [];
+//               for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
+//                 element.push(response.data.data[i].attributes.residuals.data[index].id)
+//               }
+//               if (element.length > 0) residuales = "si"
+//               data.ResidualAntiguo = element
+//               for (let index = 0; index < data.ResidualAntiguo.length; index++) {
+//                 data.id_ResidualEdit.push({ id: data.ResidualAntiguo[index] })
+//               }
+//               data.aprovechamiento = residuales
+//               break;
+//             }
+//           }
+//         })
+//         .catch(function (error) {
+//           console.log(error);
+//         });
+//     }
+//   });
+// })
 
 function filterFn(val, update) {
   if (val === '') {
@@ -697,16 +700,21 @@ function getYear(params) {
 }
 
 function addingId(params) {
-  data.id_Residual.push({ id: params })
-  data.id_ResidualEdit.push({ id: params })
+  data.id_Residual.push( params )
+  data.id_ResidualEdit.push(params )
+}
+
+function deleteId(params) {
+  data.id_Residual.push( params,1 )
+  data.id_ResidualEdit.splice(params,1)
 }
 
 function editFields(params) {
-
+  data.id_ResidualEdit = []
   if (selected.value[0].residuals.length > 0) {
     data.aprovechamientoEdit = "si"
     for (let index = 0; index < selected.value[0].residuals.length; index++) {
-      data.id_ResidualEdit.push({ id: selected.value[0].residuals[index] })
+      data.id_ResidualEdit.push(selected.value[0].residuals[index] )
     }
   }
   else { data.aprovechamientoEdit = "no" }
@@ -730,7 +738,6 @@ function editFields(params) {
     (data.cumplidas_largoEdit = selected.value[0].cumplidas_largo),
     (data.cumplidas_medianoEdit = selected.value[0].cumplidas_mediano),
     (data.deficienciasEdit = selected.value[0].deficiencias),
-    (data.diagnosticoEdit = selected.value[0].diagnostico_ambiental),
     (data.fechavisitaEdit = selected.value[0].fechavisita),
     (data.medidas_cortoEdit = selected.value[0].medidas_corto),
     (data.medidas_largoEdit = selected.value[0].medidas_largo),
@@ -761,7 +768,7 @@ function editSistTrat() {
     api
       .put(`/sis-tratamientos/${selected.value[0].idSist}`, dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         resolve(response.data.data.id)
       })
       .catch(function (error) {
@@ -771,6 +778,127 @@ function editSistTrat() {
 }
 
 function editTrampa() {
+  console.log("Editar");
+  return new Promise(resolve => {
+    const dataRest = {
+      data: {
+        bien: data.estadoBienEdit,
+        regular: data.estadoRegularEdit,
+        mal: data.estadoMalEdit,
+      }
+    }
+
+    const authorization = {
+      headers: {
+        Authorization: `Bearer ${auth.jwt}`,
+      },
+    };
+
+    console.log(dataRest);
+
+    api
+      .put(`/trampa-grasas/${selected.value[0].idTramp}`, dataRest, authorization)
+      .then(function (response) {
+        console.log(response);
+        resolve(response.data.data.id)
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  })
+}
+
+async function Edit(params) {
+  let sist,tramp
+  if(selected.value[0].idTramp=="" ? tramp=await EditcreateTrampa() : tramp=await editTrampa())
+  if(selected.value[0].idSist=="" ? sist=await EditcreateSistTrat() : sist=await editSistTrat())
+
+  data.entidades.forEach(element => {
+    if (element.entidad == data.entidadEdit) data.identidadEdit = { id: element.id }
+  });
+ 
+  const dataRest = {
+    data: {
+      politica_ambiental: data.politicaEdit,
+      diagnostico_ambiental: data.diagnosticoEdit,
+
+      atendido_por: data.atendido_porEdit,
+      comision_control: data.comision_controlEdit,
+      consumo_agua: data.consumo_aguaEdit,
+      consumo_energetico: data.consumo_energeticoEdit,
+      cumplidas_corto: data.cumplidas_cortoEdit,
+      cumplidas_largo: data.cumplidas_largoEdit,
+      cumplidas_mediano: data.cumplidas_medianoEdit,
+      deficiencias: data.deficienciasEdit,
+      fechavisita: data.fechavisitaEdit,
+      medidas_corto: data.medidas_cortoEdit,
+      medidas_largo: data.medidas_largoEdit,
+      medidas_mediano: data.medidas_medianoEdit,
+      observaciones: data.observacionesEdit,
+      recomendaciones: data.recomendacionesEdit,
+      entidad: data.identidadEdit,
+      residuals: data.id_ResidualEdit,
+      sis_tratamiento: sist,
+      trampa_grasa: tramp,
+    },
+  };
+
+  const authorization = {
+    headers: {
+      Authorization: `Bearer ${auth.jwt}`,
+    },
+  };
+
+  api
+    .put(`/actacontrols/${selected.value[0].id}`, dataRest, authorization)
+    .then(function (response) {
+      // console.log(response);
+      data.cardEdit = false
+      alerts.alerts[1].message = "Acta de control editada";
+      $q.notify(alerts.alerts[1]);
+      auth.postTraza("Acta de control editada", "Satisfactorio")
+      getActacontrol();
+    })
+    .catch(function (error) {
+      alerts.alerts[0].message = "Fallo editando el Acta de control";
+      $q.notify(alerts.alerts[0]);
+      auth.postTraza("Acta de control editada", "Fallo")
+      console.log(error.response);
+    });
+
+  selected.value = []
+}
+
+function EditcreateSistTrat() {
+  return new Promise(resolve => {
+    const dataRest = {
+      data: {
+        eficiencia: data.eficienciaEdit,
+        estado: data.estadoTecnicoEdit,
+        idoneidad: data.idoniedadEdit,
+      }
+    }
+
+    const authorization = {
+      headers: {
+        Authorization: `Bearer ${auth.jwt}`,
+      },
+    };
+
+    api
+      .post("/sis-tratamientos", dataRest, authorization)
+      .then(function (response) {
+        // console.log(response);
+        resolve(response.data.data.id)
+      })
+      .catch(function (error) {
+        console.log(error.response);
+      });
+  })
+}
+
+function EditcreateTrampa() {
+  console.log("Crear");
   return new Promise(resolve => {
     const dataRest = {
       data: {
@@ -787,72 +915,15 @@ function editTrampa() {
     };
 
     api
-      .put(`/trampa-grasas/${selected.value[0].idTramp}`, dataRest, authorization)
+      .post("/trampa-grasas", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         resolve(response.data.data.id)
       })
       .catch(function (error) {
         console.log(error.response);
       });
   })
-}
-
-async function Edit(params) {
-  data.entidades.forEach(element => {
-    if (element.nombre == data.entidadEdit) data.identidadEdit = { id: element.id }
-  });
-  const dataRest = {
-    data: {
-      politica_ambiental: data.politicaEdit,
-      diagnostico_ambiental: data.diagnosticoEdit,
-
-      atendido_por: data.atendido_porEdit,
-      comision_control: data.comision_controlEdit,
-      consumo_agua: data.consumo_aguaEdit,
-      consumo_energetico: data.consumo_energeticoEdit,
-      cumplidas_corto: data.cumplidas_cortoEdit,
-      cumplidas_largo: data.cumplidas_largoEdit,
-      cumplidas_mediano: data.cumplidas_medianoEdit,
-      deficiencias: data.deficienciasEdit,
-      diagnostico_ambiental: data.diagnosticoEdit,
-      fechavisita: data.fechavisitaEdit,
-      medidas_corto: data.medidas_cortoEdit,
-      medidas_largo: data.medidas_largoEdit,
-      medidas_mediano: data.medidas_medianoEdit,
-      observaciones: data.observacionesEdit,
-      politica_ambiental: data.politica_ambientalEdit,
-      recomendaciones: data.recomendacionesEdit,
-      entidad: data.identidadEdit,
-      residuals: data.id_ResidualEdit
-    },
-  };
-
-  const authorization = {
-    headers: {
-      Authorization: `Bearer ${auth.jwt}`,
-    },
-  };
-
-  let sist = await editSistTrat()
-  let tramp = await editTrampa()
-
-  api
-    .put(`/actacontrols/${selected.value[0].id}`, dataRest, authorization)
-    .then(function (response) {
-      console.log(response);
-      data.cardEdit = false
-      alerts.alerts[1].message = "Acta de control editada";
-      $q.notify(alerts.alerts[1]);
-      auth.postTraza("Acta de control editada", "Satisfactorio")
-      getActacontrol();
-    })
-    .catch(function (error) {
-      alerts.alerts[0].message = "Fallo editando el Acta de control";
-      $q.notify(alerts.alerts[0]);
-      auth.postTraza("Acta de control editada", "Fallo")
-      console.log(error.response);
-    });
 }
 
 function createSistTrat() {
@@ -874,7 +945,7 @@ function createSistTrat() {
     api
       .post("/sis-tratamientos", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         resolve(response.data.data.id)
       })
       .catch(function (error) {
@@ -884,6 +955,7 @@ function createSistTrat() {
 }
 
 function createTrampa() {
+  console.log("Crear");
   return new Promise(resolve => {
     const dataRest = {
       data: {
@@ -902,7 +974,7 @@ function createTrampa() {
     api
       .post("/trampa-grasas", dataRest, authorization)
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         resolve(response.data.data.id)
       })
       .catch(function (error) {
@@ -915,7 +987,7 @@ async function Create() {
   let sist = await createSistTrat()
   let tramp = await createTrampa()
   data.entidades.forEach(element => {
-    if (element.nombre == model.value) data.tempEntidad = { id: element.id }
+    if (element.entidad == model.value) data.tempEntidad = { id: element.id }
   });
   const dataRest = {
     data: {
@@ -956,13 +1028,14 @@ async function Create() {
       alerts.alerts[1].message = "Acta de control creada";
       $q.notify(alerts.alerts[1]);
       auth.postTraza("Acta de control creada", "Satisfactorio")
+      clear()
       getActacontrol();
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo creando el Acta de control";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Acta de control creada", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -992,119 +1065,27 @@ function Delete(params) {
 }
 
 function getEntidad(params) {
-  api
-    .get(`/entidads?filters[activo][$eq]=s`, {
-      headers: {
-        Authorization: "Bearer " + auth.jwt,
-      },
-    }).then(function (response) {
-      ////console.log(response);
-      for (let i = 0; i < response.data.data.length; i++) {
-        data.entidades.push({
-          nombre: response.data.data[i].attributes.entidad,
-          id: response.data.data[i].id
-        }
-        )
-      }
+      data.entidades=dataStore.entidad
       data.entidades.forEach(element => {
-        stringOptions.push(element.nombre)
+        stringOptions.push(element.entidad)
       });
-    }).catch(function (error) {
-      console.log(error.response);
-    });
 }
 
 async function getActacontrol(params) {
+  selected.value = []
   data.rows = [];
-  let count = 1
-  await api
-    .get(`/actacontrols?populate=%2A&filters[fechavisita][$containsi]=${data.fecha_actual}`, {
-      headers: {
-        Authorization: "Bearer " + auth.jwt,
-      },
-    })
-    .then(function (response) {
-      console.log(response);
-      let tratamiento = "no"
-      for (let i = 0; i < response.data.data.length; i++) {
-        let residuales, trampa
-        const element = [];
-        for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-          element.push(response.data.data[i].attributes.residuals.data[index].id)
-        }
-        if (element.length > 0) residuales = "si"
-        response.data.data[i].attributes.sis_tratamiento.data != null && (response.data.data[i].attributes.sis_tratamiento.data.attributes.eficiencia != "" && response.data.data[i].attributes.sis_tratamiento.data.attributes.estado != "" && response.data.data[i].attributes.sis_tratamiento.data.attributes.idoneidad != "") ? tratamiento = "si" : tratamiento = "no"
-        response.data.data[i].attributes.trampa_grasa.data != null && (response.data.data[i].attributes.trampa_grasa.data.attributes.bien != "0" || response.data.data[i].attributes.trampa_grasa.data.attributes.regular != "0" || response.data.data[i].attributes.trampa_grasa.data.attributes.mal != "0") ? trampa = "si" : trampa = "no"
-        if (response.data.data[i].attributes.entidad.data != null && response.data.data[i].attributes.sis_tratamiento.data != null && response.data.data[i].attributes.trampa_grasa.data != null) {
-          data.rows.push({
-            name: count,
-            id: response.data.data[i].id,
-            atendido_por: response.data.data[i].attributes.atendido_por,
-            comision_control: response.data.data[i].attributes.comision_control,
-            consumo_agua: response.data.data[i].attributes.consumo_agua,
-            consumo_energetico: response.data.data[i].attributes.consumo_energetico,
-            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
-            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
-            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
-            deficiencias: response.data.data[i].attributes.deficiencias,
-            diagnostico_ambiental: response.data.data[i].attributes.diagnostico_ambiental,
-            fechavisita: response.data.data[i].attributes.fechavisita,
-            medidas_corto: response.data.data[i].attributes.medidas_corto,
-            medidas_largo: response.data.data[i].attributes.medidas_largo,
-            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
-            observaciones: response.data.data[i].attributes.observaciones,
-            politica_ambiental: response.data.data[i].attributes.politica_ambiental,
-            recomendaciones: response.data.data[i].attributes.recomendaciones,
-            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-            idEntidad: response.data.data[i].attributes.entidad.data.id,
-            sistema_de_tratamiento: tratamiento,
-            eficiencia: response.data.data[i].attributes.sis_tratamiento.data.attributes.eficiencia,
-            estado_tecnico: response.data.data[i].attributes.sis_tratamiento.data.attributes.estado,
-            idoneidad: response.data.data[i].attributes.sis_tratamiento.data.attributes.idoneidad,
-            trampa_de_grasa: trampa,
-            estadoGrasaBien: response.data.data[i].attributes.trampa_grasa.data.attributes.bien,
-            estadoGrasaRegular: response.data.data[i].attributes.trampa_grasa.data.attributes.regular,
-            estadoGrasaMal: response.data.data[i].attributes.trampa_grasa.data.attributes.mal,
-            residuals: element,
-            residuales: residuales,
-            idSist: response.data.data[i].attributes.sis_tratamiento.data.id,
-            idTramp: response.data.data[i].attributes.trampa_grasa.data.id
-          });
-        } else if (response.data.data[i].attributes.entidad.data != null) {
-          data.rows.push({
-            name: count,
-            id: response.data.data[i].id,
-            atendido_por: response.data.data[i].attributes.atendido_por,
-            comision_control: response.data.data[i].attributes.comision_control,
-            consumo_agua: response.data.data[i].attributes.consumo_agua,
-            consumo_energetico: response.data.data[i].attributes.consumo_energetico,
-            cumplidas_corto: response.data.data[i].attributes.cumplidas_corto,
-            cumplidas_largo: response.data.data[i].attributes.cumplidas_largo,
-            cumplidas_mediano: response.data.data[i].attributes.cumplidas_mediano,
-            deficiencias: response.data.data[i].attributes.deficiencias,
-            diagnostico_ambiental: response.data.data[i].attributes.diagnostico_ambiental,
-            fechavisita: response.data.data[i].attributes.fechavisita,
-            medidas_corto: response.data.data[i].attributes.medidas_corto,
-            medidas_largo: response.data.data[i].attributes.medidas_largo,
-            medidas_mediano: response.data.data[i].attributes.medidas_mediano,
-            observaciones: response.data.data[i].attributes.observaciones,
-            politica_ambiental: response.data.data[i].attributes.politica_ambiental,
-            recomendaciones: response.data.data[i].attributes.recomendaciones,
-            entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
-            idEntidad: response.data.data[i].attributes.entidad.data.id,
-            residuals: element,
-            residuales: residuales,
-            sistema_de_tratamiento: "no",
-            trampa_de_grasa: "no",
-          });
-        }
-        count++
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
 
+  await api
+        .get(`/getActaControlData?filters[0]=${data.fecha_actual}`, {
+                headers: {
+                    Authorization: "Bearer " + auth.jwt,
+                },
+            })
+        .then(function (response) {
+            data.rows=response.data
+        }).catch(function (error) {
+            console.log(error);
+        });
 }
 
 function getSelectedString() {

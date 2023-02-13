@@ -161,9 +161,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { exportFile, useQuasar } from 'quasar'
-import { jsPDF } from "jspdf";
+import { useDataStore } from "src/stores/data-store";
 
-const doc = new jsPDF();
+const dataStore = useDataStore();
 const pagination = ref({
   sortBy: "desc",
   descending: false,
@@ -431,19 +431,6 @@ function exportTable() {
     'text/csv'
   )
 
-  var elementHTML = document.querySelector("#content")
-  doc.text(["Empresa de control Ambiental", "Bahia de la Habana"], 100, 10, { align: 'center' })
-  doc.text(["_______________________________", "Firma del Director"], 100, 280, { align: 'center' })
-  doc.html(elementHTML, {
-    callback: function (doc) {
-      doc.save("sample.pdf")
-    },
-    x: 20,
-    y: 20,
-    width: 170,
-    windowWidth: 2000
-  })
-
   if (status !== true) {
     $q.notify({
       message: 'Browser denied file download...',
@@ -508,10 +495,10 @@ function cambiarNombre(params) {
     if (element.organismo == data.organismoEdit) idOrganismo = [{ id: element.id }]
   });
   data.objPrioridad.forEach(element => {
-    if (element.prioridad == data.prioridadEdit) idPrioridad = { id: element.id }
+    if (element.Nombre == data.prioridadEdit) idPrioridad = { id: element.id }
   });
   data.objSalida.forEach(element => {
-    if (element.salida == data.salidaEdit) idSalida = { id: element.id }
+    if (element.Nombre == data.salidaEdit) idSalida = { id: element.id }
   });
   data.objOsde.forEach(element => {
     if (element.osde == data.osdeEdit) idOsde = { id: element.id }
@@ -570,26 +557,27 @@ function editFields(params) {
 }
 
 function Edit(params) {
-  let idMunicipio = []
-  let idOrganismo = []
-  let idPrioridad = {}
-  let idSalida = {}
-  let idOsde = {}
+  let idMunicipio = null
+  let idOrganismo = null
+  let idPrioridad = null
+  let idSalida = null
+  let idOsde = null
   data.objMunicipio.forEach(element => {
-    if (element.municipio == data.municipioEdit) idMunicipio = [{ id: element.id }]
+    if (element.municipio == data.municipioEdit) idMunicipio =  element.id 
   });
   data.objOrganismo.forEach(element => {
-    if (element.organismo == data.organismoEdit) idOrganismo = [{ id: element.id }]
+    if (element.organismo == data.organismoEdit) idOrganismo = element.id
   });
   data.objPrioridad.forEach(element => {
-    if (element.prioridad == data.prioridadEdit) idPrioridad = { id: element.id }
+    if (element.Nombre == data.prioridadEdit) idPrioridad = element.id 
   });
   data.objSalida.forEach(element => {
-    if (element.salida == data.salidaEdit) idSalida = { id: element.id }
+    if (element.Nombre == data.salidaEdit) idSalida = element.id 
   });
   data.objOsde.forEach(element => {
-    if (element.osde == data.osdeEdit) idOsde = { id: element.id }
+    if (element.osde == data.osdeEdit) idOsde = element.id 
   });
+  console.log(idOsde);
   const dataRest = {
     data: {
       prioridad: idPrioridad,
@@ -637,25 +625,25 @@ function Edit(params) {
 }
 
 function Create() {
-  let idMunicipio = []
-  let idOrganismo = []
-  let idPrioridad = {}
-  let idSalida = {}
-  let idOsde = {}
+  let idMunicipio = null
+  let idOrganismo = null
+  let idPrioridad = null
+  let idSalida = null
+  let idOsde = null
   data.objMunicipio.forEach(element => {
-    if (element.municipio == data.municipio) idMunicipio = [{ id: element.id }]
+    if (element.municipio == data.municipio) idMunicipio = element.id 
   });
   data.objOrganismo.forEach(element => {
-    if (element.organismo == data.organismo) idOrganismo = [{ id: element.id }]
+    if (element.organismo == data.organismo) idOrganismo = element.id
   });
   data.objPrioridad.forEach(element => {
-    if (element.prioridad == data.prioridad) idPrioridad = { id: element.id }
+    if (element.Nombre == data.prioridad) idPrioridad =element.id 
   });
   data.objSalida.forEach(element => {
-    if (element.salida == data.salida) idSalida = { id: element.id }
+    if (element.Nombre == data.salida) idSalida = element.id 
   });
   data.objOsde.forEach(element => {
-    if (element.osde == data.osde) idOsde = { id: element.id }
+    if (element.osde == data.osde) idOsde =  element.id 
   });
   const dataRest = {
     data: {
@@ -703,7 +691,6 @@ function Create() {
 }
 
 watch(() => data.organismo, (value) => {
-  console.log("entro1");
   data.osde = ""
   data.osdes = []
   data.objOrganismo.forEach(element => {
@@ -723,7 +710,7 @@ watch(() => data.organismo, (value) => {
             });
             data.osdes.push(response.data.data.attributes.osdes.data[i].attributes.nombre)
           }
-
+          data.osde=data.osdes[0]
         })
         .catch(function (error) {
           console.log(error);
@@ -733,7 +720,6 @@ watch(() => data.organismo, (value) => {
 })
 
 watch(() => data.organismoEdit, (value) => {
-  console.log("entro2");
   data.osdeEdit = ""
   data.osdes = []
   data.objOrganismo.forEach(element => {
@@ -752,9 +738,8 @@ watch(() => data.organismoEdit, (value) => {
               osde: response.data.data.attributes.osdes.data[i].attributes.nombre
             });
             data.osdes.push(response.data.data.attributes.osdes.data[i].attributes.nombre)
-            data.osdeEdit = selected.value[0].osde
           }
-
+          data.osdeEdit=data.osdes[0]
         })
         .catch(function (error) {
           console.log(error);
@@ -790,180 +775,56 @@ function Delete(params) {
 }
 
 async function getMunicipios(params) {
-  let count = 1
-  for (let index = 1; index < 2; index++) {
-    await api
-      .get(`/municipios?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        ////console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.objMunicipio.push({
-            id: response.data.data[i].id,
-            municipio: response.data.data[i].attributes.municipio
-          });
-          data.municipios.push(response.data.data[i].attributes.municipio)
-          count++
-        }
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
+  data.objMunicipio=dataStore.municipio
+  for (let index = 0; index < data.objMunicipio.length; index++) {
+    data.municipios.push(data.objMunicipio[index].municipio);
   }
+  
 }
 
 async function getOrganismos(params) {
-  let count = 1
-  for (let index = 1; index < 2; index++) {
-    await api
-      .get(`/organismos?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        //console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.objOrganismo.push({
-            id: response.data.data[i].id,
-            organismo: response.data.data[i].attributes.organismo
-          });
-          data.organismos.push(response.data.data[i].attributes.organismo)
-          count++
-        }
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
+  data.objOrganismo=dataStore.organismo
+  for (let index = 0; index < data.objOrganismo.length; index++) {
+    data.organismos.push(data.objOrganismo[index].organismo);
   }
 }
 
 async function getPrioridad(params) {
-  let count = 1
-  for (let index = 1; index < 2; index++) {
-    await api
-      .get(`/prioridads?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        ////console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.objPrioridad.push({
-            id: response.data.data[i].id,
-            prioridad: response.data.data[i].attributes.prioridad
-          });
-          data.prioridades.push(response.data.data[i].attributes.prioridad)
-          count++
-        }
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
+  data.objPrioridad=dataStore.prioridad
+  for (let index = 0; index < data.objPrioridad.length; index++) {
+    data.prioridades.push(data.objPrioridad[index].Nombre);
   }
 }
 
 async function getSalida(params) {
-  let count = 1
-  for (let index = 1; index < 2; index++) {
-    await api
-      .get(`/salidas?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        ////console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.objSalida.push({
-            id: response.data.data[i].id,
-            salida: response.data.data[i].attributes.salida
-          });
-          data.salidas.push(response.data.data[i].attributes.salida)
-          count++
-        }
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
+  data.objSalida=dataStore.salida
+  for (let index = 0; index < data.objSalida.length; index++) {
+    data.salidas.push(data.objSalida[index].Nombre);
   }
 }
 
 async function getOSDE(params) {
-  let count = 1
-  for (let index = 1; index < 2; index++) {
-    await api
-      .get(`/osdes?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        ////console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          data.objOsde.push({
-            id: response.data.data[i].id,
-            osde: response.data.data[i].attributes.nombre
-          });
-          data.osdes.push(response.data.data[i].attributes.nombre)
-          count++
-        }
-      })
-      .catch(function (error) {
-        console.log(error.response);
-      });
+  data.objOsde=dataStore.osde
+  for (let index = 0; index < data.objOsde.length; index++) {
+    data.osdes.push(data.objOsde[index].nombre);
   }
 }
 
 async function getEntidades(params) {
-  data.rows = [];
-  let count = 1
-  for (let index = 1; index < 3; index++) {
+  selected.value = []
+    data.rows = [];
+
     await api
-      .get(`/entidads?populate=%2A&pagination[page]=${index}&pagination[pageSize]=100&filters[activo][$eq]=s`, {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        //console.log(response);
-        for (let i = 0; i < response.data.data.length; i++) {
-          if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
-          if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
-          if (response.data.data[i].attributes.salida.data == null) response.data.data[i].attributes.salida.data = { attributes: { salida: "-" } }
-          if (response.data.data[i].attributes.prioridad.data == null) response.data.data[i].attributes.prioridad.data = { attributes: { prioridad: "-" } }
-          if (response.data.data[i].attributes.osde.data == null) response.data.data[i].attributes.osde.data = { attributes: { nombre: "-" } }
-          data.rows.push({
-            name: count,
-            id: response.data.data[i].id,
-            entidad: response.data.data[i].attributes.entidad,
-            municipio: response.data.data[i].attributes.municipio.data[0].attributes.municipio,
-            trabajadores: response.data.data[i].attributes.cant_trabajadores,
-            objeto: response.data.data[i].attributes.objeto_social,
-            coordinador: response.data.data[i].attributes.nomb_coordinador,
-            director: response.data.data[i].attributes.nomb_director,
-            telefono: response.data.data[i].attributes.num_telefono,
-            organismo: response.data.data[i].attributes.organismo.data[0].attributes.organismo,
-            fuente: response.data.data[i].attributes.tipo_fuente,
-            prioridad: response.data.data[i].attributes.prioridad.data.attributes.prioridad,
-            salida: response.data.data[i].attributes.salida.data.attributes.salida,
-            osde: response.data.data[i].attributes.osde.data.attributes.nombre,
-            referencia: response.data.data[i].attributes.referencia,
-            PIB: response.data.data[i].attributes.PIB,
-            latitud: response.data.data[i].attributes.latitud,
-            longitud: response.data.data[i].attributes.longitud
-          });
-          count++
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+        .get(`/getEntidadesData`, {
+            headers: {
+                Authorization: "Bearer " + auth.jwt,
+            },
+        })
+        .then(function (response) {
+            data.rows = response.data
+        }).catch(function (error) {
+            console.log(error);
+        });
 }
 
 // async function getContaminantes(params) {
@@ -1010,7 +871,7 @@ function onCreate() {
   municipio.value.validate();
   // prioridad.value.validate();
   salida.value.validate();
-  osde.value.validate();
+  // osde.value.validate();
   trabajadores.value.validate();
   objeto.value.validate();
   fuente.value.validate();
@@ -1037,7 +898,7 @@ function onEdit() {
   municipioEdit.value.validate();
   // prioridadEdit.value.validate();
   salidaEdit.value.validate();
-  osdeEdit.value.validate();
+  // osdeEdit.value.validate();
   // trabajadoresEdit.value.validate();
   objetoEdit.value.validate();
   fuenteEdit.value.validate();

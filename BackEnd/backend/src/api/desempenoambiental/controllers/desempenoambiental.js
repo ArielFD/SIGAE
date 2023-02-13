@@ -1467,5 +1467,109 @@ module.exports = createCoreController(
   
         return data3;
       },
+
+      async getDesempenoData(ctx) {
+        let data = ctx.query.filters;
+        let desempeño = await strapi.db
+          .query("api::desempenoambiental.desempenoambiental")
+          .findMany({
+            where: {
+                anno: {
+                $containsi: data[0],
+              },
+            },
+            populate: {
+              entidad:true
+            },
+          });
+
+        let rows=[],count=1
+  
+        for (let i = 0; i < desempeño.length; i++) {
+            if (desempeño[i].entidad.length > 0) {
+                rows.push({
+                    name: count.toString(),
+                    id: desempeño[i].id,
+                    entidad: desempeño[i].entidad[0].entidad,
+                    coordinador: desempeño[i].exist_coordinador,
+                    diagnostico: desempeño[i].exist_diagnostico,
+                    politica: desempeño[i].exist_politica,
+                    indicadores: desempeño[i].exist_indicadores,
+                    plan: desempeño[i].exist_plan_accion,
+                    legislacion: desempeño[i].exist_legislacion,
+                    capacitacion: desempeño[i].exist_plan_capacitacion,
+                    acciones: desempeño[i].exist_accionespml,
+                    programa: desempeño[i].exist_program_gestionambiental,
+                    recurso: desempeño[i].exist_recurso_financiero,
+                    aprovechamiento: desempeño[i].aprovechamiento_economico,
+                    sistema: desempeño[i].exist_sistem_tratamiento,
+                    anno: desempeño[i].anno,
+                    carga: desempeño[i].disminucion_carga_contaminante,
+                    observaciones: desempeño[i].observaciones,
+                    total: (desempeño[i].disminucion_carga_contaminante + desempeño[i].exist_sistem_tratamiento + desempeño[i].aprovechamiento_economico + desempeño[i].exist_recurso_financiero + desempeño[i].exist_program_gestionambiental + desempeño[i].exist_accionespml + desempeño[i].exist_plan_capacitacion + desempeño[i].exist_legislacion + desempeño[i].exist_plan_accion + desempeño[i].exist_coordinador + desempeño[i].exist_diagnostico + desempeño[i].exist_politica + desempeño[i].exist_indicadores).toString()
+                });
+                Object.keys(rows[i]).forEach(function (key) {
+                    if (rows[i][key] != null || rows[i][key] != undefined) {
+                        if (rows[i][key] === 1) {
+                            rows[i][key] = "si"
+                        } else if (rows[i][key] === 0) {
+                            rows[i][key] = "no"
+                        }
+                    }
+                })
+            }
+            count++
+        }
+        return rows;
+      },
+
+      async getDesempenoId(ctx) {
+        let data = ctx.query.filters;
+        const {desempeno_id} = ctx.params;
+        let desempeño = await strapi.db
+          .query("api::desempenoambiental.desempenoambiental")
+          .findMany({
+            where:{
+                    anno: {
+                        $containsi: data[0],
+                      }
+            },
+            populate: {
+              entidad:true
+            },
+          });
+
+        let rows=[]
+        let count = 1
+
+        for (let i = 0; i < desempeño.length; i++) {
+            if (desempeño[i].entidad.length > 0 && desempeño[i].entidad[0].id == desempeno_id) {
+                rows.push({
+                    name: count.toString(),
+                    id: desempeño[i].id,
+                    entidad: desempeño[i].entidad[0].entidad,
+                    coordinador: desempeño[i].exist_coordinador,
+                    diagnostico: desempeño[i].exist_diagnostico,
+                    politica: desempeño[i].exist_politica,
+                    indicadores: desempeño[i].exist_indicadores,
+                    plan: desempeño[i].exist_plan_accion,
+                    legislacion: desempeño[i].exist_legislacion,
+                    capacitacion: desempeño[i].exist_plan_capacitacion,
+                    acciones: desempeño[i].exist_accionespml,
+                    programa: desempeño[i].exist_program_gestionambiental,
+                    recurso: desempeño[i].exist_recurso_financiero,
+                    aprovechamiento: desempeño[i].aprovechamiento_economico,
+                    sistema: desempeño[i].exist_sistem_tratamiento,
+                    anno: desempeño[i].anno,
+                    carga: desempeño[i].disminucion_carga_contaminante,
+                    observaciones: desempeño[i].observaciones,
+                    total: (desempeño[i].disminucion_carga_contaminante + desempeño[i].exist_sistem_tratamiento + desempeño[i].aprovechamiento_economico + desempeño[i].exist_recurso_financiero + desempeño[i].exist_program_gestionambiental + desempeño[i].exist_accionespml + desempeño[i].exist_plan_capacitacion + desempeño[i].exist_legislacion + desempeño[i].exist_plan_accion + desempeño[i].exist_coordinador + desempeño[i].exist_diagnostico + desempeño[i].exist_politica + desempeño[i].exist_indicadores).toString()
+                });
+            }
+            count++
+        }
+
+        return rows;
+      },
     })
   );

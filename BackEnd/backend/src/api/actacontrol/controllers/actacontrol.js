@@ -477,5 +477,180 @@ module.exports = createCoreController(
       
       return data4;
     },
+
+    async getActaControlData(ctx) {
+      const data = ctx.query.filters;
+      let response = await strapi.db
+        .query("api::actacontrol.actacontrol")
+        .findMany({
+          where: {
+            fechavisita: {
+              $containsi: data[0],
+            },
+          },
+          orderBy:{fechavisita:'desc'},
+          populate: true
+        });
+
+      let rows = [];
+      let count = 1
+      let tratamiento = "no"
+      for (let i = 0; i < response.length; i++) {
+        let residuales, trampa
+        const element = [];
+        for (let index = 0; index < response[i].residuals.length; index++) {
+          element.push(response[i].residuals[index].id)
+        }
+        if (element.length > 0) residuales = "si"
+        response[i].sis_tratamiento != null && (response[i].sis_tratamiento.eficiencia != "" && response[i].sis_tratamiento.estado != "" && response[i].sis_tratamiento.idoneidad != "") ? tratamiento = "si" : tratamiento = "no"
+        response[i].trampa_grasa != null && (response[i].trampa_grasa.bien != "0" || response[i].trampa_grasa.regular != "0" || response[i].trampa_grasa.mal != "0") ? trampa = "si" : trampa = "no"
+        if (response[i].entidad != null && response[i].sis_tratamiento != null && response[i].trampa_grasa != null) {
+          rows.push({
+            name: count,
+            id: response[i].id,
+            atendido_por: response[i].atendido_por,
+            comision_control: response[i].comision_control,
+            consumo_agua: response[i].consumo_agua,
+            consumo_energetico: response[i].consumo_energetico,
+            cumplidas_corto: response[i].cumplidas_corto,
+            cumplidas_largo: response[i].cumplidas_largo,
+            cumplidas_mediano: response[i].cumplidas_mediano,
+            deficiencias: response[i].deficiencias,
+            diagnostico_ambiental: response[i].diagnostico_ambiental,
+            fechavisita: response[i].fechavisita,
+            medidas_corto: response[i].medidas_corto,
+            medidas_largo: response[i].medidas_largo,
+            medidas_mediano: response[i].medidas_mediano,
+            observaciones: response[i].observaciones,
+            politica_ambiental: response[i].politica_ambiental,
+            recomendaciones: response[i].recomendaciones,
+            entidad: response[i].entidad.entidad,
+            idEntidad: response[i].entidad.id,
+            sistema_de_tratamiento: tratamiento,
+            eficiencia: response[i].sis_tratamiento.eficiencia,
+            estado_tecnico: response[i].sis_tratamiento.estado,
+            idoneidad: response[i].sis_tratamiento.idoneidad,
+            trampa_de_grasa: trampa,
+            estadoGrasaBien: response[i].trampa_grasa.bien,
+            estadoGrasaRegular: response[i].trampa_grasa.regular,
+            estadoGrasaMal: response[i].trampa_grasa.mal,
+            residuals: element,
+            residuales: residuales,
+            idSist: response[i].sis_tratamiento.id,
+            idTramp: response[i].trampa_grasa.id
+          });
+        } 
+        else if (response[i].entidad != null && response[i].sis_tratamiento == null && response[i].trampa_grasa == null) {
+          rows.push({
+            name: count,
+            id: response[i].id,
+            atendido_por: response[i].atendido_por,
+            comision_control: response[i].comision_control,
+            consumo_agua: response[i].consumo_agua,
+            consumo_energetico: response[i].consumo_energetico,
+            cumplidas_corto: response[i].cumplidas_corto,
+            cumplidas_largo: response[i].cumplidas_largo,
+            cumplidas_mediano: response[i].cumplidas_mediano,
+            deficiencias: response[i].deficiencias,
+            diagnostico_ambiental: response[i].diagnostico_ambiental,
+            fechavisita: response[i].fechavisita,
+            medidas_corto: response[i].medidas_corto,
+            medidas_largo: response[i].medidas_largo,
+            medidas_mediano: response[i].medidas_mediano,
+            observaciones: response[i].observaciones,
+            politica_ambiental: response[i].politica_ambiental,
+            recomendaciones: response[i].recomendaciones,
+            entidad: response[i].entidad.entidad,
+            idEntidad: response[i].entidad.id,
+            residuals: element,
+            residuales: residuales,
+            sistema_de_tratamiento: "no",
+            eficiencia: "regular",
+            estado_tecnico: "regular",
+            idoneidad: "no",
+            trampa_de_grasa: "no",
+            estadoGrasaBien: "0",
+            estadoGrasaRegular: "0",
+            estadoGrasaMal: "0",
+            idSist: "",
+            idTramp: ""
+          });
+        }
+        else if (response[i].entidad != null && response[i].sis_tratamiento == null && response[i].trampa_grasa != null) {
+          rows.push({
+            name: count,
+            id: response[i].id,
+            atendido_por: response[i].atendido_por,
+            comision_control: response[i].comision_control,
+            consumo_agua: response[i].consumo_agua,
+            consumo_energetico: response[i].consumo_energetico,
+            cumplidas_corto: response[i].cumplidas_corto,
+            cumplidas_largo: response[i].cumplidas_largo,
+            cumplidas_mediano: response[i].cumplidas_mediano,
+            deficiencias: response[i].deficiencias,
+            diagnostico_ambiental: response[i].diagnostico_ambiental,
+            fechavisita: response[i].fechavisita,
+            medidas_corto: response[i].medidas_corto,
+            medidas_largo: response[i].medidas_largo,
+            medidas_mediano: response[i].medidas_mediano,
+            observaciones: response[i].observaciones,
+            politica_ambiental: response[i].politica_ambiental,
+            recomendaciones: response[i].recomendaciones,
+            entidad: response[i].entidad.entidad,
+            idEntidad: response[i].entidad.id,
+            residuals: element,
+            residuales: residuales,
+            sistema_de_tratamiento: "no",
+            eficiencia: "regular",
+            estado_tecnico: "regular",
+            idoneidad: "no",
+            trampa_de_grasa: trampa,
+            estadoGrasaBien: response[i].trampa_grasa.bien,
+            estadoGrasaRegular: response[i].trampa_grasa.regular,
+            estadoGrasaMal: response[i].trampa_grasa.mal,
+            idSist: "",
+            idTramp: response[i].trampa_grasa.id
+          });
+        }
+        else if (response[i].entidad != null && response[i].sis_tratamiento != null && response[i].trampa_grasa == null) {
+          rows.push({
+            name: count,
+            id: response[i].id,
+            atendido_por: response[i].atendido_por,
+            comision_control: response[i].comision_control,
+            consumo_agua: response[i].consumo_agua,
+            consumo_energetico: response[i].consumo_energetico,
+            cumplidas_corto: response[i].cumplidas_corto,
+            cumplidas_largo: response[i].cumplidas_largo,
+            cumplidas_mediano: response[i].cumplidas_mediano,
+            deficiencias: response[i].deficiencias,
+            diagnostico_ambiental: response[i].diagnostico_ambiental,
+            fechavisita: response[i].fechavisita,
+            medidas_corto: response[i].medidas_corto,
+            medidas_largo: response[i].medidas_largo,
+            medidas_mediano: response[i].medidas_mediano,
+            observaciones: response[i].observaciones,
+            politica_ambiental: response[i].politica_ambiental,
+            recomendaciones: response[i].recomendaciones,
+            entidad: response[i].entidad.entidad,
+            idEntidad: response[i].entidad.id,
+            residuals: element,
+            residuales: residuales,
+            sistema_de_tratamiento: tratamiento,
+            eficiencia: response[i].sis_tratamiento.eficiencia,
+            estado_tecnico: response[i].sis_tratamiento.estado,
+            idoneidad: response[i].sis_tratamiento.idoneidad,
+            trampa_de_grasa: "no",
+            estadoGrasaBien: "0",
+            estadoGrasaRegular: "0",
+            estadoGrasaMal: "0",
+            idSist: response[i].sis_tratamiento.id,
+            idTramp: ""
+          });
+        }
+        count++
+      }
+      return rows;
+    },
   })
 );

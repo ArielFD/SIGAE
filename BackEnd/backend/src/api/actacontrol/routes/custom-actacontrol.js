@@ -32,6 +32,17 @@ module.exports = {
           prefix: "",
           description: "This is a test endpoint",
         }
-      }
+      },
+      {
+        method: 'GET',
+        path: '/getActaControlData',
+        handler: 'actacontrol.getActaControlData',
+        config: {
+            auth:false,
+          policies: [],
+          prefix: "",
+          description: "This is a test endpoint",
+        }
+      },
     ]
   }

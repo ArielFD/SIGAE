@@ -73,6 +73,12 @@ let data = reactive({
     osdes: [],
 
     chartOptions: {
+        legend: {
+            labels: {
+                colors: undefined,
+                useSeriesColors: true
+            }
+        },
         stroke: {
             show: true,
             width: 5,
@@ -133,7 +139,7 @@ async function getOSDE(params) {
 async function getMedidas(params) {
 
     data.rows = [];
-    let data1 = [],data2=[],data3=[]
+    let data1 = [], data2 = [], data3 = []
 
     await api
         .get(`/getPlanMedidasActaControl?filters[0]=${data.fecha_actual}&filters[1]=${data.opcion}&filters[2]=${data.organismos}&filters[3]=${data.osdes}`)

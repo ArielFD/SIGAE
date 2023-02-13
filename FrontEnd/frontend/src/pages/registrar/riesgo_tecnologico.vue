@@ -182,7 +182,9 @@ import { api } from "boot/axios.js";
 import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
+import { useDataStore } from "src/stores/data-store";
 
+const dataStore = useDataStore();
 const pagination = ref({
     sortBy: "desc",
     descending: false,
@@ -527,6 +529,7 @@ function getCategorias(params) {
         .catch(function (error) {
             console.log(error.response);
         });
+        
 }
 
 function getUnidades(params) {

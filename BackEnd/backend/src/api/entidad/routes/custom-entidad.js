@@ -10,6 +10,17 @@ module.exports = {
           prefix: "",
           description: "This is a test endpoint",
         }
+      },
+      {
+        method: 'GET',
+        path: '/getEntidadesData',
+        handler: 'entidad.getEntidadesData',
+        config: {
+            auth:false,
+          policies: [],
+          prefix: "",
+          description: "This is a test endpoint",
+        }
       }
     ]
   }
