@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="col-12">
         <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
             <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
         </div>
@@ -15,23 +15,23 @@
                             </div>
                         </div>
                         <div style="width: 100%" class="row justify-start" v-else>
-                            <div class="col-4 text-h6" v-if="auth.jwt">
+                            <div class="col-3 text-h6" v-if="auth.jwt">
                                 <q-btn flat label="Residuales por categorias" icon="print" class="col-1  q-pa-xs"
                                     @click="auth.printMode = !auth.printMode" />
                             </div>
-                            <div class="col-4 text-h6" v-else>
+                            <div class="col-3 text-h6" v-else>
                                 <q-btn flat label="Residuales por categorias" class="col-1  q-pa-xs" />
                             </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
                                     :options="data.opcions" label="Residuales por:" />
                             </div>
-                            <div class="col-4" v-if="data.opcion == 'Categoria'">
+                            <div class="col-3" v-if="data.opcion == 'Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelCategoria" :options="optionsCategoria" @filter="filterFnCategoria"
                                     label="Categoria" />
                             </div>
-                            <div class="col-4" v-if="data.opcion == 'OACE y Categoria'">
+                            <div class="col-3" v-if="data.opcion == 'OACE y Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelOrganismo" :options="optionsOrganismo" @filter="filterFnOrganismo"
                                     label="OACE" />
@@ -39,7 +39,7 @@
                                     v-model="modelCategoria" :options="optionsCategoria" @filter="filterFnCategoria"
                                     label="Categoria" />
                             </div>
-                            <div class="col-4" v-if="data.opcion == 'OSDE y Categoria'">
+                            <div class="col-3" v-if="data.opcion == 'OSDE y Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelOsde" :options="optionsOsde" @filter="filterFnOsde" label="OSDE" />
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
@@ -243,7 +243,7 @@ onMounted(() => {
         getCategoria(),
         getOrganismos(),
         getOSDE()
-        console.log(auth.printMode);
+        // console.log(auth.printMode);
 });
 
 async function getOSDE(params) {
@@ -323,7 +323,7 @@ async function getActacontrol(params) {
                             if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
 
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                                console.log(response.data.data[i].id);
+                                // console.log(response.data.data[i].id);
                                 data.rows.push({
                                     name: count,
                                     id: response.data.data[i].id,
@@ -342,11 +342,11 @@ async function getActacontrol(params) {
                             }
                         }
                     } else if (data.opcion == 'OACE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
-                        console.log("Paso 1");
+                        // console.log("Paso 1");
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-                            console.log("Paso 2");
+                            // console.log("Paso 2");
                             if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
-                                console.log("Paso 3");
+                                // console.log("Paso 3");
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                                 data.rows.push({
                                     name: count,
@@ -366,13 +366,13 @@ async function getActacontrol(params) {
 
                         }
                     } else if (data.opcion == 'OSDE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
-                        console.log("paso 1");
+                        // console.log("paso 1");
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
-                            console.log("paso 2");
+                            // console.log("paso 2");
                             if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
-                                console.log("paso 3");
+                                // console.log("paso 3");
                                 if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
-                                console.log("paso 4");
+                                // console.log("paso 4");
                                 data.rows.push({
                                     name: count,
                                     id: response.data.data[i].id,

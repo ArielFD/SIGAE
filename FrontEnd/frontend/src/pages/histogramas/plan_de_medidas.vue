@@ -73,12 +73,6 @@ let data = reactive({
     osdes: [],
 
     chartOptions: {
-        legend: {
-            labels: {
-                colors: undefined,
-                useSeriesColors: true
-            }
-        },
         stroke: {
             show: true,
             width: 5,

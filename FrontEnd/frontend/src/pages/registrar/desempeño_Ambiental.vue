@@ -1,5 +1,6 @@
 <template>
     <div class="col-12">
+        {{ selected }}
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows"
@@ -536,7 +537,7 @@ function editFields(params) {
 function Edit(params) {
     data.entidades.forEach(element => {
         if (element.entidad == data.entidadEdit) {
-            data.identidadEdit = [{ id: element.id }]
+            data.identidadEdit = { id: element.id }
         }
     });
 
@@ -560,6 +561,8 @@ function Edit(params) {
             entidad: data.identidadEdit,
         },
     };
+
+    console.log(dataRest.data);
 
     Object.keys(dataRest.data).forEach(function (key) {
         if (dataRest.data[key] === "si") {
@@ -597,7 +600,7 @@ function Edit(params) {
 
 function Create() {
     data.entidades.forEach(element => {
-        if (element.nombre == model.value) data.tempEntidad = [{ id: element.id }]
+        if (element.entidad == model.value) data.tempEntidad = { id: element.id }
     });
     const dataRest = {
         data: {
@@ -619,6 +622,8 @@ function Create() {
             entidad: data.tempEntidad,
         },
     };
+
+    console.log(dataRest.data);
 
     const authorization = {
         headers: {

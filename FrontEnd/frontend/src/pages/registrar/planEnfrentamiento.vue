@@ -697,7 +697,6 @@ function Edit(params) {
         },
     };
 
-    console.log(dataRest);
 
     Object.keys(dataRest.data).forEach(function (key) {
         if (dataRest.data[key] === "si") {
