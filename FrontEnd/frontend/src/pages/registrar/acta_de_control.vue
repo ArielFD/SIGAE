@@ -208,7 +208,6 @@
                   <q-item-label><b>Editar: "Acta de Control"</b></q-item-label>
                 </q-item-section>
               </q-item>
-{{ selected }}
               <q-separator />
               <form @submit.prevent.stop="onEdit">
                 <q-card-section>
@@ -772,13 +771,12 @@ function editSistTrat() {
         resolve(response.data.data.id)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   })
 }
 
 function editTrampa() {
-  console.log("Editar");
   return new Promise(resolve => {
     const dataRest = {
       data: {
@@ -794,16 +792,13 @@ function editTrampa() {
       },
     };
 
-    console.log(dataRest);
-
     api
       .put(`/trampa-grasas/${selected.value[0].idTramp}`, dataRest, authorization)
       .then(function (response) {
-        console.log(response);
         resolve(response.data.data.id)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   })
 }
@@ -863,7 +858,7 @@ async function Edit(params) {
       alerts.alerts[0].message = "Fallo editando el Acta de control";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Acta de control editada", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
   selected.value = []
@@ -892,13 +887,12 @@ function EditcreateSistTrat() {
         resolve(response.data.data.id)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   })
 }
 
 function EditcreateTrampa() {
-  console.log("Crear");
   return new Promise(resolve => {
     const dataRest = {
       data: {
@@ -921,7 +915,7 @@ function EditcreateTrampa() {
         resolve(response.data.data.id)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   })
 }
@@ -949,13 +943,12 @@ function createSistTrat() {
         resolve(response.data.data.id)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   })
 }
 
 function createTrampa() {
-  console.log("Crear");
   return new Promise(resolve => {
     const dataRest = {
       data: {
@@ -978,7 +971,7 @@ function createTrampa() {
         resolve(response.data.data.id)
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   })
 }

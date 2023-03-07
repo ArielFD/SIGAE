@@ -86,7 +86,6 @@
   });
   
   function getTrazas(params) {
-    console.log(auth.jwt);
     api
       .get("/trazas?populate=%2A", {
         headers: {
@@ -111,7 +110,7 @@
         }
       })
       .catch(function (error) {
-        console.log(error.response);
+        console.log(error);
       });
   }
   

@@ -188,7 +188,7 @@ const prioridadEdit = ref(null);
         alerts.alerts[0].message = "Fallo editando la Prioridad";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Prioridad editada", "Fallo")
-        console.log(error.response);
+        console.log(error);
       });
 
       data.prioridadEdit = []
@@ -222,7 +222,7 @@ const prioridadEdit = ref(null);
         alerts.alerts[0].message = "Fallo creando la Prioridad";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Prioridad creada", "Fallo")
-        console.log(error.response);
+        console.log(error);
       });
   }
   
@@ -248,7 +248,6 @@ const prioridadEdit = ref(null);
   }
   
   function getPrioridads(params) {
-    console.log(auth.jwt);
     api
       .get("/getPrioridad", {
         headers: {

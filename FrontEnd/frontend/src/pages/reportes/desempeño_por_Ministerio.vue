@@ -302,7 +302,7 @@ async function getOrganismos(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -441,7 +441,6 @@ async function getDesempeño(params) {
                 console.log(error);
             });
     }
-    console.log(data.rows);
 }
 
 </script>

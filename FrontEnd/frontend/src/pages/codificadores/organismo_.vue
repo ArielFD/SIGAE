@@ -194,7 +194,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando el OACE";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("OACE editado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
   data.selection = []
@@ -228,7 +228,7 @@ function Create() {
       alerts.alerts[0].message = "Fallo creando el OACE";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("OACE creado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 

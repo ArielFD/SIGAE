@@ -245,7 +245,7 @@ async function getOrganismos(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -267,7 +267,7 @@ async function getOSDE(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -278,13 +278,12 @@ async function getEnfrentamiento(params) {
     await api
         .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde`)
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                         if (response.data.data[i].attributes.entidad.data.attributes.osde.data == null) {
-                            console.log("Entra");
                             response.data.data[i].attributes.entidad.data.attributes.osde.data = { attributes: { nombre: "-" } }
                         }
                         // console.log(response);

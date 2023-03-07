@@ -226,7 +226,7 @@ async function getActacontrol(params) {
     await api
         .get(`/actacontrols?populate[0]=trampa_grasa&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 let sistemaTemp="No"
                 if(response.data.data[i].attributes.trampa_grasa.data!=null) sistemaTemp="Si"
@@ -291,7 +291,7 @@ async function getOrganismos(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -313,7 +313,7 @@ async function getOSDE(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -335,7 +335,7 @@ async function getPrioridad(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }

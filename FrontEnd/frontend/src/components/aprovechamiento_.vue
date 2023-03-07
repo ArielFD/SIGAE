@@ -2,7 +2,6 @@
   <div class="q-pa-md">
     <q-table title="Tabla de Aprovechamiento de Residuales" dense :rows="data.rows" :columns="columns" row-key="name"
       selection="single" v-model:selected="selected" />
-    {{ data.arrIdResidual }}
     <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="data.cardCreate = true">Agregar</q-btn>
     <q-dialog v-model="data.cardCreate">
       <q-card class="my-card bg-primary" style="width:300px">

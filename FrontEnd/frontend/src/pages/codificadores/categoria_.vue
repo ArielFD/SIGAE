@@ -184,7 +184,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando la categoria";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Categoria editada", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
     data.categoriaEdit = []
@@ -218,7 +218,7 @@ function Create() {
       alerts.alerts[0].message = "Fallo creando la categoria";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Categoria creada", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 

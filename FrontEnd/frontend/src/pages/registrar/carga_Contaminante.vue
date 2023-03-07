@@ -391,7 +391,7 @@ function Edit(params) {
             alerts.alerts[0].message = "Fallo editando la Carga contaminate";
             $q.notify(alerts.alerts[0]);
             auth.postTraza("Carga contaminate editada", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 
     selected.value = []
@@ -440,7 +440,7 @@ function Create() {
             alerts.alerts[0].message = "Fallo creando la Carga contaminate";
             $q.notify(alerts.alerts[0]);
             auth.postTraza("Carga contaminate creada", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 
 }

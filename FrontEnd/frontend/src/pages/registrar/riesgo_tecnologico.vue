@@ -360,7 +360,7 @@ function CreateMaterial(params) {
     api
         .post("/sustancias", dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
             data.cardCreateMaterial = false
             alerts.alerts[1].message = "Material creado";
             $q.notify(alerts.alerts[1]);
@@ -371,7 +371,7 @@ function CreateMaterial(params) {
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando el Material";
             $q.notify(alerts.alerts[0]);
-            console.log(error.response);
+            console.log(error);
         });
 }
 
@@ -410,7 +410,7 @@ function Create() {
             alerts.alerts[0].message = "Fallo creando el Riesgo tecnologico";
             $q.notify(alerts.alerts[0]);
             auth.postTraza("Riesgo tecnologico creado", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 }
 
@@ -436,7 +436,7 @@ function Edit() {
     api
         .put(`/instalacionespeligrosas/${data.temp}`, dataRest, authorization)
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
             data.cardEdit = false
             alerts.alerts[1].message = "Riesgo tecnologico editado";
             $q.notify(alerts.alerts[1]);
@@ -448,7 +448,7 @@ function Edit() {
             alerts.alerts[0].message = "Fallo editando el Riesgo tecnologico";
             $q.notify(alerts.alerts[0]);
             auth.postTraza("Riesgo tecnologico editado", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 
     selected.value = []
@@ -527,7 +527,7 @@ function getCategorias(params) {
             });
         })
         .catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
         
 }
@@ -552,7 +552,7 @@ function getUnidades(params) {
             });
         })
         .catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
 }
 
@@ -575,7 +575,7 @@ function getEntidad(params) {
                 stringOptions.push(element.nombre)
             });
         }).catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
 }
 
@@ -604,7 +604,7 @@ async function getSustancias(params) {
                 count++
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -650,7 +650,7 @@ async function getInstalacion(params) {
                 }
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }

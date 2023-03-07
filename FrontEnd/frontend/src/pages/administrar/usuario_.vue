@@ -306,7 +306,7 @@ function Edit(params) {
       alerts.alerts[0].message = `Fallo editando el Usuario ${error.response.data.error.message}`;
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Usuario editado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
   selected.value = []
@@ -347,7 +347,7 @@ function Create() {
       alerts.alerts[0].message = `Fallo creando el Usuario ${error.response.data.error.message}`;
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Usuario creado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -373,7 +373,6 @@ function getRoles(params) {
 }
 
 function getUsuarios(params) {
-  console.log(auth.jwt);
   api
     .get("/users?populate=%2A", {
       headers: {
@@ -394,7 +393,7 @@ function getUsuarios(params) {
       }
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 

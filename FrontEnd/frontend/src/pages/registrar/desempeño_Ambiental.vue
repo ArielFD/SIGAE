@@ -1,6 +1,5 @@
 <template>
     <div class="col-12">
-        {{ selected }}
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Desempeño ambiental" dense :rows="data.rows"
@@ -562,8 +561,6 @@ function Edit(params) {
         },
     };
 
-    console.log(dataRest.data);
-
     Object.keys(dataRest.data).forEach(function (key) {
         if (dataRest.data[key] === "si") {
             dataRest.data[key] = 1
@@ -592,7 +589,7 @@ function Edit(params) {
             alerts.alerts[0].message = "Fallo editando el Desempeño ambiental";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Desempeño ambiental editado", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 
         selected.value = []
@@ -623,8 +620,6 @@ function Create() {
         },
     };
 
-    console.log(dataRest.data);
-
     const authorization = {
         headers: {
             Authorization: `Bearer ${auth.jwt}`,
@@ -645,7 +640,7 @@ function Create() {
             alerts.alerts[0].message = "Fallo creando el Desempeño ambiental";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Desempeño ambiental creado", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 }
 
@@ -693,7 +688,6 @@ async function getDesempeño(params) {
 }
 
 async function getDesempeñoID(params) {
-    console.log(params);
     data.rowsAnt = [];
     let count = 1
     let encontrado = true

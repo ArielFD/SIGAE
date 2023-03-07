@@ -283,18 +283,6 @@ async function getOrganismos(params) {
     dataStore.organismo.forEach(element => {
         stringOptionsOrganismo.push(element.organismo)
     });
-    // await api
-    //     .get(`/getOrganismos`)
-    //     .then(function (response) {
-    //         console.log(response);
-    //         data.organismos=response.data
-    //         data.organismos.forEach(element => {
-    //             stringOptionsOrganismo.push(element.organismo)
-    //         });
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     });
 }
 
 async function getOSDE(params) {

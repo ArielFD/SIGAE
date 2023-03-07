@@ -706,8 +706,6 @@ function Edit(params) {
         }
     })
 
-    console.log(dataRest);
-
     const authorization = {
         headers: {
             Authorization: `Bearer ${auth.jwt}`,
@@ -728,7 +726,7 @@ function Edit(params) {
             alerts.alerts[0].message = "Fallo editando el Plan de enfrentameinto";
             $q.notify(alerts.alerts[0]);
             auth.postTraza("Plan de enfrentameinto editado", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 
     selected.value = []
@@ -791,7 +789,7 @@ function Create() {
             alerts.alerts[0].message = "Fallo creando el Plan de enfrentameinto";
             $q.notify(alerts.alerts[0]);
             auth.postTraza("Plan de enfrentameinto creado", "Fallo")
-            console.log(error.response);
+            console.log(error);
         });
 }
 

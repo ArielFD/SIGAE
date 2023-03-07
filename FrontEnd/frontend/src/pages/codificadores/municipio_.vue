@@ -142,7 +142,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando el municipio";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Municipio editado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
   data.municipioEdit = []
@@ -176,7 +176,7 @@ function Create() {
       alerts.alerts[0].message = "Fallo creando el municipio";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Municipio creado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
 

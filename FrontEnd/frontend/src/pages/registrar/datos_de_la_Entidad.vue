@@ -411,9 +411,6 @@ function wrapCsvValue(val, formatFn, row) {
 }
 
 function exportTable() {
-  data.rows.forEach(element => {
-    console.log(element);
-  });
   // naive encoding to csv format
   const content = [columns.map(col => wrapCsvValue(col.label))].concat(
     data.rows.map(row => columns.map(col => wrapCsvValue(
@@ -577,7 +574,6 @@ function Edit(params) {
   data.objOsde.forEach(element => {
     if (element.osde == data.osdeEdit) idOsde = element.id 
   });
-  console.log(idOsde);
   const dataRest = {
     data: {
       prioridad: idPrioridad,
@@ -618,7 +614,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando la entidad";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Entidad editada", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
     selected.value = []

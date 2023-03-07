@@ -63,7 +63,7 @@
       <q-toolbar style="color: rgb(4, 48, 158)">
         <div class="col">
           <div class="row justify-center">
-            <div>SIGAE v2.0 copyright 2011-2023 - (27/01/2023)</div>
+            <div>SIGAE v2.0 copyright 2011-2023</div>
             <!-- <div>© 2022 Todos los derechos reservados</div> -->
             <!-- <div>Powered by Joven CLub</div> -->
           </div>
@@ -121,7 +121,6 @@ onMounted(() => {
 
   router.push("/Principal");
   auth.getLocalIP().then((ipAddr) => {
-    console.log(ipAddr);
     auth.ip = ipAddr
   });
 
@@ -145,7 +144,7 @@ function getEntidades(params) {
         },
       })
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         dataStore.entidad = response.data
       })
       .catch(function (error) {
@@ -193,7 +192,7 @@ function getMunicipios(params) {
       },
     })
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       dataStore.municipio = response.data
     })
     .catch(function (error) {
@@ -228,7 +227,7 @@ function getOSDEs(params) {
       dataStore.osde=response.data
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -259,7 +258,7 @@ function getUnidades(params) {
   api
     .get("/getUnidades")
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       dataStore.unidad = response.data
     })
     .catch(function (error) {
@@ -336,7 +335,7 @@ async function Login() {
       getRol()
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
       if(!error.response) alert("Conexion perdida con el servidor")
       auth.postTraza("Login", "Fallo en la Operacion")
       // let temp = parseInt(localStorage.getItem("fallo"));

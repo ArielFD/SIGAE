@@ -277,7 +277,6 @@ let data = reactive({
 
 onMounted(() => {
     getYear()
-    console.log(columnsEMinisterio);
 });
 
 function getYear(params) {
@@ -323,7 +322,7 @@ function entidadesHistorial() {
         api
             .get(`/entidads?populate=%2A&filters[activo][$eq]=s`)
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data.push({ attributes: { organismo: "-" } })
                     if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data.push({ attributes: { municipio: "-" } })
@@ -385,7 +384,6 @@ async function historial(params) {
     let count = 1
 
     let entidades = await entidadesHistorial()
-    console.log(entidades);
     pagination.value.rowsPerPage = entidades.length
 
     entidades.forEach(element => {
@@ -409,7 +407,7 @@ function entidadesActivas() {
         let count = 1
         api
             .get(`/entidads?filters[activo][$eq]=s&populate[0]=organismo&populate[1]=municipio`).then(function (response) {
-                console.log(response);
+                // console.log(response);
                 for (let i = 0; i < response.data.data.length; i++) {
                     if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                     if (response.data.data[i].attributes.municipio.data.length == 0) response.data.data[i].attributes.municipio.data[0] = { attributes: { municipio: "-" } }
@@ -445,11 +443,10 @@ async function noVisitadas(params) {
     api
         .get(`/actacontrols?populate[0]=entidad&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) temp.push(response.data.data[i].attributes.entidad.data.attributes.entidad)
             }
-            console.log(temp);
             let unique = [...new Set(temp)]
 
             for (let index = 0; index < unique.length; index++) {
@@ -480,7 +477,7 @@ async function ministerio(params) {
     let organismo = ""
     api
         .get(`/entidads?populate[0]=organismo&populate[1]=municipio&filters[activo][$eq]=s&sort[0]=organismo.organismo%3Aasc`).then(function (response) {
-            console.log(response);
+            // console.log(response);
 
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.organismo.data.length == 0) response.data.data[i].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -528,7 +525,7 @@ async function ministerio(params) {
             }
             pagination.value.rowsPerPage = data.rows.length
         }).catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
 
 

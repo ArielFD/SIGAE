@@ -182,7 +182,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando la Unidad";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Unidad editada", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
     data.unidadEdit = []
@@ -216,7 +216,7 @@ function Create() {
         alerts.alerts[0].message = "Fallo creando la Unidad";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Unidad creada", "Fallo")
-        console.log(error.response);
+        console.log(error);
       });
     
   

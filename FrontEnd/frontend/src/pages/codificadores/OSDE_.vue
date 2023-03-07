@@ -147,7 +147,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando el OSDE";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("OSDE editado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 
   data.osdeEdit = []
@@ -181,7 +181,7 @@ function Create() {
       alerts.alerts[0].message = "Fallo creando el OSDE";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("OSDE creado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -217,7 +217,7 @@ function getOSDEs(params) {
       dataStore.osde=response.data
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 

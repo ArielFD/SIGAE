@@ -181,7 +181,7 @@ function Edit(params) {
       alerts.alerts[0].message = "Fallo editando el Estado";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Estado editado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -212,7 +212,7 @@ function Create() {
       alerts.alerts[0].message = "Fallo creando el Estado";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Estado creado", "Fallo")
-      console.log(error.response);
+      console.log(error);
     });
 }
 
@@ -249,7 +249,7 @@ function getEstados(params) {
       dataStore.estado=response.data
     })
     .catch(function (error) {
-      console.log(error.response);
+      console.log(error);
     });
 }
 

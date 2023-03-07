@@ -263,7 +263,7 @@ async function getOSDE(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -285,7 +285,7 @@ async function getOrganismos(params) {
                 });
             })
             .catch(function (error) {
-                console.log(error.response);
+                console.log(error);
             });
     }
 }
@@ -305,7 +305,7 @@ function getCategoria(params) {
                 stringOptionsCategoria.push(element.categoria)
             });
         }).catch(function (error) {
-            console.log(error.response);
+            console.log(error);
         });
 }
 
@@ -315,7 +315,7 @@ async function getActacontrol(params) {
     await api
         .get(`/actacontrols?populate[0]=entidad.organismo&populate[1]=residuals.categorias&populate[2]=entidad.osde&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
-            console.log(response);
+            // console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (data.opcion == 'Categoria' && response.data.data[i].attributes.residuals.data.length > 0) {

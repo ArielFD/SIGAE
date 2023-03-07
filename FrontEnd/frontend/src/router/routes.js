@@ -34,7 +34,7 @@ const routes = [
         component: () => import("pages/registrar/carga_Contaminante.vue"),
       },
       {
-        path: "Registrar/desempeñoAmbiental",
+        path: "Registrar/desempenoAmbiental",
         name:"desempeñoAmbiental",
         meta: { requireAuth: true },
         component: () => import("pages/registrar/desempeño_Ambiental.vue"),
@@ -59,7 +59,7 @@ const routes = [
         component: () => import("pages/reportes/plan_enfrentamiento.vue"),
       },
       {
-        path: "reportes/desempeño_por_Ministerio",
+        path: "reportes/desempeno_por_Ministerio",
         name:"desempeño_por_Ministerio",
         meta: { requireAuth: true },
         component: () => import("pages/reportes/desempeño_por_Ministerio.vue"),
@@ -90,7 +90,7 @@ const routes = [
 
       //############################Histogramas############################
       {
-        path: "histogramas/indicadores_de_desempeño",
+        path: "histogramas/indicadores_de_desempeno",
         name:"indicadores_de_desempeño",
         meta: { requireAuth: true },
         component: () => import("pages/histogramas/indicadores_de_desempeño.vue"),
@@ -108,13 +108,13 @@ const routes = [
         component: () => import("pages/histogramas/comparacion_cumplimento_medidas.vue"),
       },
       {
-        path: "histogramas/comparacion_cumplimento_desempeño",
+        path: "histogramas/comparacion_cumplimento_desempeno",
         name:"comparacion_cumplimento_desempeño",
         meta: { requireAuth: true },
         component: () => import("pages/histogramas/comparacion_cumplimento_desempeño.vue"),
       },
       {
-        path: "histogramas/comparacion_parametros_desempeño",
+        path: "histogramas/comparacion_parametros_desempeno",
         name:"comparacion_parametros_desempeño",
         meta: { requireAuth: true },
         component: () => import("pages/histogramas/comparacion_parametros_desempeño.vue"),
@@ -132,7 +132,7 @@ const routes = [
         component: () => import("pages/histogramas/cumplimiento_plan_enfrentamiento.vue"),
       },
       {
-        path: "histogramas/desempeño_ambiental",
+        path: "histogramas/desempeno_ambiental",
         name:"desempeño_ambiental",
         meta: { requireAuth: true },
         component: () => import("pages/histogramas/desempeño_ambiental.vue"),

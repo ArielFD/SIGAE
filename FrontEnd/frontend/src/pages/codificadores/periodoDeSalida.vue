@@ -184,7 +184,7 @@ const salidaEdit = ref(null);
         alerts.alerts[0].message = "Fallo editando el Periodo";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Periodo editado", "Fallo")
-        console.log(error.response);
+        console.log(error);
       });
 
       data.salidaEdit = []
@@ -218,7 +218,7 @@ const salidaEdit = ref(null);
         alerts.alerts[0].message = "Fallo creando el Periodo";
       $q.notify(alerts.alerts[0]);
       auth.postTraza("Periodo creado", "Fallo")
-        console.log(error.response);
+        console.log(error);
       });
   }
   
@@ -251,7 +251,7 @@ const salidaEdit = ref(null);
         },
       })
       .then(function (response) {
-        console.log(response);
+        // console.log(response);
         dataStore.salida = response.data
       })
       .catch(function (error) {
