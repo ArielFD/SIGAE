@@ -5,8 +5,8 @@
         </div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Entidades" dense :rows="data.rows"
-                    :columns="data.columns" row-key="name" v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode">
+                <q-table class="my-sticky-header-table" title="Entidades" dense :rows="data.rows" :columns="data.columns"
+                    row-key="name" v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-3 text-h6">
@@ -17,7 +17,7 @@
                         <div style="width: 100%" class="row justify-between" v-else>
                             <div class="col-3 text-h6" v-if="auth.jwt">
                                 <q-btn flat label="Entidades" icon="print" class="col-1  q-pa-xs"
-                                    @click="auth.printMode = !auth.printMode" v-if="data.titulo=='' ? disable:!disable"/>
+                                    @click="auth.printMode = !auth.printMode" v-if="data.titulo == '' ? disable : !disable" />
                             </div>
                             <div class="col-3 text-h6" v-else>
                                 <q-btn flat label="Entidades" class="col-1  q-pa-xs" />
@@ -31,7 +31,9 @@
                                     <q-btn no-caps class="q-ma-xs text-white bg-secondary" @click="noVisitadas">
                                         Entidades no Visitadas</q-btn>
                                     <q-btn no-caps class="q-ma-xs text-white bg-secondary" @click="ministerio">
-                                        Entidades por Ministerio</q-btn>
+                                        Entidades por OACE</q-btn>
+                                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                                        class="col-1 text-black q-pa-xs" />
                                 </div>
                             </div>
                         </div>
@@ -39,8 +41,8 @@
                     <template v-slot:body-cell="props">
                         <q-td :props="props"
                             :class="(props.row.entidad == '') ? 'bg-primary text-black' : 'bg-white text-black'">{{
-        props.value
-}}
+                                props.value
+                            }}
                         </q-td>
                     </template>
                     <template v-slot:body="props" v-if="data.cellProps">
@@ -49,10 +51,11 @@
                                 {{ props.row.name }}
                             </q-td>
                             <q-td key="nombreActual" :props="props">
-                                    {{ props.row.nombreActual }}
+                                {{ props.row.nombreActual }}
                             </q-td>
-                            <q-td key="nombresAnterior" :props="props"  :class="(props.row.nombresAnterior == '') ? 'bg-primary text-black' : 'bg-white text-black'">
-                                    {{ props.row.nombresAnterior }}
+                            <q-td key="nombresAnterior" :props="props"
+                                :class="(props.row.nombresAnterior == '') ? 'bg-primary text-black' : 'bg-white text-black'">
+                                {{ props.row.nombresAnterior }}
                             </q-td>
                         </q-tr>
                     </template>
@@ -272,7 +275,7 @@ let data = reactive({
     fecha_actual: new Date(),
     columns: [],
     entidades: [],
-    cellProps:false
+    cellProps: false
 });
 
 onMounted(() => {
@@ -284,8 +287,8 @@ function getYear(params) {
 }
 
 function cerradas(params) {
-    data.titulo="Entidades cerradas "
-    data.cellProps=false
+    data.titulo = "Entidades cerradas "
+    data.cellProps = false
     data.rows = [];
     data.columns = columnsECerradas
     let count = 1
@@ -377,8 +380,8 @@ function entidadesHistorial() {
 }
 
 async function historial(params) {
-    data.titulo="Historial de entidades "
-    data.cellProps=true
+    data.titulo = "Historial de entidades "
+    data.cellProps = true
     data.rows = [];
     data.columns = columnsHistorial
     let count = 1
@@ -432,8 +435,8 @@ function entidadesActivas() {
 }
 
 async function noVisitadas(params) {
-    data.titulo="Entidades no visitadas "
-    data.cellProps=false
+    data.titulo = "Entidades no visitadas "
+    data.cellProps = false
     data.rows = [];
     data.columns = columnsENoVisitadas
 
@@ -469,8 +472,8 @@ async function noVisitadas(params) {
 }
 
 async function ministerio(params) {
-    data.titulo="Entidades por ministerio "
-    data.cellProps=false
+    data.titulo = "Entidades por ministerio "
+    data.cellProps = false
     data.rows = [];
     data.columns = columnsEMinisterio
     let count = 1

@@ -87,7 +87,7 @@
   
   function getTrazas(params) {
     api
-      .get("/trazas?populate=%2A", {
+      .get("/trazas?populate=%2A&sort[0]=fecha%3Adesc", {
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },
