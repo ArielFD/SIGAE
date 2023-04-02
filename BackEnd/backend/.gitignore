@@ -66,7 +66,7 @@ $RECYCLE.BIN/
 
 .tmp
 *.log
-# *.sql
+*.sql
 *.sqlite
 *.sqlite3
 
@@ -105,7 +105,7 @@ coverage
 # Strapi
 ############################
 
-# .env
+.env
 license.txt
 exports
 *.cache
