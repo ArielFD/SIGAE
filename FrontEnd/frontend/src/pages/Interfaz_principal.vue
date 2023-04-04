@@ -18,7 +18,7 @@
             contribuyendo
             as&iacute; a elevar el nivel de eficiencia en la ejecuci&oacute;n de dicho proceso.</p>
         </div>
-        <div class="col-2">
+        <div class="col-1">
           <q-img src="~assets/Layout_/GTE-BH.jpg" class="banner q-mt-xl" />
         </div>
       </div>

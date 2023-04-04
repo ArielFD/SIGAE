@@ -135,21 +135,39 @@ async function getEnfrentamiento(params) {
             console.log(error);
         });
 
-    data.chartOptions = {
-        xaxis: {
-            categories: data.organismos
+        if(data.organismo=="OACE"){
+            data.chartOptions = {
+                xaxis: {
+                    categories: data.organismos
+                }
+            };
+            data.series = [
+                {
+                    name: "Total de medidas",
+                    data: data1,
+                },
+                {
+                    name: "Cumplidas",
+                    data: data2,
+                }
+            ]
+        }else{
+            data.chartOptions = {
+                xaxis: {
+                    categories: data.osdes
+                }
+            };
+            data.series = [
+                {
+                    name: "Total de medidas",
+                    data: data1,
+                },
+                {
+                    name: "Cumplidas",
+                    data: data2,
+                }
+            ]
         }
-    };
-    data.series = [
-        {
-            name: "Total de medidas",
-            data: data1,
-        },
-        {
-            name: "Cumplidas",
-            data: data2,
-        }
-    ]
 
 }
 

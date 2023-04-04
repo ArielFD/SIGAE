@@ -22,16 +22,33 @@ module.exports = createCoreController(
           populate: {
             entidad: {
               populate: ["organismo", "osde"],
-              where: {
-                activo: {
-                  $containsi: "s",
-                },
-              },
+              // where: {
+              //   activo: {
+              //     $containsi: "s",
+              //   },
+              // },
             },
           },
         });
 
       let rows = [];
+      let rowTotal = {
+        name: "Total",
+        cumplidas_corto: 0,
+        cumplidas_largo: 0,
+        cumplidas_mediano: 0,
+        medidas_corto: 0,
+        medidas_largo: 0,
+        medidas_mediano: 0,
+        totalMedidas: 0,
+        totalCumplidas: 0,
+        porcientoCorto: 0,
+        porcientoMedio: 0,
+        porcientoLargo: 0,
+        porcientoTotal: 0,
+        entidad: "",
+        organismo: "",
+      };
       let count = 1;
       for (let i = 0; i < response.length; i++) {
         let porcientoCortos = 0,
@@ -74,37 +91,64 @@ module.exports = createCoreController(
                     response[i].medidas_mediano)) *
                 100
               ).toFixed(2);
+
+        let classTemp = {
+          year: data[0],
+          name: count,
+          id: response[i].id,
+          cumplidas_corto: response[i].cumplidas_corto,
+          cumplidas_largo: response[i].cumplidas_largo,
+          cumplidas_mediano: response[i].cumplidas_mediano,
+          medidas_corto: response[i].medidas_corto,
+          medidas_largo: response[i].medidas_largo,
+          medidas_mediano: response[i].medidas_mediano,
+          totalMedidas:
+            response[i].medidas_corto +
+            response[i].medidas_largo +
+            response[i].medidas_mediano,
+          totalCumplidas:
+            response[i].cumplidas_largo +
+            response[i].cumplidas_corto +
+            response[i].cumplidas_mediano,
+          porcientoCorto: porcientoCortos,
+          porcientoMedio: porcientoMedios,
+          porcientoLargo: porcientoLargos,
+          porcientoTotal: porcientoTotales,
+          entidad: response[i].entidad.entidad,
+          organismo: response[i].entidad.organismo[0].organismo,
+        };
+
         if (response[i].entidad != null) {
           if (data[1] == "Entidad" && response[i].entidad.entidad == data[2]) {
             if (response[i].entidad.organismo.length == 0)
               response[i].entidad.organismo[0] = {
                 attributes: { organismo: "-" },
               };
-            rows.push({
-              year: data[0],
-              name: count,
-              id: response[i].id,
-              cumplidas_corto: response[i].cumplidas_corto,
-              cumplidas_largo: response[i].cumplidas_largo,
-              cumplidas_mediano: response[i].cumplidas_mediano,
-              medidas_corto: response[i].medidas_corto,
-              medidas_largo: response[i].medidas_largo,
-              medidas_mediano: response[i].medidas_mediano,
-              totalMedidas:
-                response[i].medidas_corto +
+            rows.push(classTemp);
+
+            rowTotal.cumplidas_corto += parseInt(response[i].cumplidas_corto);
+            rowTotal.cumplidas_largo += parseInt(response[i].cumplidas_largo);
+            rowTotal.cumplidas_mediano += parseInt(
+              response[i].cumplidas_mediano
+            );
+            rowTotal.medidas_corto += parseInt(response[i].medidas_corto);
+            rowTotal.medidas_largo += parseInt(response[i].medidas_largo);
+            rowTotal.medidas_mediano += parseInt(response[i].medidas_mediano);
+            rowTotal.totalMedidas += parseInt(
+              response[i].medidas_corto +
                 response[i].medidas_largo +
-                response[i].medidas_mediano,
-              totalCumplidas:
-                response[i].cumplidas_largo +
+                response[i].medidas_mediano
+            );
+            rowTotal.totalCumplidas += parseInt(
+              response[i].cumplidas_largo +
                 response[i].cumplidas_corto +
-                response[i].cumplidas_mediano,
-              porcientoCorto: porcientoCortos,
-              porcientoMedio: porcientoMedios,
-              porcientoLargo: porcientoLargos,
-              porcientoTotal: porcientoTotales,
-              entidad: response[i].entidad.entidad,
-              organismo: response[i].entidad.organismo[0].organismo,
-            });
+                response[i].cumplidas_mediano
+            );
+            rowTotal.porcientoCorto = parseInt(rowTotal.cumplidas_corto/rowTotal.medidas_corto*100).toFixed(2);
+            rowTotal.porcientoMedio = parseInt(rowTotal.cumplidas_mediano/rowTotal.medidas_mediano*100).toFixed(2);
+            rowTotal.porcientoLargo = parseInt(rowTotal.cumplidas_largo/rowTotal.medidas_largo*100).toFixed(2);
+            rowTotal.porcientoTotal = parseInt(rowTotal.totalCumplidas/rowTotal.totalMedidas*100).toFixed(2);
+
             count++;
           } else if (
             data[1] == "OACE" &&
@@ -115,31 +159,31 @@ module.exports = createCoreController(
               response[i].entidad.organismo[0] = {
                 attributes: { organismo: "-" },
               };
-            rows.push({
-              year: data[0],
-              name: count,
-              id: response[i].id,
-              cumplidas_corto: response[i].cumplidas_corto,
-              cumplidas_largo: response[i].cumplidas_largo,
-              cumplidas_mediano: response[i].cumplidas_mediano,
-              medidas_corto: response[i].medidas_corto,
-              medidas_largo: response[i].medidas_largo,
-              medidas_mediano: response[i].medidas_mediano,
-              totalMedidas:
-                response[i].medidas_corto +
+            rows.push(classTemp);
+
+            rowTotal.cumplidas_corto += parseInt(response[i].cumplidas_corto);
+            rowTotal.cumplidas_largo += parseInt(response[i].cumplidas_largo);
+            rowTotal.cumplidas_mediano += parseInt(
+              response[i].cumplidas_mediano
+            );
+            rowTotal.medidas_corto += parseInt(response[i].medidas_corto);
+            rowTotal.medidas_largo += parseInt(response[i].medidas_largo);
+            rowTotal.medidas_mediano += parseInt(response[i].medidas_mediano);
+            rowTotal.totalMedidas += parseInt(
+              response[i].medidas_corto +
                 response[i].medidas_largo +
-                response[i].medidas_mediano,
-              totalCumplidas:
-                response[i].cumplidas_largo +
+                response[i].medidas_mediano
+            );
+            rowTotal.totalCumplidas += parseInt(
+              response[i].cumplidas_largo +
                 response[i].cumplidas_corto +
-                response[i].cumplidas_mediano,
-              porcientoCorto: porcientoCortos,
-              porcientoMedio: porcientoMedios,
-              porcientoLargo: porcientoLargos,
-              porcientoTotal: porcientoTotales,
-              entidad: response[i].entidad.entidad,
-              organismo: response[i].entidad.organismo[0].organismo,
-            });
+                response[i].cumplidas_mediano
+            );
+            rowTotal.porcientoCorto = parseInt(rowTotal.cumplidas_corto/rowTotal.medidas_corto*100).toFixed(2);
+            rowTotal.porcientoMedio = parseInt(rowTotal.cumplidas_mediano/rowTotal.medidas_mediano*100).toFixed(2);
+            rowTotal.porcientoLargo = parseInt(rowTotal.cumplidas_largo/rowTotal.medidas_largo*100).toFixed(2);
+            rowTotal.porcientoTotal = parseInt(rowTotal.totalCumplidas/rowTotal.totalMedidas*100).toFixed(2);
+
             count++;
           } else if (
             data[1] == "OSDE" &&
@@ -150,37 +194,37 @@ module.exports = createCoreController(
               response[i].entidad.organismo[0] = {
                 attributes: { organismo: "-" },
               };
-            rows.push({
-              year: data[0],
-              name: count,
-              id: response[i].id,
-              cumplidas_corto: response[i].cumplidas_corto,
-              cumplidas_largo: response[i].cumplidas_largo,
-              cumplidas_mediano: response[i].cumplidas_mediano,
-              medidas_corto: response[i].medidas_corto,
-              medidas_largo: response[i].medidas_largo,
-              medidas_mediano: response[i].medidas_mediano,
-              totalMedidas:
-                response[i].medidas_corto +
+            rows.push(classTemp);
+
+            rowTotal.cumplidas_corto += parseInt(response[i].cumplidas_corto);
+            rowTotal.cumplidas_largo += parseInt(response[i].cumplidas_largo);
+            rowTotal.cumplidas_mediano += parseInt(
+              response[i].cumplidas_mediano
+            );
+            rowTotal.medidas_corto += parseInt(response[i].medidas_corto);
+            rowTotal.medidas_largo += parseInt(response[i].medidas_largo);
+            rowTotal.medidas_mediano += parseInt(response[i].medidas_mediano);
+            rowTotal.totalMedidas += parseInt(
+              response[i].medidas_corto +
                 response[i].medidas_largo +
-                response[i].medidas_mediano,
-              totalCumplidas:
-                response[i].cumplidas_largo +
+                response[i].medidas_mediano
+            );
+            rowTotal.totalCumplidas += parseInt(
+              response[i].cumplidas_largo +
                 response[i].cumplidas_corto +
-                response[i].cumplidas_mediano,
-              porcientoCorto: porcientoCortos,
-              porcientoMedio: porcientoMedios,
-              porcientoLargo: porcientoLargos,
-              porcientoTotal: porcientoTotales,
-              entidad: response[i].entidad.entidad,
-              organismo: response[i].entidad.organismo[0].organismo,
-            });
+                response[i].cumplidas_mediano
+            );
+            rowTotal.porcientoCorto = parseInt(rowTotal.cumplidas_corto/rowTotal.medidas_corto*100).toFixed(2);
+            rowTotal.porcientoMedio = parseInt(rowTotal.cumplidas_mediano/rowTotal.medidas_mediano*100).toFixed(2);
+            rowTotal.porcientoLargo = parseInt(rowTotal.cumplidas_largo/rowTotal.medidas_largo*100).toFixed(2);
+            rowTotal.porcientoTotal = parseInt(rowTotal.totalCumplidas/rowTotal.totalMedidas*100).toFixed(2);
+
             count++;
           }
         }
       }
 
-      return rows;
+      return {rows,rowTotal};
     },
 
     async getMedidasActaControl(ctx) {
@@ -471,10 +515,10 @@ module.exports = createCoreController(
         });
       }
 
-      data4.push(data1)
-      data4.push(data2)
-      data4.push(data3)
-      
+      data4.push(data1);
+      data4.push(data2);
+      data4.push(data3);
+
       return data4;
     },
 
@@ -488,23 +532,37 @@ module.exports = createCoreController(
               $containsi: data[0],
             },
           },
-          orderBy:{fechavisita:'desc'},
-          populate: true
+          orderBy: { fechavisita: "desc" },
+          populate: true,
         });
 
       let rows = [];
-      let count = 1
-      let tratamiento = "no"
+      let count = 1;
+      let tratamiento = "no";
       for (let i = 0; i < response.length; i++) {
-        let residuales, trampa
+        let residuales, trampa;
         const element = [];
         for (let index = 0; index < response[i].residuals.length; index++) {
-          element.push(response[i].residuals[index].id)
+          element.push(response[i].residuals[index].id);
         }
-        if (element.length > 0) residuales = "si"
-        response[i].sis_tratamiento != null && (response[i].sis_tratamiento.eficiencia != "" && response[i].sis_tratamiento.estado != "" && response[i].sis_tratamiento.idoneidad != "") ? tratamiento = "si" : tratamiento = "no"
-        response[i].trampa_grasa != null && (response[i].trampa_grasa.bien != "0" || response[i].trampa_grasa.regular != "0" || response[i].trampa_grasa.mal != "0") ? trampa = "si" : trampa = "no"
-        if (response[i].entidad != null && response[i].sis_tratamiento != null && response[i].trampa_grasa != null) {
+        if (element.length > 0) residuales = "si";
+        response[i].sis_tratamiento != null &&
+        response[i].sis_tratamiento.eficiencia != "" &&
+        response[i].sis_tratamiento.estado != "" &&
+        response[i].sis_tratamiento.idoneidad != ""
+          ? (tratamiento = "si")
+          : (tratamiento = "no");
+        response[i].trampa_grasa != null &&
+        (response[i].trampa_grasa.bien != "0" ||
+          response[i].trampa_grasa.regular != "0" ||
+          response[i].trampa_grasa.mal != "0")
+          ? (trampa = "si")
+          : (trampa = "no");
+        if (
+          response[i].entidad != null &&
+          response[i].sis_tratamiento != null &&
+          response[i].trampa_grasa != null
+        ) {
           rows.push({
             name: count,
             id: response[i].id,
@@ -537,10 +595,13 @@ module.exports = createCoreController(
             residuals: element,
             residuales: residuales,
             idSist: response[i].sis_tratamiento.id,
-            idTramp: response[i].trampa_grasa.id
+            idTramp: response[i].trampa_grasa.id,
           });
-        } 
-        else if (response[i].entidad != null && response[i].sis_tratamiento == null && response[i].trampa_grasa == null) {
+        } else if (
+          response[i].entidad != null &&
+          response[i].sis_tratamiento == null &&
+          response[i].trampa_grasa == null
+        ) {
           rows.push({
             name: count,
             id: response[i].id,
@@ -573,10 +634,13 @@ module.exports = createCoreController(
             estadoGrasaRegular: "0",
             estadoGrasaMal: "0",
             idSist: "",
-            idTramp: ""
+            idTramp: "",
           });
-        }
-        else if (response[i].entidad != null && response[i].sis_tratamiento == null && response[i].trampa_grasa != null) {
+        } else if (
+          response[i].entidad != null &&
+          response[i].sis_tratamiento == null &&
+          response[i].trampa_grasa != null
+        ) {
           rows.push({
             name: count,
             id: response[i].id,
@@ -609,10 +673,13 @@ module.exports = createCoreController(
             estadoGrasaRegular: response[i].trampa_grasa.regular,
             estadoGrasaMal: response[i].trampa_grasa.mal,
             idSist: "",
-            idTramp: response[i].trampa_grasa.id
+            idTramp: response[i].trampa_grasa.id,
           });
-        }
-        else if (response[i].entidad != null && response[i].sis_tratamiento != null && response[i].trampa_grasa == null) {
+        } else if (
+          response[i].entidad != null &&
+          response[i].sis_tratamiento != null &&
+          response[i].trampa_grasa == null
+        ) {
           rows.push({
             name: count,
             id: response[i].id,
@@ -645,10 +712,10 @@ module.exports = createCoreController(
             estadoGrasaRegular: "0",
             estadoGrasaMal: "0",
             idSist: response[i].sis_tratamiento.id,
-            idTramp: ""
+            idTramp: "",
           });
         }
-        count++
+        count++;
       }
       return rows;
     },

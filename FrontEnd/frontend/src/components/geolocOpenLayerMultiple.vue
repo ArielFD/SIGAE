@@ -20,9 +20,9 @@ import { api } from "boot/axios.js";
 
 let data = reactive({
     longitud: -82.337749,
-    latitud: 23.134483,
-    directa:[],
-    indirecta:[]
+    latitud: 23.120906,
+    directa: [],
+    indirecta: []
     // mostrar: false
 })
 
@@ -32,18 +32,18 @@ onMounted(() => {
 })
 
 function entidadesActivas() {
-        api
-            .get(`/entidads?filters[activo][$eq]=s`).then(function (response) {
-                console.log(response);
-                for (let index = 0; index < response.data.data.length; index++) {
-                    let spot=[response.data.data[index].attributes.longitud,response.data.data[index].attributes.latitud]
-                    if(response.data.data[index].attributes.tipo_fuente=="Directa") data.directa.push(new Feature(new Point(spot)))
-                    if(response.data.data[index].attributes.tipo_fuente=="Indirecta") data.indirecta.push(new Feature(new Point(spot)))
-                }
-                mostrar()
-            }).catch(function (error) {
-                console.log(error);
-            });
+    api
+        .get(`/entidads?filters[activo][$eq]=s`).then(function (response) {
+            console.log(response);
+            for (let index = 0; index < response.data.data.length; index++) {
+                let spot = [response.data.data[index].attributes.longitud, response.data.data[index].attributes.latitud]
+                if (response.data.data[index].attributes.tipo_fuente == "Directa") data.directa.push(new Feature(new Point(spot)))
+                if (response.data.data[index].attributes.tipo_fuente == "Indirecta") data.indirecta.push(new Feature(new Point(spot)))
+            }
+            mostrar()
+        }).catch(function (error) {
+            console.log(error);
+        });
 }
 
 function mostrar(params) {
@@ -67,7 +67,7 @@ function mostrar(params) {
         view: new View({
             projection: "EPSG:4326",
             center: place,
-            zoom: 12,
+            zoom: 13,
         }),
         layers: [
             new TileLayer({
@@ -121,6 +121,7 @@ function mostrar(params) {
     });
 
     function formatCoordinate(coordinate) {
+        console.log(coordinate);
         return `
         <table>
           <tbody>

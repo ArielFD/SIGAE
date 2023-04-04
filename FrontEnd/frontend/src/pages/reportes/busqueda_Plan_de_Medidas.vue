@@ -52,6 +52,51 @@
                             </div>
                         </div>
                     </template>
+                    <template v-slot:bottom-row>
+        <q-tr>
+          <q-td>
+            Total
+          </q-td>
+          <q-td>
+          </q-td>
+          <q-td>
+            {{data.rowTotal.medidas_corto}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.cumplidas_corto}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.porcientoCorto}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.medidas_mediano}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.cumplidas_mediano}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.porcientoMedio}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.medidas_largo}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.cumplidas_largo}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.porcientoLargo}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.totalMedidas}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.totalCumplidas}}
+          </q-td>
+          <q-td>
+            {{data.rowTotal.porcientoTotal}}
+          </q-td>
+        </q-tr>
+      </template>
                 </q-table>
             </q-card-section>
         </q-card>
@@ -205,6 +250,7 @@ const optionsOsde = ref(stringOptionsOsde)
 let data = reactive({
     titulo: "Plan de medias ",
     rows: [],
+    rowTotal:{},
     opcion: "",
     opcions: ["Entidad", "OACE", "OSDE"],
     entidades: [],
@@ -308,11 +354,18 @@ async function getActacontrol(params) {
 
     api
         .get(`/getActacontrol?filters[0]=${data.fecha_actual}&filters[1]=${data.opcion}&filters[2]=${modelEntidad.value}&filters[3]=${modelOrganismo.value}&filters[4]=${modelOsde.value}`).then(function (response) {
-            // console.log(response);
-            data.rows = response.data
+            console.log(response);
+            data.rows = response.data.rows
+            data.rowTotal=response.data.rowTotal
         }).catch(function (error) {
             console.log(error);
         });
 }
 
 </script>
+
+<style scoped>
+.q-td{
+    text-align: center;
+}
+</style>
