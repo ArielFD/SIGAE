@@ -18,30 +18,30 @@ module.exports = {
    * run jobs, or perform some special logic.
    */
   bootstrap({ strapi }) {
-    async function updateUnPublishedElements(ctx) {
-      console.log("Estoy aqui!!!!!");
-      let arr=[];
-      let temp=await strapi.db.query("api::unidad.unidad").findMany({
-        where: { publishedAt: null },
-      });
+    // async function updateUnPublishedElements(ctx) {
+    //   console.log("Estoy aqui!!!!!");
+    //   let arr=[];
+    //   let temp=await strapi.db.query("api::unidad.unidad").findMany({
+    //     where: { publishedAt: null },
+    //   });
 
-      temp.forEach(element => {
-        arr.push(element.id)
-      });
+    //   temp.forEach(element => {
+    //     arr.push(element.id)
+    //   });
 
-      console.log(arr);
+    //   console.log(arr);
 
-      for (let temp = 0; temp < arr.length; temp++) {
-        //   const element = array[temp];
-        console.log(
-          await strapi.db.query("api::unidad.unidad").update({
-            where: { id: arr[temp] },
-            data: {
-              publishedAt: new Date().toISOString(),
-            },
-          })
-        );
-      }
-    }
+    //   for (let temp = 0; temp < arr.length; temp++) {
+    //     //   const element = array[temp];
+    //     console.log(
+    //       await strapi.db.query("api::unidad.unidad").update({
+    //         where: { id: arr[temp] },
+    //         data: {
+    //           publishedAt: new Date().toISOString(),
+    //         },
+    //       })
+    //     );
+    //   }
+    // }
   },
 };
