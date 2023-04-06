@@ -9,6 +9,8 @@
 <script setup>
 
 import "ol/ol.css";
+import GeoJSON from 'ol/format/GeoJSON';
+import BingMaps from 'ol/source/BingMaps.js';
 import { Feature, Map, Overlay, View } from 'ol/index';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Point } from 'ol/geom';
@@ -17,6 +19,16 @@ import { useGeographic } from 'ol/proj';
 import { onMounted, reactive } from "vue"
 import { Draw, Modify, Snap } from 'ol/interaction';
 import { api } from "boot/axios.js";
+import cuenca_bahia from "../../public/cuenca"
+
+const geojsonFormat = new GeoJSON();
+const geojsonSource = new VectorSource({
+  features: geojsonFormat.readFeatures(cuenca_bahia)
+});
+
+const vectorLayer = new VectorLayer({
+  source: geojsonSource
+});
 
 let data = reactive({
     longitud: -82.337749,
@@ -70,8 +82,27 @@ function mostrar(params) {
             zoom: 13,
         }),
         layers: [
+            // new TileLayer({
+            //     source: new OSM(),
+            // }),
             new TileLayer({
-                source: new OSM(),
+                // visible: false,
+                // preload: Infinity,
+                source: new BingMaps({
+                    key: 'Ap7tyqRHQsO5Stf47WmhtNXHeXqofmTlHKTTJ-2iA6-GhtvCXYJ43XCwWSTOt-oi',
+                    imagerySet: "Aerial",
+                    // use maxZoom 19 to see stretched tiles instead of the BingMaps
+                    // "no photos at this zoom level" tiles
+                    // maxZoom: 19
+                    //         const styles = [
+                    //   'RoadOnDemand',
+                    //   'Aerial',
+                    //   'AerialWithLabelsOnDemand',
+                    //   'CanvasDark',
+                    //   'OrdnanceSurvey',
+                    // ];
+
+                }),
             }),
             new VectorLayer({
                 source: source,
@@ -84,11 +115,13 @@ function mostrar(params) {
                 source: source1,
                 style: {
                     'circle-radius': 3,
-                    'circle-fill-color': 'blue',
+                    'circle-fill-color': 'yellow',
                 },
             })
         ],
     });
+
+    map.addLayer(vectorLayer);
 
     let modify = new Modify({ source: source });
     map.addInteraction(modify);
