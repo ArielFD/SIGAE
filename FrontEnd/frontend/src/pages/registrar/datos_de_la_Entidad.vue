@@ -16,7 +16,7 @@
                   </template>
                 </q-input>
               </div>
-              <q-btn color="secondary" icon-right="archive" label="Exportar a Ecxel" no-caps @click="exportTable" :to="{ name: 'test' } " target='_blank'/>
+              <q-btn color="secondary" icon-right="archive" label="Exportar a Excel" no-caps @click="exportTable" :to="{ name: 'test' } " target='_blank'/>
               <q-btn color="secondary" label="Cambiar el nombre de la Entidad" no-caps @click="editNombre" />
               <q-dialog v-model="data.cardCambiar">
                 <q-card class="my-card bg-primary" style="width: 400px" flat bordered>
@@ -48,7 +48,7 @@
       </q-card-section>
 
       <q-card-actions class="justify-end">
-        <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
+        <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true, clear()">Insertar</q-btn>
         <q-dialog v-model="data.cardCreate">
           <q-card class="my-card bg-primary" flat bordered>
             <q-item>
@@ -111,7 +111,7 @@
             <form @submit.prevent.stop="onEdit">
               <q-card-section>
                 <div class="row justify-between">
-                  <q-input outlined dense v-model="data.entidadEdit" type="text" label="Nombre de la Entidad"
+                  <q-input outlined dense v-model="data.entidadEdit" type="text" readonly label="Nombre de la Entidad"
                     class="col-12 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="entidadEdit"/>
                   <q-input outlined dense v-model="data.directorEdit" type="text" label="Nombre del Director"
                     class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="directorEdit"/>
@@ -342,6 +342,23 @@ let data = reactive({
 
   cargaContaminante: []
 });
+
+function clear(params) {
+  data.entidad= "",
+  data.organismo= "",
+  data.municipio= "",
+  data.prioridad= "",
+  data.salida= "",
+  data.osde= "",
+  data.trabajadores= "",
+  data.objeto= "",
+  data.fuente= "",
+  data.director= "",
+  data.telefono= "",
+  data.coordinador= "",
+  data.PIB= "",
+  data.latlon= [-82.374751, 23.117113]
+}
 
 onMounted(() => {
   getEntidades()

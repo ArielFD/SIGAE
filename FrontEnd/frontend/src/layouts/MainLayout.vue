@@ -63,12 +63,12 @@
       <q-toolbar style="color: rgb(4, 48, 158)">
         <div class="col">
           <div class="row justify-center">
-            <div>SIGAE v2.0 copyright 2011-2023</div>
+            <div>SIGAE v2.0 copyright 2022-2023</div>
             <!-- <div>© 2022 Todos los derechos reservados</div> -->
             <!-- <div>Powered by Joven CLub</div> -->
           </div>
         </div>
-        <div style="rigth:0%">07/03/2023</div>
+        <div style="rigth:0%">11/04/2023</div>
       </q-toolbar>
     </q-footer>
 
@@ -373,7 +373,7 @@ function onLogin() {
 <style lang="sass" scoped>
 .banner1
   height: 100%
-  max-height: 120px
+  max-height: 170px
 .my-card
   width: 100%
   min-width: 500px

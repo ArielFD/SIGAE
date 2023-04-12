@@ -23,12 +23,12 @@ import cuenca_bahia from "../../public/cuenca"
 
 const geojsonFormat = new GeoJSON();
 const geojsonSource = new VectorSource({
-  features: geojsonFormat.readFeatures(cuenca_bahia)
+    features: geojsonFormat.readFeatures(cuenca_bahia)
 });
 
-const vectorLayer = new VectorLayer({
-  source: geojsonSource
-});
+// const vectorLayer = new VectorLayer({
+//     source: geojsonSource
+// });
 
 let data = reactive({
     longitud: -82.337749,
@@ -49,8 +49,8 @@ function entidadesActivas() {
             console.log(response);
             for (let index = 0; index < response.data.data.length; index++) {
                 let spot = [response.data.data[index].attributes.longitud, response.data.data[index].attributes.latitud]
-                if (response.data.data[index].attributes.tipo_fuente == "Directa") data.directa.push(new Feature(new Point(spot)))
-                if (response.data.data[index].attributes.tipo_fuente == "Indirecta") data.indirecta.push(new Feature(new Point(spot)))
+                if (response.data.data[index].attributes.tipo_fuente == "Directa") data.directa.push(new Feature({geometry:new Point(spot),id:response.data.data[index].attributes.entidad}))
+                if (response.data.data[index].attributes.tipo_fuente == "Indirecta") data.indirecta.push(new Feature({geometry:new Point(spot),id:response.data.data[index].attributes.entidad}))
             }
             mostrar()
         }).catch(function (error) {
@@ -105,6 +105,9 @@ function mostrar(params) {
                 }),
             }),
             new VectorLayer({
+                source: geojsonSource
+            }),
+            new VectorLayer({
                 source: source,
                 style: {
                     'circle-radius': 3,
@@ -117,14 +120,18 @@ function mostrar(params) {
                     'circle-radius': 3,
                     'circle-fill-color': 'yellow',
                 },
+                draggable: false
             })
         ],
     });
 
-    map.addLayer(vectorLayer);
+    // map.addLayer(vectorLayer);
 
-    let modify = new Modify({ source: source });
-    map.addInteraction(modify);
+    // let modify = new Modify({ source: source });
+    // let modify1 = new Modify({ source: source1 });
+
+    // map.addInteraction(modify);
+    // map.addInteraction(modify1);
 
     let draw, snap; // global so we can remove them later
     // let typeSelect = document.getElementById('type');;
@@ -152,23 +159,32 @@ function mostrar(params) {
         element: element,
         stopEvent: false,
     });
+    map.addOverlay(popup);
 
-    function formatCoordinate(coordinate) {
-        console.log(coordinate);
-        return `
-        <table>
-          <tbody>
-            <tr><th>lon</th><td>${coordinate[0]}</td></tr>
-            <tr><th>lat</th><td>${coordinate[1]}</td></tr>
-          </tbody>
-        </table>`;
+    function formatCoordinate(coordinate,id) {
+        if(coordinate.length==2){
+            return `
+            <table>
+              <tbody>
+                <tr><th>Entidad:</th><td><b>${id}</b></td></tr>
+              </tbody>
+            </table>`;
+        }
+        else{
+            return `
+            <table>
+              <tbody>
+                
+              </tbody>
+            </table>`;
+        }
     }
 
     let info = document.getElementById('info');
     map.on('moveend', function () {
         let view = map.getView();
         let center = view.getCenter();
-        //info.innerHTML = formatCoordinate(center);
+        // info.innerHTML = formatCoordinate(center);
     });
 
     let popover;
@@ -182,6 +198,8 @@ function mostrar(params) {
             return;
         }
         const coordinate = feature.getGeometry().getCoordinates();
+        const id=feature.values_.id
+        
         popup.setPosition([
             coordinate[0] + Math.round(event.coordinate[0] / 360) * 360,
             coordinate[1],
@@ -192,7 +210,7 @@ function mostrar(params) {
 
         popover = new bootstrap.Popover(element, {
             container: element.parentElement,
-            content: formatCoordinate(coordinate),
+            content: formatCoordinate(coordinate,id),
             html: true,
             offset: [0, 20],
             placement: 'top',

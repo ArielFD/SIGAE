@@ -13,20 +13,22 @@
             <div class="col-1 text-h6" v-if="auth.jwt">
                 <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
             </div>
-            <p class="col-7">
+            <p class="col-3">
                 <label><b>Plan de medidas por:</b> </label> &nbsp;
-                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Corto"
-                    label="Corto" color="secondary" />
-                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Mediano"
-                    label="Mediano" color="secondary" />
-                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Largo"
-                    label="Largo" color="secondary" />
                 <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
                     label="OACE" color="secondary" />
                 <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"
                     label="OSDE" color="secondary" />
-                <q-radio v-model="data.opcion" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Totales"
-                    label="Totales" color="secondary" />
+            </p>
+            <p class="col-4">
+                <q-radio v-model="data.opcion1" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Corto"
+                    label="Corto" color="secondary" />
+                <q-radio v-model="data.opcion1" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Mediano"
+                    label="Mediano" color="secondary" />
+                <q-radio v-model="data.opcion1" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Largo"
+                    label="Largo" color="secondary" />
+                <q-radio v-model="data.opcion1" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="Totales"
+                        label="Totales" color="secondary" />
             </p>
             <div class="col-3">
                 <div class="row justify-end">
@@ -68,6 +70,7 @@ let data = reactive({
     titulo: "Histograma de plan de medidas ",
     fecha_actual: new Date(),
     opcion: "OACE",
+    opcion1:"Totales",
     rows: [],
     organismos: [],
     osdes: [],
@@ -136,16 +139,17 @@ async function getMedidas(params) {
     let data1 = [], data2 = [], data3 = []
 
     await api
-        .get(`/getPlanMedidasActaControl?filters[0]=${data.fecha_actual}&filters[1]=${data.opcion}&filters[2]=${data.organismos}&filters[3]=${data.osdes}`)
+        .get(`/getPlanMedidasActaControl?filters[0]=${data.fecha_actual}&filters[1]=${data.opcion}&filters[2]=${data.organismos}&filters[3]=${data.osdes}&filters[4]=${data.opcion1}`)
         .then(function (response) {
+            console.log(response);
             data1 = response.data[0];
             data2 = response.data[1];
-            data3 = response.data[2];
+            // data3 = response.data[2];
         }).catch(function (error) {
             console.log(error);
         });
 
-    if (data.opcion == "Corto" || data.opcion == "Mediano" || data.opcion == "Largo" || data.opcion == "Totales") {
+    if (data.opcion == "OACE") {
         data.chartOptions = {
             xaxis: {
                 categories: data.organismos
@@ -164,36 +168,9 @@ async function getMedidas(params) {
         for (let index = 0; index < data.organismos.length; index++) {
             if (!data1[index]) data1[index] = 0
             if (!data2[index]) data2[index] = 0
-            if (!data3[index]) data3[index] = 0
         }
     }
-    else if (data.opcion == "OACE") {
-        data.chartOptions = {
-            xaxis: {
-                categories: data.organismos
-            }
-        };
-        data.series = [
-            {
-                name: "Corto",
-                data: data1,
-            },
-            {
-                name: "Mediano",
-                data: data2,
-            },
-            {
-                name: "Largo",
-                data: data3,
-            }
-        ]
-        for (let index = 0; index < data.organismos.length; index++) {
-            if (!data1[index]) data1[index] = 0
-            if (!data2[index]) data2[index] = 0
-            if (!data3[index]) data3[index] = 0
-        }
-    }
-    else if (data.opcion == "OSDE") {
+    else {
         data.chartOptions = {
             xaxis: {
                 categories: data.osdes
@@ -201,22 +178,17 @@ async function getMedidas(params) {
         };
         data.series = [
             {
-                name: "Corto",
+                name: "Medidas",
                 data: data1,
             },
             {
-                name: "Mediano",
+                name: "Cumplidas",
                 data: data2,
-            },
-            {
-                name: "Largo",
-                data: data3,
             }
         ]
-        for (let index = 0; index < data.osdes.length; index++) {
+        for (let index = 0; index < data.organismos.length; index++) {
             if (!data1[index]) data1[index] = 0
             if (!data2[index]) data2[index] = 0
-            if (!data3[index]) data3[index] = 0
         }
     }
 }

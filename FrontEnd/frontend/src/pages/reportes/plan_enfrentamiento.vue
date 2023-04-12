@@ -18,7 +18,7 @@
                         <div style="width: 100%" class="row justify-start" v-else>
                             <div class="col-3 text-h6" v-if="auth.jwt">
                                 <q-btn flat label="Plan de enfrentamiento" icon="print" class="col-1  q-pa-xs"
-                                    @click="auth.printMode = !auth.printMode" v-if="data.titulo=='' ? !disable:disable"/>
+                                    @click="auth.printMode = !auth.printMode"/>
                             </div>
                             <div class="col-3 text-h6" v-else>
                                 <q-btn flat label="Plan de enfrentamiento" class="col-1  q-pa-xs" />

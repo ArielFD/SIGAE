@@ -406,118 +406,229 @@ module.exports = createCoreController(
         }
       }
 
-      for (let index = 0; index < data[2].split(",").length; index++) {
-        rows.forEach((element) => {
-          switch (data[1]) {
-            case "Totales": {
-              if (element.organismo == data[2].split(",")[index]) {
-                if (!data1[index]) {
-                  data1[index] = element.totalMedidas;
-                } else {
-                  data1[index] += element.totalMedidas;
+      if(data[1]=="OACE"){
+        for (let index = 0; index < data[2].split(",").length; index++) {
+          rows.forEach((element) => {
+            switch (data[4]) {
+              case "Totales": {
+                if (element.organismo == data[2].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.totalMedidas;
+                  } else {
+                    data1[index] += element.totalMedidas;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.totalCumplidas;
+                  } else {
+                    data2[index] += element.totalCumplidas;
+                  }
+                  // if(data2[index]/data1[index]) data[2].split(",")[index]=data[2].split(",")[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
+                  // else data[2].split(",")[index]=data[2].split(",")[index]+" 0%"
                 }
-                if (!data2[index]) {
-                  data2[index] = element.totalCumplidas;
-                } else {
-                  data2[index] += element.totalCumplidas;
-                }
-                // if(data2[index]/data1[index]) data[2].split(",")[index]=data[2].split(",")[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
-                // else data[2].split(",")[index]=data[2].split(",")[index]+" 0%"
+                break;
               }
-              break;
-            }
-            case "Corto": {
-              if (element.organismo == data[2].split(",")[index]) {
-                if (!data1[index]) {
-                  data1[index] = element.medidas_corto;
-                } else {
-                  data1[index] += element.medidas_corto;
+              case "Corto": {
+                if (element.organismo == data[2].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.medidas_corto;
+                  } else {
+                    data1[index] += element.medidas_corto;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.cumplidas_corto;
+                  } else {
+                    data2[index] += element.cumplidas_corto;
+                  }
                 }
-                if (!data2[index]) {
-                  data2[index] = element.cumplidas_corto;
-                } else {
-                  data2[index] += element.cumplidas_corto;
-                }
+                break;
               }
-              break;
-            }
-            case "Mediano": {
-              if (element.organismo == data[2].split(",")[index]) {
-                if (!data1[index]) {
-                  data1[index] = element.medidas_mediano;
-                } else {
-                  data1[index] += element.medidas_mediano;
+              case "Mediano": {
+                if (element.organismo == data[2].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.medidas_mediano;
+                  } else {
+                    data1[index] += element.medidas_mediano;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.cumplidas_mediano;
+                  } else {
+                    data2[index] += element.cumplidas_mediano;
+                  }
                 }
-                if (!data2[index]) {
-                  data2[index] = element.cumplidas_mediano;
-                } else {
-                  data2[index] += element.cumplidas_mediano;
-                }
+                break;
               }
-              break;
-            }
-            case "Largo": {
-              if (element.organismo == data[2].split(",")[index]) {
-                if (!data1[index]) {
-                  data1[index] = element.medidas_largo;
-                } else {
-                  data1[index] += element.medidas_largo;
+              case "Largo": {
+                if (element.organismo == data[2].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.medidas_largo;
+                  } else {
+                    data1[index] += element.medidas_largo;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.cumplidas_largo;
+                  } else {
+                    data2[index] += element.cumplidas_largo;
+                  }
                 }
-                if (!data2[index]) {
-                  data2[index] = element.cumplidas_largo;
-                } else {
-                  data2[index] += element.cumplidas_largo;
-                }
+                break;
               }
-              break;
+              // case "OACE": {
+              //   if (element.organismo == data[2].split(",")[index]) {
+              //     if (!data1[index]) {
+              //       data1[index] = element.medidas_corto;
+              //     } else {
+              //       data1[index] += element.medidas_corto;
+              //     }
+              //     if (!data2[index]) {
+              //       data2[index] = element.medidas_mediano;
+              //     } else {
+              //       data2[index] += element.medidas_mediano;
+              //     }
+              //     if (!data3[index]) {
+              //       data3[index] = element.medidas_largo;
+              //     } else {
+              //       data3[index] += element.medidas_largo;
+              //     }
+              //   }
+              //   break;
+              // }
+              // case "OSDE": {
+              //   if (element.osde == data[3].split(",")[index]) {
+              //     if (!data1[index]) {
+              //       data1[index] = element.medidas_corto;
+              //     } else {
+              //       data1[index] += element.medidas_corto;
+              //     }
+              //     if (!data2[index]) {
+              //       data2[index] = element.cumplidas_corto;
+              //     } else {
+              //       data2[index] += element.cumplidas_corto;
+              //     }
+              //     if (!data3[index]) {
+              //       data3[index] = element.medidas_largo;
+              //     } else {
+              //       data3[index] += element.medidas_largo;
+              //     }
+              //   }
+              //   break;
+              // }
             }
-            case "OACE": {
-              if (element.organismo == data[2].split(",")[index]) {
-                if (!data1[index]) {
-                  data1[index] = element.medidas_corto;
-                } else {
-                  data1[index] += element.medidas_corto;
+          });
+        }
+      }else{
+        for (let index = 0; index < data[3].split(",").length; index++) {
+          rows.forEach((element) => {
+            switch (data[4]) {
+              case "Totales": {
+                if (element.osde == data[3].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.totalMedidas;
+                  } else {
+                    data1[index] += element.totalMedidas;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.totalCumplidas;
+                  } else {
+                    data2[index] += element.totalCumplidas;
+                  }
+                  // if(data2[index]/data1[index]) data[2].split(",")[index]=data[2].split(",")[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
+                  // else data[2].split(",")[index]=data[2].split(",")[index]+" 0%"
                 }
-                if (!data2[index]) {
-                  data2[index] = element.medidas_mediano;
-                } else {
-                  data2[index] += element.medidas_mediano;
-                }
-                if (!data3[index]) {
-                  data3[index] = element.medidas_largo;
-                } else {
-                  data3[index] += element.medidas_largo;
-                }
+                break;
               }
-              break;
-            }
-            case "OSDE": {
-              if (element.osde == data[3].split(",")[index]) {
-                if (!data1[index]) {
-                  data1[index] = element.medidas_corto;
-                } else {
-                  data1[index] += element.medidas_corto;
+              case "Corto": {
+                if (element.osde == data[3].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.medidas_corto;
+                  } else {
+                    data1[index] += element.medidas_corto;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.cumplidas_corto;
+                  } else {
+                    data2[index] += element.cumplidas_corto;
+                  }
                 }
-                if (!data2[index]) {
-                  data2[index] = element.cumplidas_corto;
-                } else {
-                  data2[index] += element.cumplidas_corto;
-                }
-                if (!data3[index]) {
-                  data3[index] = element.medidas_largo;
-                } else {
-                  data3[index] += element.medidas_largo;
-                }
+                break;
               }
-              break;
+              case "Mediano": {
+                if (element.osde == data[3].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.medidas_mediano;
+                  } else {
+                    data1[index] += element.medidas_mediano;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.cumplidas_mediano;
+                  } else {
+                    data2[index] += element.cumplidas_mediano;
+                  }
+                }
+                break;
+              }
+              case "Largo": {
+                if (element.osde == data[3].split(",")[index]) {
+                  if (!data1[index]) {
+                    data1[index] = element.medidas_largo;
+                  } else {
+                    data1[index] += element.medidas_largo;
+                  }
+                  if (!data2[index]) {
+                    data2[index] = element.cumplidas_largo;
+                  } else {
+                    data2[index] += element.cumplidas_largo;
+                  }
+                }
+                break;
+              }
+              // case "OACE": {
+              //   if (element.organismo == data[2].split(",")[index]) {
+              //     if (!data1[index]) {
+              //       data1[index] = element.medidas_corto;
+              //     } else {
+              //       data1[index] += element.medidas_corto;
+              //     }
+              //     if (!data2[index]) {
+              //       data2[index] = element.medidas_mediano;
+              //     } else {
+              //       data2[index] += element.medidas_mediano;
+              //     }
+              //     if (!data3[index]) {
+              //       data3[index] = element.medidas_largo;
+              //     } else {
+              //       data3[index] += element.medidas_largo;
+              //     }
+              //   }
+              //   break;
+              // }
+              // case "OSDE": {
+              //   if (element.osde == data[3].split(",")[index]) {
+              //     if (!data1[index]) {
+              //       data1[index] = element.medidas_corto;
+              //     } else {
+              //       data1[index] += element.medidas_corto;
+              //     }
+              //     if (!data2[index]) {
+              //       data2[index] = element.cumplidas_corto;
+              //     } else {
+              //       data2[index] += element.cumplidas_corto;
+              //     }
+              //     if (!data3[index]) {
+              //       data3[index] = element.medidas_largo;
+              //     } else {
+              //       data3[index] += element.medidas_largo;
+              //     }
+              //   }
+              //   break;
+              // }
             }
-          }
-        });
+          });
+        }
       }
 
       data4.push(data1);
       data4.push(data2);
-      data4.push(data3);
+      // data4.push(data3);
 
       return data4;
     },

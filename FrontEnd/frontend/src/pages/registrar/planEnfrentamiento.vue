@@ -10,7 +10,7 @@
             </q-card-section>
 
             <q-card-actions class="justify-end">
-                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
+                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true, clear()">Insertar</q-btn>
                 <q-dialog v-model="data.cardCreate">
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
@@ -615,6 +615,29 @@ let data = reactive({
 
     visible:false
 });
+
+function clear(params) {
+    data.desechos= "no",
+    data.inversiones= "no",
+    data.licencia= "no",
+    data.observaciones= "",
+    data.permiso= "no",
+    data.plan= "no",
+    data.sistema= "no",
+    data.trampa= "no",
+    data.medidas= 0,
+    data.cumplidas= 0,
+    data.evaluadas= 0,
+    data.incumplidas= 0,
+    data.nombrePermiso= "",
+    data.cuerpo= "",
+    data.nombreLicencia= "",
+    data.observacionesDesechos= "",
+    data.marcha= "si",
+    data.descripcion= "",
+    data.fecha= "",
+    model.value = []
+}
 
 function filterFn(val, update) {
     if (val === '') {

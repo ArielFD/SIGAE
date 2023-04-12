@@ -9,7 +9,7 @@
 
             <q-card-actions class="justify-end">
                 <q-btn no-caps class="text-white bg-secondary"
-                    @click="data.cardCreate = true; data.rowsMateriales = []">Insertar</q-btn>
+                    @click="data.cardCreate = true; data.rowsMateriales = [],clear()">Insertar</q-btn>
                 <q-dialog v-model="data.cardCreate">
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
@@ -276,6 +276,18 @@ let data = reactive({
 
     temp:null
 })
+
+function clear(params) {
+    data.año= data.fecha_actual,
+    data.categoria= "",
+    data.unidad= "",
+    data.tipoMaterial= "",
+    data.cantidad= "",
+    data.contencion= "",
+    data.alcance= "",
+    data.sustancia= "no",
+    model.value = []
+}
 
 onMounted(() => {
     getYear()

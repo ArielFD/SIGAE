@@ -29,7 +29,7 @@
             </q-card-section>
 
             <q-card-actions class="justify-end">
-                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
+                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true, clear()">Insertar</q-btn>
                 <q-dialog v-model="data.cardCreate">
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
@@ -493,6 +493,24 @@ function filterFn(val, update) {
     })
 }
 
+function clear(params) {
+    data.coordinador= 1,
+    data.diagnostico= 1,
+    data.politica= 1,
+    data.indicadores= 1,
+    data.plan= 1,
+    data.legislacion= 1,
+    data.capacitacion= 1,
+    data.acciones= 1,
+    data.programa= 1,
+    data.recurso= 1,
+    data.aprovechamiento= 1,
+    data.sistema= 1,
+    data.carga= 1,
+    data.año= data.fecha_actual,
+    data.observaciones= "",
+    model.value=[]
+}
 onMounted(() => {
     getYear()
     getDesempeño()

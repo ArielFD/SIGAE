@@ -8,7 +8,7 @@
             </q-card-section>
 
             <q-card-actions class="justify-end">
-                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true">Insertar</q-btn>
+                <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true, clear()">Insertar</q-btn>
                 <q-dialog v-model="data.cardCreate">
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
@@ -298,6 +298,23 @@ let data = reactive({
     cardEdit: false,
     cardCreate: false,
 });
+
+function clear(params) {
+    data._DB05= "0",
+    data._DQ0= "0",
+    data._PT= "0",
+    data._NTK= "0",
+    data._ST= "0",
+    data._SSED= "0",
+    data._PH= "0",
+    data._TEMP= "0",
+    data._COND= "0",
+    data.Hidrocarburos= "0",
+    data.Flujo= "0",
+    data.Grasas= "0",
+    data.año= data.fecha_actual
+    model.value=[]
+}
 
 function filterFn(val, update) {
     if (val === '') {
