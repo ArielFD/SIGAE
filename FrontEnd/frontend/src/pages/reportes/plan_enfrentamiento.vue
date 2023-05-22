@@ -1,13 +1,14 @@
 <template>
     <div class="col-12">
-        <div  class="text-center q-mt-xl" v-if="auth.printMode == true">
+        <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <q-img src="~assets/Layout_/GTE-BH_print.png" class="banner" />
         </div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" selection="multiple" v-model:selected="selected"
-                    v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode">
+                    v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode"
+                    no-data-label="Datos no disponibles">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-3 text-h6">
@@ -18,14 +19,14 @@
                         <div style="width: 100%" class="row justify-start" v-else>
                             <div class="col-3 text-h6" v-if="auth.jwt">
                                 <q-btn flat label="Plan de enfrentamiento" icon="print" class="col-1  q-pa-xs"
-                                    @click="auth.printMode = !auth.printMode"/>
+                                    @click="auth.printMode = !auth.printMode" />
                             </div>
                             <div class="col-3 text-h6" v-else>
                                 <q-btn flat label="Plan de enfrentamiento" class="col-1  q-pa-xs" />
                             </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
-                                    :options="data.opcions" label="Busqueda por:" />
+                                    :options="data.opcions" label="Búsqueda por:" />
                             </div>
                             <div class="col-4" v-if="data.opcion == 'OACE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
@@ -177,7 +178,7 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
-    titulo:"Plan de enfrentamiento",
+    titulo: "Plan de enfrentamiento",
     temp: false,
     rows: [],
     rows1: [],
@@ -316,15 +317,6 @@ async function getEnfrentamiento(params) {
                             oace: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
                         });
-                        if (data.rows[i]) {
-                            Object.keys(data.rows[i]).forEach(function (key) {
-                                if (data.rows[i][key] === true) {
-                                    data.rows[i][key] = "si"
-                                } else if (data.rows[i][key] === false) {
-                                    data.rows[i][key] = "no"
-                                }
-                            })
-                        }
                         count++
                     } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
                         if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -357,18 +349,21 @@ async function getEnfrentamiento(params) {
                             oace: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
                         });
-                        if (data.rows[i]) {
-                        Object.keys(data.rows[i]).forEach(function (key) {
-                            if (data.rows[i][key] === true) {
-                                data.rows[i][key] = "si"
-                            } else if (data.rows[i][key] === false) {
-                                data.rows[i][key] = "no"
-                            }
-                        })
-                    }
                         count++
                     }
                 }
+            }
+            for (let i = 0; i < data.rows.length; i++) {
+                    Object.keys(data.rows[i]).forEach(function (key) {
+                        console.log(data.rows[i][key]);
+                        if (data.rows[i][key] === true) {
+                            data.rows[i][key] = "si"
+                        } else if (data.rows[i][key] === false) {
+                            data.rows[i][key] = "no"
+                        }
+                    })
+                
+
             }
         })
         .catch(function (error) {

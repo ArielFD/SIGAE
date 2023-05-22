@@ -76,7 +76,7 @@ const pagination = ref({
     sortBy: "desc",
     descending: false,
     page: 1,
-    rowsPerPage: 17,
+    rowsPerPage: 17
 });
 
 const auth = useAuthStore();

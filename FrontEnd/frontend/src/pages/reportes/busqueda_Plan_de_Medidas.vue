@@ -7,7 +7,7 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
                     :columns="columns" row-key="name" v-model:selected="selected" v-model:pagination="pagination"
-                    :hide-bottom="auth.printMode" wrap-cells>
+                    :hide-bottom="auth.printMode" wrap-cells no-data-label="Datos no disponibles">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-2 text-h6">
@@ -25,7 +25,7 @@
                             </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
-                                    :options="data.opcions" label="Busqueda por:" />
+                                    :options="data.opcions" label="Búsqueda por:" />
                             </div>
                             <div class="col-4" v-if="data.opcion == 'Entidad'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined

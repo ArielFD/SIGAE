@@ -29,29 +29,29 @@
                                             class="col-2" />
                                     </div>
                                     <div class="column items-start">
-                                        <q-input outlined dense v-model="data._DB05" type="number" label="DB0₅(mg/l)"
+                                        <q-input outlined dense v-model="data._DB05" type="number" step="any" label="DB0₅(mg/l)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._DQ0" type="number" label="DQ0(mg/l)"
+                                        <q-input outlined dense v-model="data._DQ0" type="number" step="any" label="DQ0(mg/l)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._PT" type="number" label="PT(mg/l)"
+                                        <q-input outlined dense v-model="data._PT" type="number" step="any" label="PT(mg/l)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._NTK" type="number" label="NTK(mg/l)"
+                                        <q-input outlined dense v-model="data._NTK" type="number" step="any" label="NTK(mg/l)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._ST" type="number" label="ST(mg/l)"
+                                        <q-input outlined dense v-model="data._ST" type="number" step="any" label="ST(mg/l)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._SSED" type="number" label="S.SED(mg/l)"
+                                        <q-input outlined dense v-model="data._SSED" type="number" step="any" label="S.SED(mg/l)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._PH" type="number" label="pH(U)"
+                                        <q-input outlined dense v-model="data._PH" type="number" step="any" label="pH(U)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._TEMP" type="number" label="TEMP(⁰C)"
+                                        <q-input outlined dense v-model="data._TEMP" type="number" step="any" label="TEMP(⁰C)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data._COND" type="number" label="COND(µS/cm)"
+                                        <q-input outlined dense v-model="data._COND" type="number" step="any" label="COND(µS/cm)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data.Hidrocarburos" type="number"
+                                        <q-input outlined dense v-model="data.Hidrocarburos" type="number" step="any"
                                             label="Hidrocarburos(mg/l)" class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data.Flujo" type="number" label="Flujo(m³/día)"
+                                        <q-input outlined dense v-model="data.Flujo" type="number" step="any" label="Flujo(m³/día)"
                                             class="col-2 q-pa-xs" />
-                                        <q-input outlined dense v-model="data.Grasas" type="number"
+                                        <q-input outlined dense v-model="data.Grasas" type="number" step="any"
                                             label="Grasas y aceites(mg/l)" class="col-2 q-pa-xs" />
                                     </div>
                                 </div>

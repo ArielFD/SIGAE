@@ -236,6 +236,7 @@ const passwordEdit = ref(null);
 const rolEdit = ref(null);
 
 let data = reactive({
+  idUserActive:"",
   username: "",
   idUsuario: "",
   noUsuario: "",
@@ -395,27 +396,47 @@ function getUsuarios(params) {
     .catch(function (error) {
       console.log(error);
     });
+  
+    api
+      .get("/users/me?populate=%2A", {
+        headers: {
+          Authorization: "Bearer " + auth.jwt,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        data.idUserActive=response.data.id
+      }).catch(function (error) {
+      console.log(error);
+    });
 }
 
 function Delete(params) {
-  api
-    .delete(`/users/${selected.value[0].id}`, {
-      headers: {
-        Authorization: "Bearer " + auth.jwt,
-      },
-    })
-    .then(function (response) {
-      alerts.alerts[1].message = "Usuario eliminado";
-      $q.notify(alerts.alerts[1]);
-      auth.postTraza("Usuario eliminado", "Satisfactorio")
-      getUsuarios()
-    })
-    .catch(function (error) {
-      alerts.alerts[0].message = "Fallo eliminando el Usuario";
-      $q.notify(alerts.alerts[0]);
-      auth.postTraza("Usuario eliminado", "Fallo")
-      console.log(error);
-    });
+  if(selected.value[0].id!=data.idUserActive){
+    api
+      .delete(`/users/${selected.value[0].id}`, {
+        headers: {
+          Authorization: "Bearer " + auth.jwt,
+        },
+      })
+      .then(function (response) {
+        console.log(response);
+        alerts.alerts[1].message = "Usuario eliminado";
+        $q.notify(alerts.alerts[1]);
+        auth.postTraza("Usuario eliminado", "Satisfactorio")
+        getUsuarios()
+      })
+      .catch(function (error) {
+        alerts.alerts[0].message = "Fallo eliminando el Usuario";
+        $q.notify(alerts.alerts[0]);
+        auth.postTraza("Usuario eliminado", "Fallo")
+        console.log(error);
+      });
+  }else{
+    alerts.alerts[0].message = "El usuario esta activo, no es posible eliminarlo";
+        $q.notify(alerts.alerts[0]);
+        auth.postTraza("Usuario eliminado", "Fallo")
+  }
 }
 
 function getSelectedString() {

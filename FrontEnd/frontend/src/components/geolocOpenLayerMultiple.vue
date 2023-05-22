@@ -237,7 +237,7 @@ function mostrar(params) {
     position: relative;
     margin: 0;
     padding: 0;
-    height: 500px;
+    height: 600px;
     width: 99%;
 }
 

@@ -17,7 +17,10 @@
                 </div>
                 <div class="col" style="max-width: 300px">
                   <q-input dense debounce="400" color="primary" v-model="filter">
-                    <template v-slot:prepend>
+                    <template v-slot:prepend v-if="filter">
+                      <q-btn flat round color="secondary" icon="close" class="col-1" @click="filter=''" />
+                    </template>
+                    <template v-slot:prepend v-else>
                       <q-icon name="search" />
                     </template>
                   </q-input>

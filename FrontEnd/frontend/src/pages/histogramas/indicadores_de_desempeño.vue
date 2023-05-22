@@ -18,7 +18,7 @@
             </p>
             <div class="col-2" style="width:150px">
                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion" :options="data.opciones"
-                    label="Busqueda por:" />
+                    label="Búsqueda por:" />
             </div>
             <div class="col-2">
                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined

@@ -20,11 +20,11 @@
                                     @click="auth.printMode = !auth.printMode" />
                             </div>
                             <div class="col-3 text-h6" v-else>
-                                <q-btn flat label="PDesempeño ambiental" class="col-1  q-pa-xs" />
+                                <q-btn flat label="Desempeño ambiental" class="col-1  q-pa-xs" />
                             </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
-                                    :options="data.opcions" label="Busqueda por:" />
+                                    :options="data.opcions" label="Búsqueda por:" />
                             </div>
                             <div class="col-3" v-if="data.opcion == 'OACE'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
@@ -364,15 +364,7 @@ async function getDesempeño(params) {
                                     total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
                                 });
                             }
-                            if (data.rows[i]) {
-                                Object.keys(data.rows[i]).forEach(function (key) {
-                                    if (data.rows[i][key] === 1) {
-                                        data.rows[i][key] = "si"
-                                    } else if (data.rows[i][key] === 0) {
-                                        data.rows[i][key] = "no"
-                                    }
-                                })
-                            }
+                            
                             count++
                         } else if (data.opcion == 'OSDE' && response.data.data[i].attributes.entidad.data[0].attributes.osde.data != null && response.data.data[i].attributes.entidad.data[0].attributes.osde.data.attributes.nombre == modelOsde.value) {
                             if (response.data.data[i].attributes.entidad.data[0].attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data[0].attributes.organismo.data[0] = { attributes: { organismo: "-" } }
@@ -422,7 +414,13 @@ async function getDesempeño(params) {
                                     total: (response.data.data[i].attributes.disminucion_carga_contaminante + response.data.data[i].attributes.exist_sistem_tratamiento + response.data.data[i].attributes.aprovechamiento_economico + response.data.data[i].attributes.exist_recurso_financiero + response.data.data[i].attributes.exist_program_gestionambiental + response.data.data[i].attributes.exist_accionespml + response.data.data[i].attributes.exist_plan_capacitacion + response.data.data[i].attributes.exist_legislacion + response.data.data[i].attributes.exist_plan_accion + response.data.data[i].attributes.exist_coordinador + response.data.data[i].attributes.exist_diagnostico + response.data.data[i].attributes.exist_politica + response.data.data[i].attributes.exist_indicadores).toString()
                                 });
                             }
-                            if (data.rows[i]) {
+                            
+                            count++
+                        }
+                    }
+
+                }
+                for (let i = 0; i < data.rows.length; i++) {
                                 Object.keys(data.rows[i]).forEach(function (key) {
                                     if (data.rows[i][key] === 1) {
                                         data.rows[i][key] = "si"
@@ -430,11 +428,8 @@ async function getDesempeño(params) {
                                         data.rows[i][key] = "no"
                                     }
                                 })
-                            }
-                            count++
-                        }
-                    }
-
+                            
+                    
                 }
             })
             .catch(function (error) {

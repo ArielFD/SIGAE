@@ -14,7 +14,13 @@ export const useDataStore = defineStore({
     prioridad:[],
     unidad:[],
     categoria:[],
-    entidad:[]
+    entidad:[],
+    rActaControl:"asdasdsa",
+    rEntidad:"",
+    rCargaCont:"",
+    rDesempeño:"",
+    rEnfrentamiento:"",
+    rRiesgo:""
   }),
   getters: {
   },

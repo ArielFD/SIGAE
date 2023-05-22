@@ -1,6 +1,7 @@
 <template>
   <div id="content" class="col-12">
     <!-- <button @click="Import">Importar</button> -->
+    {{selected}}
     <q-card class="my-card q-ma-md bg-primary" id="card" bordered>
       <q-card-section>
         <q-table class="my-sticky-header-table" title="Datos de las Entidades" dense :rows="data.rows"
@@ -11,9 +12,12 @@
               <div class="col-3 text-h6">Datos de la entidad</div>
               <div class="col" style="max-width: 300px">
                 <q-input dense debounce="400" color="primary" v-model="filter">
-                  <template v-slot:prepend>
-                    <q-icon name="search" />
-                  </template>
+                  <template v-slot:prepend v-if="filter">
+                      <q-btn flat round color="secondary" icon="close" class="col-1" @click="filter=''" />
+                    </template>
+                    <template v-slot:prepend v-else>
+                      <q-icon name="search" />
+                    </template>
                 </q-input>
               </div>
               <q-btn color="secondary" icon-right="archive" label="Exportar a Excel" no-caps @click="exportTable" :to="{ name: 'test' } " target='_blank'/>
@@ -733,7 +737,7 @@ watch(() => data.organismo, (value) => {
 })
 
 watch(() => data.organismoEdit, (value) => {
-  data.osdeEdit = ""
+  // data.osdeEdit = ""
   data.osdes = []
   data.objOrganismo.forEach(element => {
     if (element.organismo == value) {
@@ -752,7 +756,7 @@ watch(() => data.organismoEdit, (value) => {
             });
             data.osdes.push(response.data.data.attributes.osdes.data[i].attributes.nombre)
           }
-          data.osdeEdit=data.osdes[0]
+          // data.osdeEdit=data.osdes[0]
         })
         .catch(function (error) {
           console.log(error);
