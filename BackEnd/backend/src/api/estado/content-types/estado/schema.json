@@ -4,7 +4,8 @@
   "info": {
     "singularName": "estado",
     "pluralName": "estados",
-    "displayName": "estado"
+    "displayName": "estado",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,10 @@
   "attributes": {
     "estado": {
       "type": "string"
+    },
+    "eliminado": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

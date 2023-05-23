@@ -1,7 +1,6 @@
 <template>
   <div id="content" class="col-12">
     <!-- <button @click="Import">Importar</button> -->
-    {{selected}}
     <q-card class="my-card q-ma-md bg-primary" id="card" bordered>
       <q-card-section>
         <q-table class="my-sticky-header-table" title="Datos de las Entidades" dense :rows="data.rows"
@@ -767,9 +766,14 @@ watch(() => data.organismoEdit, (value) => {
 
 
 function Delete(params) {
+  const dataRest = {
+    data: {
+      activo: "c",
+    },
+  };
   for (let index = 0; index < selected.value.length; index++) {
     api
-      .delete(`/entidads/${selected.value[index].id}`, {
+      .put(`/entidads/${selected.value[index].id}`,dataRest, {
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },

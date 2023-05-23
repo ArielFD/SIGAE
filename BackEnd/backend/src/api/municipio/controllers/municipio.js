@@ -15,11 +15,13 @@ module.exports = createCoreController(
           .query("api::municipio.municipio")
           .findMany();
         for (let i = 0; i < municipios.length; i++) {
-          rows.push({
-            name: i + 1,
-            id: municipios[i].id,
-            municipio: municipios[i].municipio,
-          });
+          if(!municipios[i].eliminado){
+            rows.push({
+              name: i + 1,
+              id: municipios[i].id,
+              municipio: municipios[i].municipio,
+            });
+          }
         }
         return rows;
       },

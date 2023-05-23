@@ -15,11 +15,13 @@ module.exports = createCoreController(
         .query("api::categoria.categoria")
         .findMany();
       for (let i = 0; i < categoria.length; i++) {
-        rows.push({
-          name: i + 1,
-          id: categoria[i].id,
-          categoria: categoria[i].categoria,
-        });
+        if(!categoria[i].eliminado){
+          rows.push({
+            name: i + 1,
+            id: categoria[i].id,
+            categoria: categoria[i].categoria,
+          });
+        }
       }
       return rows;
     },

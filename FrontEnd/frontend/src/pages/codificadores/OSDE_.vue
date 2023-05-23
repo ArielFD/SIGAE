@@ -186,8 +186,13 @@ function Create() {
 }
 
 function Delete(params) {
+  const dataRest = {
+    data: {
+      eliminado: true,
+    },
+  };
   api
-    .delete(`/osdes/${selected.value[0].id}`, {
+    .put(`/osdes/${selected.value[0].id}`, dataRest,{
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },

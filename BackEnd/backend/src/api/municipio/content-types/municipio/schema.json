@@ -14,6 +14,10 @@
   "attributes": {
     "municipio": {
       "type": "string"
+    },
+    "eliminado": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

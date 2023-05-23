@@ -20,6 +20,10 @@
       "relation": "oneToMany",
       "target": "api::osde.osde",
       "mappedBy": "oace"
+    },
+    "eliminado": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

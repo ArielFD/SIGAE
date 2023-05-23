@@ -14,11 +14,13 @@ module.exports = createCoreController(
           .query("api::estado.estado")
           .findMany();
         for (let i = 0; i < estados.length; i++) {
-          rows.push({
-            name: i + 1,
-            id: estados[i].id,
-            estado: estados[i].estado,
-          });
+          if(!estados[i].eliminado){
+            rows.push({
+              name: i + 1,
+              id: estados[i].id,
+              estado: estados[i].estado,
+            });
+          }
         }
         return rows;
       },

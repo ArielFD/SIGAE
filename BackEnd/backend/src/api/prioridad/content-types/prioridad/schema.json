@@ -4,7 +4,8 @@
   "info": {
     "singularName": "prioridad",
     "pluralName": "prioridads",
-    "displayName": "prioridad"
+    "displayName": "prioridad",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -13,6 +14,10 @@
   "attributes": {
     "prioridad": {
       "type": "integer"
+    },
+    "eliminado": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

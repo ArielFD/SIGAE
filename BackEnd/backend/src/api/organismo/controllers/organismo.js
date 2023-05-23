@@ -37,8 +37,18 @@ module.exports = createCoreController(
     async getOrganismos(ctx) {
       let organismos = await strapi.db
         .query("api::organismo.organismo")
-        .findMany({ select: ["id", "organismo"] });
-      return organismos;
+        .findMany({ select: ["id", "organismo","eliminado"] });
+        let rows = [];
+        for (let i = 0; i < organismos.length; i++) {
+          if(!organismos[i].eliminado){
+            rows.push({
+              name: i + 1,
+              id: organismos[i].id,
+              organismo: organismos[i].organismo,
+            });
+          }
+        }
+      return rows;
     },
 
     async getOrganismosOsde(ctx) {
@@ -48,21 +58,23 @@ module.exports = createCoreController(
       console.log(organismos);
       let rows = [];
       for (let i = 0; i < organismos.length; i++) {
-        let arr = []
-        let arrEdit = []
-        for (let index = 0; index < organismos[i].osdes.length; index++) {
-          const element = organismos[i].osdes[index].nombre;
-          const id = organismos[i].osdes[index].id;
-          arr.push(element)
-          arrEdit.push({ id })
+        if(!organismos[i].eliminado){
+          let arr = []
+          let arrEdit = []
+          for (let index = 0; index < organismos[i].osdes.length; index++) {
+            const element = organismos[i].osdes[index].nombre;
+            const id = organismos[i].osdes[index].id;
+            arr.push(element)
+            arrEdit.push({ id })
+          }
+          rows.push({
+            name: i + 1,
+            id: organismos[i].id,
+            Nombre: organismos[i].organismo,
+            Osde: arr.join(", "),
+            arrOsde: arrEdit
+          });
         }
-        rows.push({
-          name: i + 1,
-          id: organismos[i].id,
-          Nombre: organismos[i].organismo,
-          Osde: arr.join(", "),
-          arrOsde: arrEdit
-        });
       }
       return rows;
     },

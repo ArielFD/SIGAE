@@ -227,8 +227,13 @@ const prioridadEdit = ref(null);
   }
   
   function Delete(params) {
+    const dataRest = {
+    data: {
+      eliminado: true,
+    },
+  };
     api
-      .delete(`/prioridads/${selected.value[0].id}`, {
+      .put(`/prioridads/${selected.value[0].id}`, dataRest,{
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },

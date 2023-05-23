@@ -20,6 +20,10 @@
       "relation": "manyToOne",
       "target": "api::organismo.organismo",
       "inversedBy": "osdes"
+    },
+    "eliminado": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

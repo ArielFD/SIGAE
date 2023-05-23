@@ -223,8 +223,13 @@ function Create() {
 }
 
 function Delete(params) {
+  const dataRest = {
+    data: {
+      eliminado: true,
+    },
+  };
   api
-    .delete(`/unidads/${selected.value[0].id}`, {
+    .put(`/unidads/${selected.value[0].id}`,dataRest, {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },

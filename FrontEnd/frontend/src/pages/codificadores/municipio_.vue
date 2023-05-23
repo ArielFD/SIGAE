@@ -183,8 +183,13 @@ function Create() {
 }
 
 function Delete(params) {
+  const dataRest = {
+    data: {
+      eliminado: true,
+    },
+  };
   api
-    .delete(`/municipios/${selected.value[0].id}`, {
+    .put(`/municipios/${selected.value[0].id}`,dataRest, {
       headers: {
         Authorization: "Bearer " + auth.jwt,
       },

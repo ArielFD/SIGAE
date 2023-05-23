@@ -223,8 +223,13 @@ const salidaEdit = ref(null);
   }
   
   function Delete(params) {
+    const dataRest = {
+    data: {
+      eliminado: true,
+    },
+  };
     api
-      .delete(`/salidas/${selected.value[0].id}`, {
+      .put(`/salidas/${selected.value[0].id}`, dataRest, {
         headers: {
           Authorization: "Bearer " + auth.jwt,
         },
