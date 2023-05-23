@@ -68,7 +68,7 @@
             <!-- <div>Powered by Joven CLub</div> -->
           </div>
         </div>
-        <div style="rigth:0%">18/05/2023</div>
+        <div style="rigth:0%">23/05/2023</div>
       </q-toolbar>
     </q-footer>
 
