@@ -5,9 +5,9 @@
         </div>
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
-                <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows"
-                    :columns="columns" row-key="name" v-model:selected="selected" v-model:pagination="pagination"
-                    :hide-bottom="auth.printMode" wrap-cells no-data-label="Datos no disponibles">
+                <q-table class="my-sticky-header-table" title="Plan de medidas" dense :rows="data.rows" :columns="columns"
+                    row-key="name" v-model:selected="selected" v-model:pagination="pagination" :hide-bottom="auth.printMode"
+                    wrap-cells no-data-label="Datos no disponibles">
                     <template v-slot:top>
                         <div style="width: 100%" class="row justify-center" v-if="auth.printMode == true">
                             <div class="col-2 text-h6">
@@ -53,50 +53,50 @@
                         </div>
                     </template>
                     <template v-slot:bottom-row>
-        <q-tr>
-          <q-td>
-            Total
-          </q-td>
-          <q-td>
-          </q-td>
-          <q-td>
-            {{data.rowTotal.medidas_corto}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.cumplidas_corto}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.porcientoCorto}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.medidas_mediano}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.cumplidas_mediano}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.porcientoMedio}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.medidas_largo}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.cumplidas_largo}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.porcientoLargo}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.totalMedidas}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.totalCumplidas}}
-          </q-td>
-          <q-td>
-            {{data.rowTotal.porcientoTotal}}
-          </q-td>
-        </q-tr>
-      </template>
+                        <q-tr>
+                            <q-td>
+                                Total
+                            </q-td>
+                            <q-td>
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.medidas_corto }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.cumplidas_corto }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.porcientoCorto }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.medidas_mediano }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.cumplidas_mediano }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.porcientoMedio }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.medidas_largo }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.cumplidas_largo }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.porcientoLargo }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.totalMedidas }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.totalCumplidas }}
+                            </q-td>
+                            <q-td>
+                                {{ data.rowTotal.porcientoTotal }}
+                            </q-td>
+                        </q-tr>
+                    </template>
                 </q-table>
             </q-card-section>
         </q-card>
@@ -250,7 +250,7 @@ const optionsOsde = ref(stringOptionsOsde)
 let data = reactive({
     titulo: "Plan de medias ",
     rows: [],
-    rowTotal:{},
+    rowTotal: {},
     opcion: "",
     opcions: ["Entidad", "OACE", "OSDE"],
     entidades: [],
@@ -333,14 +333,14 @@ async function getOrganismos(params) {
 
 async function getOSDE(params) {
     dataStore.osde.forEach(element => {
-                stringOptionsOsde.push(element.Nombre)
-            });
+        stringOptionsOsde.push(element.Nombre)
+    });
 }
 
 async function getEntidad(params) {
     dataStore.entidad.forEach(element => {
-                stringOptionsEntidad.push(element.entidad)
-            });
+        stringOptionsEntidad.push(element.entidad)
+    });
 }
 
 async function getActacontrol(params) {
@@ -356,7 +356,7 @@ async function getActacontrol(params) {
         .get(`/getActacontrol?filters[0]=${data.fecha_actual}&filters[1]=${data.opcion}&filters[2]=${modelEntidad.value}&filters[3]=${modelOrganismo.value}&filters[4]=${modelOsde.value}`).then(function (response) {
             console.log(response);
             data.rows = response.data.rows
-            data.rowTotal=response.data.rowTotal
+            data.rowTotal = response.data.rowTotal
         }).catch(function (error) {
             console.log(error);
         });
@@ -365,7 +365,7 @@ async function getActacontrol(params) {
 </script>
 
 <style scoped>
-.q-td{
+.q-td {
     text-align: center;
 }
 </style>

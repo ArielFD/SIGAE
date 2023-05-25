@@ -1,5 +1,6 @@
 <template>
   <div class="col-12">
+    {{selected}}
     <q-slide-transition duration="1000" appear="true">
       <q-card class="my-card q-ma-md bg-primary" bordered>
         <q-card-section>
@@ -9,16 +10,16 @@
             <template v-slot:top>
               <div style="width: 100%" class="row justify-between">
                 <div class="col-3 text-h6">Actas de Control</div>
-                <div class="col-3">
+                <div class="col-4">
                   <div class="row justify-center">
                     <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año" class="col-3" />
                     <q-btn flat round color="secondary" icon="search" class="col-1" @click="getActacontrol()" />
                   </div>
                 </div>
-                <div class="col" style="max-width: 300px">
+                <div class="col-6" style="max-width: 300px">
                   <q-input dense debounce="400" color="primary" v-model="filter">
                     <template v-slot:prepend v-if="filter">
-                      <q-btn flat round color="secondary" icon="close" class="col-1" @click="filter=''" />
+                      <q-btn flat round color="secondary" icon="close" class="col-1" @click="filter = ''" />
                     </template>
                     <template v-slot:prepend v-else>
                       <q-icon name="search" />
@@ -31,7 +32,8 @@
         </q-card-section>
 
         <q-card-actions class="justify-end">
-          <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true; clear(); data.id_Residual=[]">Insertar</q-btn>
+          <q-btn no-caps class="text-white bg-secondary"
+            @click="data.cardCreate = true; clear(); data.id_Residual = []">Insertar</q-btn>
           <q-dialog v-model="data.cardCreate">
             <q-card class="my-card bg-primary" flat bordered style="width: 100%">
               <q-item>
@@ -44,9 +46,9 @@
               <form @submit.prevent.stop="onCreate">
                 <q-card-section>
                   <div class="row">
-                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined
-                      v-model="model" :options="options" @filter="filterFn" label="Entidad" style="max-width: 50%"
-                      lazy-rules :rules="alerts.inputRules" ref="modelo" />
+                    <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined v-model="model"
+                      :options="options" @filter="filterFn" label="Entidad" style="max-width: 50%" lazy-rules
+                      :rules="alerts.inputRules" ref="modelo" />
                     <q-input outlined dense v-model="data.fechavisita" type="date" hint="Fecha de Visita" lazy-rules
                       :rules="alerts.inputRules" ref="fechavisita" />
                   </div>
@@ -96,12 +98,12 @@
                         <q-item-section avatar>Eficiencia:</q-item-section>
                         <q-item-section>
                           <div>
-                            <q-radio v-model="data.eficiencia" checked-icon="task_alt"
-                              unchecked-icon="panorama_fish_eye" val="mal" label="Mal" color="secondary" />
-                            <q-radio v-model="data.eficiencia" checked-icon="task_alt"
-                              unchecked-icon="panorama_fish_eye" val="regular" label="Regular" color="secondary" />
-                            <q-radio v-model="data.eficiencia" checked-icon="task_alt"
-                              unchecked-icon="panorama_fish_eye" val="bien" label="Bien" color="secondary" />
+                            <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                              val="mal" label="Mal" color="secondary" />
+                            <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                              val="regular" label="Regular" color="secondary" />
+                            <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                              val="bien" label="Bien" color="secondary" />
                           </div>
                         </q-item-section>
                       </q-item>
@@ -109,10 +111,10 @@
                   </div>
                   <div class="q-mt-xl">Tipo de grasa:</div>
                   <div>
-                    <q-radio v-model="data.tipoGrasa" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                      val="si" label="Si" color="secondary" />
-                    <q-radio v-model="data.tipoGrasa" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                      val="no" label="No" color="secondary" />
+                    <q-radio v-model="data.tipoGrasa" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="si"
+                      label="Si" color="secondary" />
+                    <q-radio v-model="data.tipoGrasa" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="no"
+                      label="No" color="secondary" />
                   </div>
                   <div style="max-width: 100%" v-if="data.tipoGrasa == 'si'">
                     <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
@@ -160,9 +162,9 @@
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_mediano
-                      " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
-                      <q-input outlined dense v-model="data.cumplidas_mediano" label="Cumplidas a mediano"
-                        class="q-pa-sm" type="number" style="max-width: 300px" />
+                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
+                      <q-input outlined dense v-model="data.cumplidas_mediano" label="Cumplidas a mediano" class="q-pa-sm"
+                        type="number" style="max-width: 300px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_largo" label="Medidas a largo" class="q-pa-sm"
@@ -205,7 +207,7 @@
           </q-dialog>
           <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
           <q-dialog v-model="data.cardEdit">
-            <q-card class="my-card bg-primary" flat bordered>
+            <q-card class="my-card-to-pdf bg-primary" flat bordered>
               <q-item>
                 <q-item-section>
                   <q-item-label><b>Editar: "Acta de Control"</b></q-item-label>
@@ -301,10 +303,10 @@
                       <q-item-section avatar>Politica ambiental:</q-item-section>
                       <q-item-section>
                         <div>
-                          <q-radio v-model="data.politicaEdit" checked-icon="task_alt"
-                            unchecked-icon="panorama_fish_eye" val="Si" label="Si" color="secondary" />
-                          <q-radio v-model="data.politicaEdit" checked-icon="task_alt"
-                            unchecked-icon="panorama_fish_eye" val="No" label="No" color="secondary" />
+                          <q-radio v-model="data.politicaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                            val="Si" label="Si" color="secondary" />
+                          <q-radio v-model="data.politicaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
+                            val="No" label="No" color="secondary" />
                         </div>
                       </q-item-section>
                     </q-item>
@@ -326,20 +328,20 @@
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_cortoEdit" label="Medidas a corto" class="q-pa-sm"
                         type="number" style="max-width: 150px" />
-                      <q-input outlined dense v-model="data.cumplidas_cortoEdit" label="Cumplidas a corto"
-                        class="q-pa-sm" type="number" style="max-width: 170px" />
+                      <q-input outlined dense v-model="data.cumplidas_cortoEdit" label="Cumplidas a corto" class="q-pa-sm"
+                        type="number" style="max-width: 170px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_medianoEdit
-                      " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
+                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
                       <q-input outlined dense v-model="data.cumplidas_medianoEdit" label="Cumplidas a mediano"
                         class="q-pa-sm" type="number" style="max-width: 300px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_largoEdit" label="Medidas a largo" class="q-pa-sm"
                         type="number" style="max-width: 150px" />
-                      <q-input outlined dense v-model="data.cumplidas_largoEdit" label="Cumplidas a largo"
-                        class="q-pa-sm" type="number" style="max-width: 170px" />
+                      <q-input outlined dense v-model="data.cumplidas_largoEdit" label="Cumplidas a largo" class="q-pa-sm"
+                        type="number" style="max-width: 170px" />
                     </div>
                   </div>
                   <q-input outlined dense v-model="data.consumo_aguaEdit" label="Consumo de agua"
@@ -368,6 +370,7 @@
                 <q-separator dark />
 
                 <q-card-actions class="justify-end">
+                  <q-btn no-caps class="text-white bg-secondary" @click="generatePDF">PDF</q-btn>
                   <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
                 </q-card-actions>
               </form>
@@ -388,6 +391,8 @@ import { useAuthStore } from "src/stores/auth-store";
 import { useAlertsRulesStore } from "src/stores/alerts-rules-store";
 import { useQuasar } from "quasar";
 import { useDataStore } from "src/stores/data-store";
+import jsPDF from 'jspdf';
+
 
 const dataStore = useDataStore();
 const pagination = ref({
@@ -524,6 +529,7 @@ const observacionesEdit = ref(null);
 
 let data = reactive({
   fecha_actual: new Date(),
+  fechaImpresion: new Date(),
   rows: [],
   id_Residual: [],
 
@@ -599,8 +605,8 @@ let data = reactive({
 });
 
 function clear(params) {
-  model.value="",
-  data.tratamiento = "no"
+  model.value = "",
+    data.tratamiento = "no"
   data.idoniedad = ""
   data.estadoTecnico = ""
   data.eficiencia = ""
@@ -628,7 +634,7 @@ function clear(params) {
   data.politica_ambiental = ""
   data.recomendaciones = ""
   data.aprovechamiento = "no",
-  data.id_ResidualEdit=[]
+    data.id_ResidualEdit = []
 }
 
 // watch(() => model.value, (value) => {
@@ -673,6 +679,32 @@ function clear(params) {
 //     }
 //   });
 // })
+function generatePDF() {
+  // create a new jsPDF instance
+  var doc = new jsPDF();
+  doc.setFontSize(12)
+  doc.text("                                                                                          Fecha de la visita: "+data.fechavisitaEdit+"\n\n" +
+                "Entidad: "+selected.value[0].entidad+"           Director: "+selected.value[0].director+"\n" +
+                "Organismo: "+selected.value[0].organismo+"\n" +
+                "Teléfono(s): "+selected.value[0].telefono+"\n\n" +
+                "Atendido por: "+data.atendido_porEdit+"\n" +
+                "Comisión de control: "+data.comision_controlEdit+"\n\n" +
+                "Sistema de tratamiento: "+data.tratamientoEdit+"\n\n" +
+                "Trampa de grasa: "+data.tipoGrasaEdit+"\n" +
+                "Bien: "+data.estadoBienEdit+"    Regular: "+data.estadoRegularEdit+"    Mal: "+data.estadoMalEdit+"\n\n" +
+                "Política ambiental: "+data.politicaEdit+"\n" +
+                "Diagnóstico ambiental: "+data.diagnosticoEdit+"\n\n" +
+                "Medidas a corto:   "+data.medidas_cortoEdit+"       Cumplidas a corto: "+data.cumplidas_cortoEdit+"\n" +
+                "Medidas a mediano: "+data.medidas_medianoEdit+"       Cumplidas a mediano: "+data.cumplidas_medianoEdit+"\n" +
+                "Medidas a largo:   "+data.medidas_largoEdit+"       Cumplidas a largo: "+data.cumplidas_largoEdit+"\n\n" +
+                "Consumo de agua: "+data.consumo_aguaEdit+"\n" +
+                "Consumo energético: "+data.consumo_energeticoEdit+"\n\n" +
+                "Deficiencias: "+data.deficienciasEdit+"\n\n\n" +
+                "Recomendaciones: "+data.recomendacionesEdit+"\n\n\n" +
+                "Observaciones: "+data.observacionesEdit+"\n\n\n" +
+                "APROVECHAMIENTO ECONÓMICO: "+data.aprovechamientoEdit+"", 10, 10)
+  doc.save("Acta de Control.pdf")
+}
 
 function filterFn(val, update) {
   if (val === '') {
@@ -699,16 +731,17 @@ onMounted(() => {
 
 function getYear(params) {
   data.fecha_actual = data.fecha_actual.getFullYear()
+  data.fechaImpresion= data.fechaImpresion.getDay()+"/"+data.fechaImpresion.getMonth()+"/"+data.fechaImpresion.getFullYear()
 }
 
 function addingId(params) {
-  data.id_Residual.push( params )
-  data.id_ResidualEdit.push(params )
+  data.id_Residual.push(params)
+  data.id_ResidualEdit.push(params)
 }
 
 function deleteId(params) {
-  data.id_Residual.push( params,1 )
-  data.id_ResidualEdit.splice(params,1)
+  data.id_Residual.push(params, 1)
+  data.id_ResidualEdit.splice(params, 1)
 }
 
 function editFields(params) {
@@ -716,7 +749,7 @@ function editFields(params) {
   if (selected.value[0].residuals.length > 0) {
     data.aprovechamientoEdit = "si"
     for (let index = 0; index < selected.value[0].residuals.length; index++) {
-      data.id_ResidualEdit.push(selected.value[0].residuals[index] )
+      data.id_ResidualEdit.push(selected.value[0].residuals[index])
     }
   }
   else { data.aprovechamientoEdit = "no" }
@@ -807,14 +840,14 @@ function editTrampa() {
 }
 
 async function Edit(params) {
-  let sist,tramp
-  if(selected.value[0].idTramp=="" ? tramp=await EditcreateTrampa() : tramp=await editTrampa())
-  if(selected.value[0].idSist=="" ? sist=await EditcreateSistTrat() : sist=await editSistTrat())
+  let sist, tramp
+  if (selected.value[0].idTramp == "" ? tramp = await EditcreateTrampa() : tramp = await editTrampa())
+    if (selected.value[0].idSist == "" ? sist = await EditcreateSistTrat() : sist = await editSistTrat())
 
-  data.entidades.forEach(element => {
-    if (element.entidad == data.entidadEdit) data.identidadEdit = { id: element.id }
-  });
- 
+      data.entidades.forEach(element => {
+        if (element.entidad == data.entidadEdit) data.identidadEdit = { id: element.id }
+      });
+
   const dataRest = {
     data: {
       politica_ambiental: data.politicaEdit,
@@ -1061,10 +1094,10 @@ function Delete(params) {
 }
 
 function getEntidad(params) {
-      data.entidades=dataStore.entidad
-      data.entidades.forEach(element => {
-        stringOptions.push(element.entidad)
-      });
+  data.entidades = dataStore.entidad
+  data.entidades.forEach(element => {
+    stringOptions.push(element.entidad)
+  });
 }
 
 async function getActacontrol(params) {
@@ -1072,16 +1105,16 @@ async function getActacontrol(params) {
   data.rows = [];
 
   await api
-        .get(`/getActaControlData?filters[0]=${data.fecha_actual}`, {
-                headers: {
-                    Authorization: "Bearer " + auth.jwt,
-                },
-            })
-        .then(function (response) {
-            data.rows=response.data
-        }).catch(function (error) {
-            console.log(error);
-        });
+    .get(`/getActaControlData?filters[0]=${data.fecha_actual}`, {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      data.rows = response.data
+    }).catch(function (error) {
+      console.log(error);
+    });
 }
 
 function getSelectedString() {

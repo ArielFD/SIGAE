@@ -39,8 +39,8 @@
                             </div>
                             <div class="col-3">
                                 <div class="row justify-center">
-                                    <!-- <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
-                                        class="col-6 text-black q-pa-xs" /> -->
+                                    <q-input outlined dense v-model="data.fecha_actual" type="number" label="Año"
+                                        class="col-4 text-black q-pa-xs" />
                                     <q-btn flat round color="secondary" icon="search" class="col-2 text-black q-pa-xs"
                                         @click="getEnfrentamiento()" />
                                 </div>
@@ -188,7 +188,13 @@ let data = reactive({
 
     organismos: [],
     osdes: [],
+
+    fecha_actual: new Date(),
 });
+
+function getYear(params) {
+    data.fecha_actual = data.fecha_actual.getFullYear()
+}
 
 function filterFnOsde(val, update) {
     if (val === '') {
@@ -227,6 +233,7 @@ function filterFnOrganismo(val, update) {
 onMounted(() => {
     getOrganismos(),
         getOSDE()
+        getYear()
 });
 
 async function getOrganismos(params) {
@@ -277,9 +284,9 @@ async function getEnfrentamiento(params) {
     data.rows = [];
     let count = 1
     await api
-        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde`)
+        .get(`/plan-enfrentamientos?populate[0]=entidad.organismo&populate[1]=entidad.osde&filters[fecha][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
-            // console.log(response);
+            console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (data.opcion == 'OACE' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
@@ -355,7 +362,6 @@ async function getEnfrentamiento(params) {
             }
             for (let i = 0; i < data.rows.length; i++) {
                     Object.keys(data.rows[i]).forEach(function (key) {
-                        console.log(data.rows[i][key]);
                         if (data.rows[i][key] === true) {
                             data.rows[i][key] = "si"
                         } else if (data.rows[i][key] === false) {

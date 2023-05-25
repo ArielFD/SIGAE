@@ -644,7 +644,15 @@ module.exports = createCoreController(
             },
           },
           orderBy: { fechavisita: "desc" },
-          populate: true,
+          populate: {
+            sis_tratamiento:true,
+            entidad:{
+              populate:true
+            },
+            trampa_grasa:true,
+            residuals:true
+          },
+          
         });
 
       let rows = [];
@@ -694,6 +702,9 @@ module.exports = createCoreController(
             politica_ambiental: response[i].politica_ambiental,
             recomendaciones: response[i].recomendaciones,
             entidad: response[i].entidad.entidad,
+            director:response[i].entidad.nomb_director,
+            telefono:response[i].entidad.num_telefono,
+            organismo: response[i].entidad.organismo[0].organismo,
             idEntidad: response[i].entidad.id,
             sistema_de_tratamiento: tratamiento,
             eficiencia: response[i].sis_tratamiento.eficiencia,
@@ -733,6 +744,9 @@ module.exports = createCoreController(
             politica_ambiental: response[i].politica_ambiental,
             recomendaciones: response[i].recomendaciones,
             entidad: response[i].entidad.entidad,
+            director:response[i].entidad.nomb_director,
+            telefono:response[i].entidad.num_telefono,
+            organismo: response[i].entidad.organismo[0].organismo,
             idEntidad: response[i].entidad.id,
             residuals: element,
             residuales: residuales,
@@ -772,6 +786,9 @@ module.exports = createCoreController(
             politica_ambiental: response[i].politica_ambiental,
             recomendaciones: response[i].recomendaciones,
             entidad: response[i].entidad.entidad,
+            director:response[i].entidad.nomb_director,
+            telefono:response[i].entidad.num_telefono,
+            organismo: response[i].entidad.organismo[0].organismo,
             idEntidad: response[i].entidad.id,
             residuals: element,
             residuales: residuales,
@@ -811,6 +828,9 @@ module.exports = createCoreController(
             politica_ambiental: response[i].politica_ambiental,
             recomendaciones: response[i].recomendaciones,
             entidad: response[i].entidad.entidad,
+            director:response[i].entidad.nomb_director,
+            telefono:response[i].entidad.num_telefono,
+            organismo: response[i].entidad.organismo[0].organismo,
             idEntidad: response[i].entidad.id,
             residuals: element,
             residuales: residuales,
