@@ -102,7 +102,7 @@
         </q-card>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -248,7 +248,7 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
-    titulo: "Plan de medias ",
+    titulo: "Plan de medidas ",
     rows: [],
     rowTotal: {},
     opcion: "",

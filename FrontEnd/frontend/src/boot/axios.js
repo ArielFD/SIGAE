@@ -8,6 +8,7 @@ import axios from 'axios'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: 'http://localhost:1337/api' })
+// const api = axios.create({ baseURL: 'http://srv-sigae2.gte-bh.cu:1337/api' })
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

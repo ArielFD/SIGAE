@@ -119,7 +119,7 @@ onMounted(() => {
   //     (auth.email = JSON.parse(localStorage.getItem("userData")).email),
   //     (auth.password = JSON.parse(localStorage.getItem("userData")).password);
   // }
-
+  console.log(window.location.hostname);
   router.push("/Principal");
   auth.getLocalIP().then((ipAddr) => {
     auth.ip = ipAddr
@@ -373,6 +373,7 @@ function onLogin() {
 <style lang="sass" scoped>
 .banner1
   height: 100%
+  max-height: 170px
   max-height: 170px
 .my-card
   width: 100%

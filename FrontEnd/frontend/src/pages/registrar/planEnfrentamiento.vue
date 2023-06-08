@@ -11,7 +11,7 @@
 
             <q-card-actions class="justify-end">
                 <q-btn no-caps class="text-white bg-secondary" @click="data.cardCreate = true, clear()">Insertar</q-btn>
-                <q-dialog v-model="data.cardCreate">
+                <q-dialog v-model="data.cardCreate" persistent>
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
@@ -217,13 +217,13 @@
 
                             <q-card-actions class="justify-end">
                                 <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
-                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary" @click="clear" v-close-popup>Cerrar</q-btn>
                             </q-card-actions>
                         </form>
                     </q-card>
                 </q-dialog>
                 <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
-                <q-dialog v-model="data.cardEdit">
+                <q-dialog v-model="data.cardEdit" persistent>
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
@@ -433,7 +433,7 @@
 
                             <q-card-actions class="justify-end">
                                 <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
-                                <q-btn no-caps class="text-white bg-secondary">Limpiar Campos</q-btn>
+                                <q-btn no-caps class="text-white bg-secondary" @click="clear" v-close-popup>Cerrar</q-btn>
                             </q-card-actions>
                         </form>
                     </q-card>

@@ -20,7 +20,8 @@ export const useAuthStore = defineStore({
       const data = {
         data: {
           fecha: new Date().toISOString(),
-          ip: this.ip,
+          // ip: this.ip,
+          ip: window.location.hostname,
           user: this.user.username,
           operacion: params1,
           resultado: params2,

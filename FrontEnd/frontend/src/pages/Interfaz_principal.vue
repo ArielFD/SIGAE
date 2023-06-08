@@ -5,7 +5,7 @@
         <div class="row justify-center">
           <div class="text q-mt-xl col-12">
             <h6 class="no-margin">
-              <b>SIGAE:</b> Sistema informatico para la gestion ambiental empresarial
+              <b>SIGAE:</b> Sistema Informático para la Gestión Ambiental Empresarial
               <br />
             </h6>
             <q-separator></q-separator>

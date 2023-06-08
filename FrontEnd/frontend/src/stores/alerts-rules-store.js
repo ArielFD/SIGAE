@@ -9,7 +9,7 @@ export const useAlertsRulesStore = defineStore({
         { color: "warning", message: "", icon: "warning" },
       ],
       emailRules: [(val) => (val && val.length > 0) || "Campo obligatorio"],
-      inputRules: [(val) => (val && val.length > 0) || ""],
+      inputRules: [(val) => (val && val.length > 0) || "Campo obligatorio"],
       inputTelephone: [(val) => (val && val.length == 8) || "Numero de telefono incorrecto"],
       ageRules: [(val) => (val > 0 && val < 120) || "Edad Incorrecta"],
       passRules: [(val) => (val && val.length > 0) || "Campo obligatorio"],

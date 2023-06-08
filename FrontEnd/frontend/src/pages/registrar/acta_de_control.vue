@@ -1,6 +1,5 @@
 <template>
   <div class="col-12">
-    {{selected}}
     <q-slide-transition duration="1000" appear="true">
       <q-card class="my-card q-ma-md bg-primary" bordered>
         <q-card-section>
@@ -34,7 +33,7 @@
         <q-card-actions class="justify-end">
           <q-btn no-caps class="text-white bg-secondary"
             @click="data.cardCreate = true; clear(); data.id_Residual = []">Insertar</q-btn>
-          <q-dialog v-model="data.cardCreate">
+          <q-dialog v-model="data.cardCreate" persistent>
             <q-card class="my-card bg-primary" flat bordered style="width: 100%">
               <q-item>
                 <q-item-section>
@@ -44,7 +43,7 @@
 
               <q-separator />
               <form @submit.prevent.stop="onCreate">
-                <q-card-section>
+                <q-card-section >
                   <div class="row">
                     <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined v-model="model"
                       :options="options" @filter="filterFn" label="Entidad" style="max-width: 50%" lazy-rules
@@ -52,11 +51,11 @@
                     <q-input outlined dense v-model="data.fechavisita" type="date" hint="Fecha de Visita" lazy-rules
                       :rules="alerts.inputRules" ref="fechavisita" />
                   </div>
-                  <q-input outlined dense v-model="data.atendido_por" label="Atendido por" class="q-mt-xl q-mb-md"
+                  <q-input outlined dense v-model="data.atendido_por" label="Atendido por" 
                     style="max-width: 50%" lazy-rules :rules="alerts.inputRules" ref="atendido_por" />
                   <q-input outlined dense v-model="data.comision_control" label="Comision" style="max-width: 50%"
                     lazy-rules :rules="alerts.inputRules" ref="comision_control" />
-                  <div class="q-mt-xl">Sistema de tratamiento:</div>
+                  <div >Sistema de tratamiento:</div>
                   <div>
                     <q-radio v-model="data.tratamiento" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                       val="si" label="Si" color="secondary" />
@@ -67,7 +66,7 @@
                     <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
                     <div>
                       <q-item>
-                        <q-item-section avatar>Idoneidad:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Idoneidad:</q-item-section>
                         <q-item-section>
                           <div>
                             <q-radio v-model="data.idoniedad" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
@@ -80,7 +79,7 @@
                     </div>
                     <div>
                       <q-item>
-                        <q-item-section avatar>Estado tecnico:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Estado tecnico:</q-item-section>
                         <q-item-section>
                           <div class="row">
                             <q-radio v-model="data.estadoTecnico" checked-icon="task_alt"
@@ -95,7 +94,7 @@
                     </div>
                     <div>
                       <q-item>
-                        <q-item-section avatar>Eficiencia:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Eficiencia:</q-item-section>
                         <q-item-section>
                           <div>
                             <q-radio v-model="data.eficiencia" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
@@ -109,7 +108,7 @@
                       </q-item>
                     </div>
                   </div>
-                  <div class="q-mt-xl">Tipo de grasa:</div>
+                  <div >Tipo de grasa:</div>
                   <div>
                     <q-radio v-model="data.tipoGrasa" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="si"
                       label="Si" color="secondary" />
@@ -123,13 +122,13 @@
                         style="max-width: 70px" />
                       <q-input outlined dense v-model="data.estadoRegular" type="number" label="Regular" class="q-pl-md"
                         style="max-width: 100px" />
-                      <q-input outlined dense v-model="data.estadoMal" type="number" label="Mal" class="q-pl-md q-mb-md"
+                      <q-input outlined dense v-model="data.estadoMal" type="number" label="Mal" class="q-pl-md "
                         style="max-width: 70px" />
                     </div>
                   </div>
                   <div>
                     <q-item>
-                      <q-item-section avatar>Politica ambiental:</q-item-section>
+                      <q-item-section avatar style="width: 150px;">Politica ambiental:</q-item-section>
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.politica" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
@@ -142,7 +141,7 @@
                   </div>
                   <div>
                     <q-item>
-                      <q-item-section avatar>Diagnostico ambiental:</q-item-section>
+                      <q-item-section avatar style="width: 150px;">Diagnostico ambiental:</q-item-section>
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.diagnostico" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
@@ -158,35 +157,35 @@
                       <q-input outlined dense v-model="data.medidas_corto" label="Medidas a corto" class="q-pa-sm"
                         type="number" style="max-width: 150px" />
                       <q-input outlined dense v-model="data.cumplidas_corto" label="Cumplidas a corto" class="q-pa-sm"
-                        type="number" style="max-width: 170px" />
+                        type="number" style="max-width: 150px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_mediano
-                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
+                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 150px" />
                       <q-input outlined dense v-model="data.cumplidas_mediano" label="Cumplidas a mediano" class="q-pa-sm"
-                        type="number" style="max-width: 300px" />
+                        type="number" style="max-width: 150px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_largo" label="Medidas a largo" class="q-pa-sm"
                         type="number" style="max-width: 150px" />
                       <q-input outlined dense v-model="data.cumplidas_largo" label="Cumplidas a largo" class="q-pa-sm"
-                        type="number" style="max-width: 170px" />
+                        type="number" style="max-width: 150px" />
                     </div>
                   </div>
                   <q-input outlined dense v-model="data.consumo_agua" label="Consumo de agua"
-                    class="q-mt-xl q-mb-md q-pa-sm" style="max-width: 200px" lazy-rules :rules="alerts.inputRules"
+                    class=" q-pa-sm" style="max-width: 200px" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_agua" />
                   <q-input outlined dense v-model="data.consumo_energetico" label="Consumo energetico"
                     style="max-width: 200px" class="q-pa-sm" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_energetico" />
                   <q-input v-model="data.deficiencias" filled type="textarea" label="Deficiencias"
-                    class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules
+                    class=" q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules
                     :rules="alerts.inputRules" ref="deficiencias" />
                   <q-input v-model="data.recomendaciones" filled type="textarea" label="Recomendaciones"
-                    class="q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
+                    class="q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
                     ref="recomendaciones" />
                   <q-input v-model="data.observaciones" filled type="textarea" label="Observaciones"
-                    class="q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
+                    class="q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
                     ref="observaciones" />
                 </q-card-section>
 
@@ -200,13 +199,13 @@
 
                 <q-card-actions class="justify-end">
                   <q-btn no-caps class="text-white bg-secondary" type="submit">Agregar</q-btn>
-                  <q-btn no-caps class="text-white bg-secondary" @click="clear">Limpiar Campos</q-btn>
+                  <q-btn no-caps class="text-white bg-secondary" @click="clear" v-close-popup>Cerrar</q-btn>
                 </q-card-actions>
               </form>
             </q-card>
           </q-dialog>
           <q-btn no-caps class="text-white bg-secondary" @click="editFields">Editar</q-btn>
-          <q-dialog v-model="data.cardEdit">
+          <q-dialog v-model="data.cardEdit" persistent>
             <q-card class="my-card-to-pdf bg-primary" flat bordered>
               <q-item>
                 <q-item-section>
@@ -223,11 +222,11 @@
                     <q-input outlined dense v-model="data.fechavisitaEdit" type="date" hint="Fecha de Visita" lazy-rules
                       :rules="alerts.inputRules" ref="fechavisitaEdit" />
                   </div>
-                  <q-input outlined dense v-model="data.atendido_porEdit" label="Atendido por" class="q-mt-xl q-mb-md"
+                  <q-input outlined dense v-model="data.atendido_porEdit" label="Atendido por" 
                     style="max-width: 50%" lazy-rules :rules="alerts.inputRules" ref="atendido_porEdit" />
                   <q-input outlined dense v-model="data.comision_controlEdit" label="Comision" style="max-width: 50%"
                     lazy-rules :rules="alerts.inputRules" ref="comision_controlEdit" />
-                  <div class="q-mt-xl">Sistema de tratamiento:</div>
+                  <div >Sistema de tratamiento:</div>
                   <div>
                     <q-radio v-model="data.tratamientoEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                       val="si" label="Si" color="secondary" />
@@ -238,7 +237,7 @@
                     <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
                     <div>
                       <q-item>
-                        <q-item-section avatar>Idoneidad:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Idoneidad:</q-item-section>
                         <q-item-section>
                           <div>
                             <q-radio v-model="data.idoniedadEdit" checked-icon="task_alt"
@@ -251,7 +250,7 @@
                     </div>
                     <div>
                       <q-item>
-                        <q-item-section avatar>Estado tecnico:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Estado tecnico:</q-item-section>
                         <q-item-section>
                           <div>
                             <q-radio v-model="data.estadoTecnicoEdit" checked-icon="task_alt"
@@ -266,7 +265,7 @@
                     </div>
                     <div>
                       <q-item>
-                        <q-item-section avatar>Eficiencia:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Eficiencia:</q-item-section>
                         <q-item-section>
                           <div>
                             <q-radio v-model="data.eficienciaEdit" checked-icon="task_alt"
@@ -280,7 +279,7 @@
                       </q-item>
                     </div>
                   </div>
-                  <div class="q-mt-xl">Tipo de grasa:</div>
+                  <div >Tipo de grasa:</div>
                   <div>
                     <q-radio v-model="data.tipoGrasaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
                       val="si" label="Si" color="secondary" />
@@ -295,12 +294,12 @@
                       <q-input outlined dense v-model="data.estadoRegularEdit" type="number" label="Regular"
                         class="q-pl-md" style="max-width: 100px" />
                       <q-input outlined dense v-model="data.estadoMalEdit" type="number" label="Mal"
-                        class="q-pl-md q-mb-md" style="max-width: 70px" />
+                        class="q-pl-md " style="max-width: 70px" />
                     </div>
                   </div>
                   <div>
                     <q-item>
-                      <q-item-section avatar>Politica ambiental:</q-item-section>
+                      <q-item-section avatar style="width: 150px;">Politica ambiental:</q-item-section>
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.politicaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
@@ -313,7 +312,7 @@
                   </div>
                   <div>
                     <q-item>
-                      <q-item-section avatar>Diagnostico ambiental:</q-item-section>
+                      <q-item-section avatar style="width: 150px;">Diagnostico ambiental:</q-item-section>
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.diagnosticoEdit" checked-icon="task_alt"
@@ -329,35 +328,35 @@
                       <q-input outlined dense v-model="data.medidas_cortoEdit" label="Medidas a corto" class="q-pa-sm"
                         type="number" style="max-width: 150px" />
                       <q-input outlined dense v-model="data.cumplidas_cortoEdit" label="Cumplidas a corto" class="q-pa-sm"
-                        type="number" style="max-width: 170px" />
+                        type="number" style="max-width: 150px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_medianoEdit
-                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 170px" />
+                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 150px" />
                       <q-input outlined dense v-model="data.cumplidas_medianoEdit" label="Cumplidas a mediano"
-                        class="q-pa-sm" type="number" style="max-width: 300px" />
+                        class="q-pa-sm" type="number" style="max-width: 150px" />
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_largoEdit" label="Medidas a largo" class="q-pa-sm"
                         type="number" style="max-width: 150px" />
                       <q-input outlined dense v-model="data.cumplidas_largoEdit" label="Cumplidas a largo" class="q-pa-sm"
-                        type="number" style="max-width: 170px" />
+                        type="number" style="max-width: 150px" />
                     </div>
                   </div>
                   <q-input outlined dense v-model="data.consumo_aguaEdit" label="Consumo de agua"
-                    class="q-mt-xl q-mb-md q-pa-sm" style="max-width: 200px" lazy-rules :rules="alerts.inputRules"
+                    class="q-pa-sm" style="max-width: 200px" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_aguaEdit" />
                   <q-input outlined dense v-model="data.consumo_energeticoEdit" label="Consumo energetico"
                     style="max-width: 200px" class="q-pa-sm" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_energeticoEdit" />
                   <q-input v-model="data.deficienciasEdit" filled type="textarea" label="Deficiencias"
-                    class="q-mt-xl q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules
+                    class="q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules
                     :rules="alerts.inputRules" ref="deficienciasEdit" />
                   <q-input v-model="data.recomendacionesEdit" filled type="textarea" label="Recomendaciones"
-                    class="q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
+                    class="q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
                     ref="recomendacionesEdit" />
                   <q-input v-model="data.observacionesEdit" filled type="textarea" label="Observaciones"
-                    class="q-mb-md q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
+                    class="q-pa-sm" style="min-width: 400px; width: 50%" lazy-rules :rules="alerts.inputRules"
                     ref="observacionesEdit" />
                 </q-card-section>
 
@@ -372,6 +371,7 @@
                 <q-card-actions class="justify-end">
                   <q-btn no-caps class="text-white bg-secondary" @click="generatePDF">PDF</q-btn>
                   <q-btn no-caps class="text-white bg-secondary" type="submit">Editar</q-btn>
+                  <q-btn no-caps class="text-white bg-secondary" @click="clear" v-close-popup>Cerrar</q-btn>
                 </q-card-actions>
               </form>
             </q-card>

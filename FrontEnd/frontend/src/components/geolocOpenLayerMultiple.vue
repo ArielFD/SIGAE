@@ -32,7 +32,7 @@ const geojsonSource = new VectorSource({
 
 let data = reactive({
     longitud: -82.337749,
-    latitud: 23.120906,
+    latitud: 23.090006,
     directa: [],
     indirecta: []
     // mostrar: false
@@ -79,7 +79,7 @@ function mostrar(params) {
         view: new View({
             projection: "EPSG:4326",
             center: place,
-            zoom: 13,
+            zoom: 12.4
         }),
         layers: [
             // new TileLayer({
