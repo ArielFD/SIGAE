@@ -14,7 +14,7 @@
                 <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
             </div>
             <p class="col-2">
-                <label><b>Comparacion por Indicadores de desempeño:</b> </label> &nbsp;
+                <label><b>Comparación por Indicadores de desempeño:</b> </label> &nbsp;
             </p>
             <div class="col-2" style="width:150px">
                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion" :options="data.opciones"
@@ -39,7 +39,7 @@
         </apexcharts>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -68,7 +68,7 @@ let data = reactive({
     fecha_anterior: "",
     opciones: ["OACE", "OSDE"],
     opcion: "OACE",
-    indicadores: ["Coordinador", "Diagnostico", "Politica", "Indicadores", "Plan de accion", "Legislacion", "Plan de capacitacion", "Acciones PML", "Programa de gestion ambiental", "recursos financieros", "Aprovechamiento Economico", "Sistema de tratamiento", "Carga contaminante"],
+    indicadores: ["Coordinador", "Diagnóstico", "Política", "Indicadores", "Plan de acción", "Legislación", "Plan de capacitación", "Acciones PML", "Programa de gestión ambiental", "recursos financieros", "Aprovechamiento Económico", "Sistema de tratamiento", "Carga contaminante"],
     indicador: "Coordinador",
     rows: [],
     organismos: [],

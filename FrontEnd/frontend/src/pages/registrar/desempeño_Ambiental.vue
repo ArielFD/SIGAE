@@ -70,7 +70,7 @@
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.politica" color="secondary"
-                                            label="Existencia de politica" left-label :true-value="1"
+                                            label="Existencia de política" left-label :true-value="1"
                                             :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].politica" color="secondary"
                                             disable label="Ultimo registro" left-label :true-value="1"
@@ -86,14 +86,14 @@
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.plan" color="secondary"
-                                            label="Existencia de plan de accion" left-label :true-value="1"
+                                            label="Existencia de plan de acción" left-label :true-value="1"
                                             :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].plan" color="secondary" disable
                                             label="Ultimo registro" left-label :true-value="1" :false-value="0" />
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.legislacion" color="secondary"
-                                            label="Existencia de legislacion" left-label :true-value="1"
+                                            label="Existencia de legislación" left-label :true-value="1"
                                             :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].legislacion" color="secondary"
                                             disable label="Ultimo registro" left-label :true-value="1"
@@ -101,7 +101,7 @@
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.capacitacion" color="secondary"
-                                            label="Existencia de plan de capacitacion" left-label :true-value="1"
+                                            label="Existencia de plan de capacitación" left-label :true-value="1"
                                             :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].capacitacion" color="secondary"
                                             disable label="Ultimo registro" left-label :true-value="1"
@@ -117,7 +117,7 @@
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.programa" color="secondary"
-                                            label="Existencia de programa de gestion ambiental" left-label
+                                            label="Existencia de programa de gestión ambiental" left-label
                                             :true-value="1" :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].programa" color="secondary"
                                             disable label="Ultimo registro" left-label :true-value="1"
@@ -133,7 +133,7 @@
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.aprovechamiento" color="secondary"
-                                            label="Aprovechamiento economico" left-label :true-value="1"
+                                            label="Aprovechamiento económico" left-label :true-value="1"
                                             :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].aprovechamiento"
                                             color="secondary" disable label="Ultimo registro" left-label :true-value="1"
@@ -149,7 +149,7 @@
                                     </div>
                                     <div class="row justify-between">
                                         <q-toggle class="col-6" v-model="data.carga" color="secondary"
-                                            label="Disminucion de carga contaminante" left-label :true-value="1"
+                                            label="Disminución de carga contaminante" left-label :true-value="1"
                                             :false-value="0" />
                                         <q-toggle class="col-6" v-model="data.rowsAnt[0].carga" color="secondary"
                                             disable label="Ultimo registro" left-label :true-value="1"
@@ -161,33 +161,33 @@
                                         label="Existencia de coordinador" left-label :true-value="1" :false-value="0" />
                                     <q-toggle v-model="data.diagnostico" color="secondary"
                                         label="Existencia de diagnostico" left-label :true-value="1" :false-value="0" />
-                                    <q-toggle v-model="data.politica" color="secondary" label="Existencia de politica"
+                                    <q-toggle v-model="data.politica" color="secondary" label="Existencia de política"
                                         left-label :true-value="1" :false-value="0" />
                                     <q-toggle v-model="data.indicadores" color="secondary"
                                         label="Existencia de indicadores" left-label :true-value="1" :false-value="0" />
-                                    <q-toggle v-model="data.plan" color="secondary" label="Existencia de plan de accion"
+                                    <q-toggle v-model="data.plan" color="secondary" label="Existencia de plan de acción"
                                         left-label :true-value="1" :false-value="0" />
                                     <q-toggle v-model="data.legislacion" color="secondary"
-                                        label="Existencia de legislacion" left-label :true-value="1" :false-value="0" />
+                                        label="Existencia de legislación" left-label :true-value="1" :false-value="0" />
                                     <q-toggle v-model="data.capacitacion" color="secondary"
-                                        label="Existencia de plan de capacitacion" left-label :true-value="1"
+                                        label="Existencia de plan de capacitación" left-label :true-value="1"
                                         :false-value="0" />
                                     <q-toggle v-model="data.acciones" color="secondary"
                                         label="Existencia de acciones PML" left-label :true-value="1"
                                         :false-value="0" />
                                     <q-toggle v-model="data.programa" color="secondary"
-                                        label="Existencia de programa de gestion ambiental" left-label :true-value="1"
+                                        label="Existencia de programa de gestión ambiental" left-label :true-value="1"
                                         :false-value="0" />
                                     <q-toggle v-model="data.recurso" color="secondary"
                                         label="Existencia de recurso financiero" left-label :true-value="1"
                                         :false-value="0" />
                                     <q-toggle v-model="data.aprovechamiento" color="secondary"
-                                        label="Aprovechamiento economico" left-label :true-value="1" :false-value="0" />
+                                        label="Aprovechamiento económico" left-label :true-value="1" :false-value="0" />
                                     <q-toggle v-model="data.sistema" color="secondary"
                                         label="Existencia de sistema de tratamiento" left-label :true-value="1"
                                         :false-value="0" />
                                     <q-toggle v-model="data.carga" color="secondary"
-                                        label="Disminucion de carga contaminante" left-label :true-value="1"
+                                        label="Disminución de carga contaminante" left-label :true-value="1"
                                         :false-value="0" />
                                 </div>
                                 <q-input outlined dense v-model="data.observaciones" type="textarea"
@@ -230,33 +230,33 @@
                                     <q-toggle v-model="data.diagnosticoEdit" color="secondary"
                                         label="Existencia de diagnostico" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.politicaEdit" color="secondary"
-                                        label="Existencia de politica" left-label true-value="si" false-value="no" />
+                                        label="Existencia de política" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.indicadoresEdit" color="secondary"
                                         label="Existencia de indicadores" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.planEdit" color="secondary"
-                                        label="Existencia de plan de accion" left-label true-value="si"
+                                        label="Existencia de plan de acción" left-label true-value="si"
                                         false-value="no" />
                                     <q-toggle v-model="data.legislacionEdit" color="secondary"
-                                        label="Existencia de legislacion" left-label true-value="si" false-value="no" />
+                                        label="Existencia de legislación" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.capacitacionEdit" color="secondary"
-                                        label="Existencia de plan de capacitacion" left-label true-value="si"
+                                        label="Existencia de plan de capacitación" left-label true-value="si"
                                         false-value="no" />
                                     <q-toggle v-model="data.accionesEdit" color="secondary"
                                         label="Existencia de acciones PML" left-label true-value="si"
                                         false-value="no" />
                                     <q-toggle v-model="data.programaEdit" color="secondary"
-                                        label="Existencia de programa de gestion ambiental" left-label true-value="si"
+                                        label="Existencia de programa de gestión ambiental" left-label true-value="si"
                                         false-value="no" />
                                     <q-toggle v-model="data.recursoEdit" color="secondary"
                                         label="Existencia de recurso financiero" left-label true-value="si"
                                         false-value="no" />
                                     <q-toggle v-model="data.aprovechamientoEdit" color="secondary"
-                                        label="Aprovechamiento economico" left-label true-value="si" false-value="no" />
+                                        label="Aprovechamiento económico" left-label true-value="si" false-value="no" />
                                     <q-toggle v-model="data.sistemaEdit" color="secondary"
                                         label="Existencia de sistema de tratamiento" left-label true-value="si"
                                         false-value="no" />
                                     <q-toggle v-model="data.cargaEdit" color="secondary"
-                                        label="Disminucion de carga contaminante" left-label true-value="si"
+                                        label="Disminución de carga contaminante" left-label true-value="si"
                                         false-value="no" />
                                 </div>
                                 <q-input outlined dense v-model="data.observacionesEdit" type="textarea"
@@ -341,7 +341,7 @@ const columns = [
     {
         name: "politica",
         align: "center",
-        label: "Politica",
+        label: "Política",
         field: "politica",
         sortable: true,
     },
@@ -355,21 +355,21 @@ const columns = [
     {
         name: "plan",
         align: "center",
-        label: "Plan de accion",
+        label: "Plan de acción",
         field: "plan",
         sortable: true,
     },
     {
         name: "legislacion",
         align: "center",
-        label: "Legislacion",
+        label: "Legislación",
         field: "legislacion",
         sortable: true,
     },
     {
         name: "capacitacion",
         align: "center",
-        label: "Plan de Capacitacion",
+        label: "Plan de Capacitación",
         field: "capacitacion",
         sortable: true,
     },
@@ -383,21 +383,21 @@ const columns = [
     {
         name: "programa",
         align: "center",
-        label: "Programa de gestion ambiental",
+        label: "Programa de gestión ambiental",
         field: "programa",
         sortable: true,
     },
     {
         name: "recurso",
         align: "center",
-        label: "Recurso finaciero",
+        label: "Recurso financiero",
         field: "recurso",
         sortable: true,
     },
     {
         name: "aprovechamiento",
         align: "center",
-        label: "Aprovechamiento economico",
+        label: "Aprovechamiento económico",
         field: "aprovechamiento",
         sortable: true,
     },
@@ -411,7 +411,7 @@ const columns = [
     {
         name: "carga",
         align: "center",
-        label: "Disminucion de carga contaminante",
+        label: "Disminución de carga contaminante",
         field: "carga",
         sortable: true,
     },

@@ -3,7 +3,7 @@
       <q-card class="my-card q-ma-md bg-primary" bordered>
         <q-card-section>
           <q-table
-            title="Prioridads"
+            title="Prioridades"
             :rows="dataStore.prioridad"
             :columns="columns"
             row-key="name"

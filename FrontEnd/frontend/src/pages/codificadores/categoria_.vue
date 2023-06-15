@@ -238,13 +238,13 @@ function Delete(params) {
     .then(function (response) {
       alerts.alerts[1].message = "Categoria eliminada";
       $q.notify(alerts.alerts[1]);
-      auth.postTraza("Categoria eliminada", "Satisfactorio")
+      auth.postTraza("Categoría eliminada", "Satisfactorio")
       getCategorias()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo eliminando la categoria";
       $q.notify(alerts.alerts[0]);
-      auth.postTraza("Categoria eliminada", "Fallo")
+      auth.postTraza("Categoría eliminada", "Fallo")
       console.log(error);
     });
 }

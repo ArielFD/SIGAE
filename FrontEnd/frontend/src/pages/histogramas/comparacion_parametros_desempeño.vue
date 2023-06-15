@@ -14,7 +14,7 @@
                 <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
             </div>
             <p class="col-2">
-                <label><b>Comparacion de parametros de desempeño:</b> </label> &nbsp;
+                <label><b>Comparación de parámetros de desempeño:</b> </label> &nbsp;
             </p>
             <div class="col-3">
                 <div class="row justify-start">
@@ -31,7 +31,7 @@
         </apexcharts>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -55,10 +55,10 @@ onMounted(() => {
 })
 
 let data = reactive({
-    titulo: "Histograma de comparacion de parametros de desempeño ",
+    titulo: "Histograma de comparación de parámetros de desempeño ",
     fecha_actual: new Date(),
     fecha_anterior: "",
-    indicadores: ["Coordinador", "Diagnostico", "Politica", "Indicadores", "Plan de accion", "Legislacion", "Plan de capacitacion", "Acciones PML", "Programa de gestion ambiental", "recursos financieros", "Aprovechamiento Economico", "Sistema de tratamiento", "Carga contaminante"],
+    indicadores: ["Coordinador", "Diagnóstico", "Política", "Indicadores", "Plan de acción", "Legislación", "Plan de capacitación", "Acciones PML", "Programa de gestión ambiental", "recursos financieros", "Aprovechamiento Económico", "Sistema de tratamiento", "Carga contaminante"],
     rows: [],
     organismos: [],
     osdes: [],

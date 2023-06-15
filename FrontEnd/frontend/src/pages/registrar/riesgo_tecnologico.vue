@@ -14,7 +14,7 @@
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
-                                <q-item-label><b>Nuevo: "Riesgo tecnologico"</b></q-item-label>
+                                <q-item-label><b>Nuevo: "Riesgo tecnológico"</b></q-item-label>
                             </q-item-section>
                         </q-item>
 
@@ -51,7 +51,7 @@
                                                     label="Nombre del material" class="col-6 q-pa-sm text-black"
                                                     lazy-rules :rules="alerts.inputRules" ref="tipoMaterial" />
                                                 <q-select class="col-6 q-pa-sm text-black" dense outlined
-                                                    v-model="data.categoria" :options="data.category" label="Categoria"
+                                                    v-model="data.categoria" :options="data.category" label="Categoría"
                                                     lazy-rules :rules="alerts.inputRules" ref="categoria" />
                                                 <q-input outlined dense v-model="data.cantidad" label="Cantidad"
                                                     type="number" class="col-6 q-pa-sm text-black" lazy-rules
@@ -60,7 +60,7 @@
                                                     v-model="data.unidad" :options="data.unid" label="Unidad" lazy-rules
                                                     :rules="alerts.inputRules" ref="unidad" />
                                                 <q-input outlined dense v-model="data.contencion"
-                                                    label="Forma de contencion" class="col-12 q-pa-sm text-black"
+                                                    label="Forma de contención" class="col-12 q-pa-sm text-black"
                                                     lazy-rules :rules="alerts.inputRules" ref="contencion" />
                                                 <q-input outlined dense v-model="data.alcance" label="Alcance"
                                                     class="col-12 q-pa-sm text-black" lazy-rules
@@ -94,7 +94,7 @@
                     <q-card class="my-card bg-primary" flat bordered>
                         <q-item>
                             <q-item-section>
-                                <q-item-label><b>Editar: "Riesgo tecnologico"</b></q-item-label>
+                                <q-item-label><b>Editar: "Riesgo tecnológico"</b></q-item-label>
                             </q-item-section>
                         </q-item>
 
@@ -132,7 +132,7 @@
                                                     label="Nombre del material" class="col-6 q-pa-sm text-black"
                                                     lazy-rules :rules="alerts.inputRules" ref="tipoMaterial" />
                                                 <q-select class="col-6 q-pa-sm text-black" dense outlined
-                                                    v-model="data.categoria" :options="data.category" label="Categoria"
+                                                    v-model="data.categoria" :options="data.category" label="Categoría"
                                                     lazy-rules :rules="alerts.inputRules" ref="categoria" />
                                                 <q-input outlined dense v-model="data.cantidad" label="Cantidad"
                                                     type="number" class="col-6 q-pa-sm text-black" lazy-rules
@@ -141,7 +141,7 @@
                                                     v-model="data.unidad" :options="data.unid" label="Unidad" lazy-rules
                                                     :rules="alerts.inputRules" ref="unidad" />
                                                 <q-input outlined dense v-model="data.contencion"
-                                                    label="Forma de contencion" class="col-12 q-pa-sm text-black"
+                                                    label="Forma de contención" class="col-12 q-pa-sm text-black"
                                                     lazy-rules :rules="alerts.inputRules" ref="contencion" />
                                                 <q-input outlined dense v-model="data.alcance" label="Alcance"
                                                     class="col-12 q-pa-sm text-black" lazy-rules
@@ -222,10 +222,10 @@ const columnsMateriales = [
         sortable: true
     },
     { name: 'descripcion', align: 'center', label: 'Nombre del Material', field: 'descripcion', sortable: true },
-    { name: 'categoria', label: 'Categoria', field: 'categoria', sortable: true },
+    { name: 'categoria', label: 'Categoría', field: 'categoria', sortable: true },
     { name: 'cantidad', label: 'Cantidad', field: 'cantidad' },
     { name: 'unidad', label: 'Unidad', field: 'unidad' },
-    { name: 'contencion', label: 'Forma de contencion', field: 'contencion' },
+    { name: 'contencion', label: 'Forma de contención', field: 'contencion' },
     { name: 'alcance', label: 'Alcance', field: 'alcance' },
 ]
 

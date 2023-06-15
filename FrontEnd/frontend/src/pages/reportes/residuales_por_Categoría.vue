@@ -16,11 +16,11 @@
                         </div>
                         <div style="width: 100%" class="row justify-start" v-else>
                             <div class="col-3 text-h6" v-if="auth.jwt">
-                                <q-btn flat label="Residuales por categorias" icon="print" class="col-1  q-pa-xs"
+                                <q-btn flat label="Residuales por categorías" icon="print" class="col-1  q-pa-xs"
                                     @click="auth.printMode = !auth.printMode" />
                             </div>
                             <div class="col-3 text-h6" v-else>
-                                <q-btn flat label="Residuales por categorias" class="col-1  q-pa-xs" />
+                                <q-btn flat label="Residuales por categorías" class="col-1  q-pa-xs" />
                             </div>
                             <div class="col-2">
                                 <q-select class="text-black q-pa-xs" dense outlined v-model="data.opcion"
@@ -29,7 +29,7 @@
                             <div class="col-3" v-if="data.opcion == 'Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
                                     v-model="modelCategoria" :options="optionsCategoria" @filter="filterFnCategoria"
-                                    label="Categoria" />
+                                    label="Categoría" />
                             </div>
                             <div class="col-3" v-if="data.opcion == 'OACE y Categoria'">
                                 <q-select class="text-black q-pa-xs" use-input input-debounce="0" dense outlined
@@ -61,7 +61,7 @@
         </q-card>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -109,7 +109,7 @@ const columns = [
     {
         name: "categoria",
         align: "center",
-        label: "Categoria",
+        label: "Categoría",
         field: "categoria",
         sortable: true,
     },
@@ -137,7 +137,7 @@ const columns = [
     {
         name: "disposicion",
         align: "center",
-        label: "Disposicion",
+        label: "Disposición",
         field: "disposicion",
         sortable: true,
     },
@@ -170,10 +170,10 @@ const modelOsde = ref([])
 const optionsOsde = ref(stringOptionsOsde)
 
 let data = reactive({
-    titulo:"Residuales por categorias ",
+    titulo:"Residuales por categorías ",
     rows: [],
     opcion: "",
-    opcions: ["Categoria", "OACE y Categoria", "OSDE y Categoria"],
+    opcions: ["Categoría", "OACE y Categoría", "OSDE y Categoría"],
 
     categorias: [],
     organismos: [],
@@ -318,7 +318,7 @@ async function getActacontrol(params) {
             // console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 if (response.data.data[i].attributes.entidad.data != null) {
-                    if (data.opcion == 'Categoria' && response.data.data[i].attributes.residuals.data.length > 0) {
+                    if (data.opcion == 'Categoría' && response.data.data[i].attributes.residuals.data.length > 0) {
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
                             if (response.data.data[i].attributes.residuals.data[index].attributes.categorias.data.length > 0 && response.data.data[i].attributes.residuals.data[index].attributes.categorias.data[0].attributes.categoria == modelCategoria.value) {
 
@@ -341,7 +341,7 @@ async function getActacontrol(params) {
 
                             }
                         }
-                    } else if (data.opcion == 'OACE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
+                    } else if (data.opcion == 'OACE y Categoría' && response.data.data[i].attributes.entidad.data.attributes.organismo.data.length > 0 && response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo == modelOrganismo.value) {
                         // console.log("Paso 1");
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
                             // console.log("Paso 2");
@@ -365,7 +365,7 @@ async function getActacontrol(params) {
                             }
 
                         }
-                    } else if (data.opcion == 'OSDE y Categoria' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
+                    } else if (data.opcion == 'OSDE y Categoría' && response.data.data[i].attributes.entidad.data.attributes.osde.data != null && response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre == modelOsde.value) {
                         // console.log("paso 1");
                         for (let index = 0; index < response.data.data[i].attributes.residuals.data.length; index++) {
                             // console.log("paso 2");

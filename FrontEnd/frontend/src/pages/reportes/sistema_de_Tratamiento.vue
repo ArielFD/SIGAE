@@ -58,7 +58,7 @@
         </q-card>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -120,6 +120,27 @@ const columns = [
         align: "center",
         label: "Sistema de tratamiento",
         field: "sistema",
+        sortable: true,
+    },
+    {
+        name: "idoneidad",
+        align: "center",
+        label: "Idoneidad",
+        field: "idoneidad",
+        sortable: true,
+    },
+    {
+        name: "estadoTecnico",
+        align: "center",
+        label: "Estado Técnico",
+        field: "estadoTecnico",
+        sortable: true,
+    },
+    {
+        name: "eficiencia",
+        align: "center",
+        label: "Eficiencia",
+        field: "eficiencia",
         sortable: true,
     }
 ];
@@ -219,10 +240,18 @@ async function getActacontrol(params) {
     await api
         .get(`/actacontrols?populate[0]=sis_tratamiento&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
-            // console.log(response);
+            console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 let sistemaTemp="No"
-                if(response.data.data[i].attributes.sis_tratamiento.data!=null) sistemaTemp="Si"
+                let idoneidad=""
+                let estado=""
+                let eficiencia=""
+                if(response.data.data[i].attributes.sis_tratamiento.data!=null && response.data.data[i].attributes.sis_tratamiento.data.attributes.eficiencia != "") {
+                    sistemaTemp="Si"
+                    idoneidad=response.data.data[i].attributes.sis_tratamiento.data.attributes.idoneidad
+                            estado=response.data.data[i].attributes.sis_tratamiento.data.attributes.estado
+                            eficiencia=response.data.data[i].attributes.sis_tratamiento.data.attributes.eficiencia
+                }
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                     if(response.data.data[i].attributes.entidad.data.attributes.osde.data==null) response.data.data[i].attributes.entidad.data.attributes.osde.data ={attributes: { nombre: "-" }}
@@ -231,6 +260,9 @@ async function getActacontrol(params) {
                         data.rows.push({
                             name:count,
                             sistema: sistemaTemp,
+                            idoneidad:idoneidad,
+                            estadoTecnico:estado,
+                            eficiencia:eficiencia,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
@@ -241,6 +273,9 @@ async function getActacontrol(params) {
                         data.rows.push({
                             name:count,
                             sistema: sistemaTemp,
+                            idoneidad:idoneidad,
+                            estadoTecnico:estado,
+                            eficiencia:eficiencia,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
@@ -251,6 +286,9 @@ async function getActacontrol(params) {
                         data.rows.push({
                             name:count,
                             sistema: sistemaTemp,
+                            idoneidad:idoneidad,
+                            estadoTecnico:estado,
+                            eficiencia:eficiencia,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre

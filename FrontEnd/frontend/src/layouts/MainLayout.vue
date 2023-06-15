@@ -10,10 +10,11 @@
           <q-btn push no-caps :label="data.Tittle" :to="{ name: 'Interfaz_principal' }" flat size="lg" icon="home" />
         </div>
         <div>
+          <btn_Ejecutivo v-if="data.ejecutivo" />
           <btn_Administrador v-if="data.admin" />
           <btn_RegistrarReportes v-if="data.auth"></btn_RegistrarReportes>
           <btn_Reportes v-if="data.public"></btn_Reportes>
-          <btn_Histogramas v-if="data.public || data.auth"></btn_Histogramas>
+          <btn_Histogramas v-if="data.public || data.auth || data.ejecutivo"></btn_Histogramas>
           <q-btn push no-caps label="Login" v-if="!auth.jwt" @click="data.card = true" flat size="lg" />
           <q-btn push no-caps label="Logout" v-else @click="cerrarSesion" flat size="lg" />
         </div>
@@ -84,6 +85,7 @@ import btn_Administrador from "src/components/myLayout/btn_Admistrador.vue"
 import btn_RegistrarReportes from "src/components/myLayout/btn_Registrar-Reportes.vue"
 import btn_Reportes from "src/components/myLayout/btn_Reportes.vue"
 import btn_Histogramas from "src/components/myLayout/btn_histogramas.vue"
+import btn_Ejecutivo from "src/components/myLayout/btn_Ejecutivo.vue"
 import { api } from "boot/axios.js";
 import { useQuasar } from "quasar";
 import { useRouter, useRoute } from "vue-router";
@@ -123,6 +125,7 @@ onMounted(() => {
   router.push("/Principal");
   auth.getLocalIP().then((ipAddr) => {
     auth.ip = ipAddr
+    console.log(auth.ip);
   });
 
   getRol()
@@ -240,7 +243,7 @@ async function getOrganismos(params) {
     })
     .catch(function (error) {
       console.log(error);
-      if(!error.response) alert("Conexion perdida con el servidor")
+      if(!error.response) alert("Conexión perdida con el servidor")
     });
 }
 
@@ -269,6 +272,7 @@ function getUnidades(params) {
 
 function getRol(params) {
   if (auth.jwt == "" || auth.jwt == null) {
+    data.ejecutivo = false
     data.admin = false
     data.auth = false
     data.public = true
@@ -282,7 +286,7 @@ function getRol(params) {
         },
       })
       .then(function (response) {
-        // console.log(response);
+        console.log(response);
         if (
           response.data.role.name === "Administrador") {
           data.admin = true
@@ -295,6 +299,15 @@ function getRol(params) {
           data.auth = true
           data.admin = false
           data.public = false
+          data.Tittle = "SIGAE-" + response.data.role.name + "-" + response.data.username
+        }
+        if (
+          response.data.role.name === "Ejecutivo") {
+            console.log("Entro");
+          data.auth = false
+          data.admin = false
+          data.public = false
+          data.ejecutivo = true
           data.Tittle = "SIGAE-" + response.data.role.name + "-" + response.data.username
         }
       })
@@ -323,7 +336,7 @@ async function Login() {
     .then(function (response) {
       //console.log(response);
       data.card = false
-      alertRules.alerts[1].message = "Sesion Iniciada, Bienvenido!!!";
+      alertRules.alerts[1].message = "Sesión Iniciada, Bienvenido!!!";
       $q.notify(alertRules.alerts[1]);
       auth.jwt = response.data.jwt;
       auth.user = response.data.user;
@@ -337,8 +350,8 @@ async function Login() {
     })
     .catch(function (error) {
       console.log(error);
-      if(!error.response) alert("Conexion perdida con el servidor")
-      auth.postTraza("Login", "Fallo en la Operacion")
+      if(!error.response) alert("Conexión perdida con el servidor")
+      auth.postTraza("Login", "Fallo en la Operación")
       // let temp = parseInt(localStorage.getItem("fallo"));
       // temp++;
       // localStorage.setItem("fallo", temp);
@@ -372,9 +385,7 @@ function onLogin() {
 
 <style lang="sass" scoped>
 .banner1
-  height: 100%
-  max-height: 170px
-  max-height: 170px
+  width: 50%
 .my-card
   width: 100%
   min-width: 500px

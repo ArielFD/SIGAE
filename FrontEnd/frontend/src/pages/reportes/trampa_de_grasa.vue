@@ -58,7 +58,7 @@
         </q-card>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -127,6 +127,27 @@ const columns = [
         align: "center",
         label: "Trampa de grasa",
         field: "trampa",
+        sortable: true,
+    },
+    {
+        name: "Bien",
+        align: "center",
+        label: "Bien",
+        field: "Bien",
+        sortable: true,
+    },
+    {
+        name: "Mal",
+        align: "center",
+        label: "Mal",
+        field: "Mal",
+        sortable: true,
+    },
+    {
+        name: "Regular",
+        align: "center",
+        label: "Regular",
+        field: "Regular",
         sortable: true,
     }
 ];
@@ -226,10 +247,10 @@ async function getActacontrol(params) {
     await api
         .get(`/actacontrols?populate[0]=trampa_grasa&populate[1]=entidad.organismo&populate[2]=entidad.osde&populate[3]=entidad.prioridad&filters[fechavisita][$containsi]=${data.fecha_actual}`)
         .then(function (response) {
-            // console.log(response);
+            console.log(response);
             for (let i = 0; i < response.data.data.length; i++) {
                 let sistemaTemp="No"
-                if(response.data.data[i].attributes.trampa_grasa.data!=null) sistemaTemp="Si"
+                if(response.data.data[i].attributes.trampa_grasa.data!=null && response.data.data[i].attributes.trampa_grasa.data.attributes.bien+response.data.data[i].attributes.trampa_grasa.data.attributes.mal+response.data.data[i].attributes.trampa_grasa.data.attributes.regular!=0) sistemaTemp="Si"
                 if (response.data.data[i].attributes.entidad.data != null) {
                     if (response.data.data[i].attributes.entidad.data.attributes.organismo.data.length == 0) response.data.data[i].attributes.entidad.data.attributes.organismo.data[0] = { attributes: { organismo: "-" } }
                     if(response.data.data[i].attributes.entidad.data.attributes.osde.data==null) response.data.data[i].attributes.entidad.data.attributes.osde.data ={attributes: { nombre: "-" }}
@@ -238,6 +259,9 @@ async function getActacontrol(params) {
                         data.rows.push({
                             name:count,
                             trampa: sistemaTemp,
+                            Bien:response.data.data[i].attributes.trampa_grasa.data.attributes.bien,
+                            Mal:response.data.data[i].attributes.trampa_grasa.data.attributes.mal,
+                            Regular:response.data.data[i].attributes.trampa_grasa.data.attributes.regular,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
@@ -248,6 +272,9 @@ async function getActacontrol(params) {
                         data.rows.push({
                             name:count,
                             trampa: sistemaTemp,
+                            Bien:response.data.data[i].attributes.trampa_grasa.data.attributes.bien,
+                            Mal:response.data.data[i].attributes.trampa_grasa.data.attributes.mal,
+                            Regular:response.data.data[i].attributes.trampa_grasa.data.attributes.regular,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre
@@ -258,6 +285,9 @@ async function getActacontrol(params) {
                         data.rows.push({
                             name:count,
                             trampa: sistemaTemp,
+                            Bien:response.data.data[i].attributes.trampa_grasa.data.attributes.bien,
+                            Mal:response.data.data[i].attributes.trampa_grasa.data.attributes.mal,
+                            Regular:response.data.data[i].attributes.trampa_grasa.data.attributes.regular,
                             entidad: response.data.data[i].attributes.entidad.data.attributes.entidad,
                             organismo: response.data.data[i].attributes.entidad.data.attributes.organismo.data[0].attributes.organismo,
                             osde: response.data.data[i].attributes.entidad.data.attributes.osde.data.attributes.nombre

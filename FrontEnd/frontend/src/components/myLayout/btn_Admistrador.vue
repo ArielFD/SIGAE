@@ -77,7 +77,7 @@ function backup(params) {
     })
     .then(function (response) {
       if(response.data=="Backup Completed"){
-        alertRules.alerts[1].message = "Backup realizado con exito!!!";
+        alertRules.alerts[1].message = "Backup realizado con éxito!!!";
         $q.notify(alertRules.alerts[1]);
         auth.postTraza("BackUp", "Satisfactorio")
       }

@@ -11,16 +11,16 @@
         <form @submit.prevent.stop="onCreate">
           <q-card-section class="row q-pa-sm">
             <q-select class="col-6 q-pa-sm text-black" dense outlined v-model="data.categoria" :options="data.category"
-              label="Categoria" lazy-rules :rules="alerts.inputRules" ref="categoria" />
+              label="Categoría" lazy-rules :rules="alerts.inputRules" ref="categoria" />
             <q-input class="col-6 q-pa-sm text-black" outlined dense v-model="data.tipoResidual"
               label="Tipo de residual" lazy-rules :rules="alerts.inputRules" ref="tipoResidual" />
             <q-input class="col-6 q-pa-sm text-black" outlined dense v-model="data.cantidadGenerada"
               label="Cantidad generada" lazy-rules :rules="alerts.inputRules" ref="cantidadGenerada" />
             <q-select class="col-6 q-pa-sm text-black" dense outlined v-model="data.unidad" :options="data.unid"
               label="Unidad" lazy-rules :rules="alerts.inputRules" ref="unidad" />
-            <q-input outlined dense v-model="data.disposicionFinal" label="Disposicion final"
+            <q-input outlined dense v-model="data.disposicionFinal" label="Disposición final"
               class="col-12 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="disposicionFinal" />
-            <q-input outlined dense v-model="data.aprovechamiento" label="Aprovechamiento economico"
+            <q-input outlined dense v-model="data.aprovechamiento" label="Aprovechamiento económico"
               class="col-10 q-pa-sm text-black" lazy-rules :rules="alerts.inputRules" ref="aprovechamiento" />
             <q-input outlined dense v-model="data.fecha" type="date" class="col-8 q-pa-sm text-black" lazy-rules
               :rules="alerts.inputRules" ref="fecha" />
@@ -58,7 +58,7 @@ const columns = [
   {
     name: 'name',
     required: true,
-    label: 'Categoria',
+    label: 'Categoría',
     align: 'left',
     field: row => row.name,
     format: val => `${val}`,
@@ -67,14 +67,14 @@ const columns = [
   { name: 'tipoResidual', align: 'center', label: 'Tipo de Residual', field: 'tipoResidual', sortable: true },
   { name: 'cantidadGenerada', label: 'Cantidad generada', field: 'cantidadGenerada', sortable: true },
   { name: 'unidad', label: 'Unidad', field: 'unidad' },
-  { name: 'disposicionFinal', label: 'Disposicion final', field: 'disposicionFinal' },
-  { name: 'aprovechamiento', label: 'Aprovecahmiento economico', field: 'aprovechamiento' },
+  { name: 'disposicionFinal', label: 'Disposición final', field: 'disposicionFinal' },
+  { name: 'aprovechamiento', label: 'Aprovechamiento económico', field: 'aprovechamiento' },
   { name: 'fecha', label: 'Fecha', field: 'fecha', sortable: true },
 ]
 
 const rows = []
 
-const categoria = ref(null);
+const categoría = ref(null);
 const unidad = ref(null);
 const aprovechamiento = ref(null);
 const cantidadGenerada = ref(null);
@@ -229,7 +229,7 @@ function getSelectedString() {
 }
 
 function onCreate() {
-  categoria.value.validate();
+  categoría.value.validate();
   unidad.value.validate();
   aprovechamiento.value.validate();
   cantidadGenerada.value.validate();
@@ -237,7 +237,7 @@ function onCreate() {
   fecha.value.validate();
   tipoResidual.value.validate();
 
-  if (categoria.value.hasError || unidad.value.hasError || aprovechamiento.value.hasError || cantidadGenerada.value.hasError || disposicionFinal.value.hasError || fecha.value.hasError || tipoResidual.value.hasError) {
+  if (categoría.value.hasError || unidad.value.hasError || aprovechamiento.value.hasError || cantidadGenerada.value.hasError || disposicionFinal.value.hasError || fecha.value.hasError || tipoResidual.value.hasError) {
     alerts.alerts[0].message = "Rellene todo los campos obligatorios";
     $q.notify(alerts.alerts[0]);
     // form has error

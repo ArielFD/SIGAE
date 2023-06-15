@@ -24,7 +24,7 @@
           </div>
         </div>
       </div>
-      <div class="col-7 q-mt-xl">
+      <div class="geo col-7 q-mt-xl">
         <geo></geo>
       </div>
     </div>

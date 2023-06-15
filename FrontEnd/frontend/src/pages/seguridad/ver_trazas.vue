@@ -61,7 +61,7 @@
     {
       name: "Operacion",
       align: "center",
-      label: "Operacion",
+      label: "Operación",
       field: "Operacion",
       sortable: true,
     },

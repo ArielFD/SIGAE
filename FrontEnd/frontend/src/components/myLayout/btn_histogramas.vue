@@ -8,19 +8,19 @@
               <q-item-section>Plan de medidas</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'comparacion_cumplimento_medidas' }" class="text-black">
-              <q-item-section>Comparacion de cumplimientos de medidas en Actas de Control</q-item-section>
+              <q-item-section>Comparación de cumplimientos de medidas en Actas de Control</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'comparacion_cumplimento_desempeño' }" class="text-black">
-              <q-item-section>Comparacion de cumplimientos de medidas en Plan de Enfrentamiento</q-item-section>
+              <q-item-section>Comparación de cumplimientos de medidas en Plan de Enfrentamiento</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'indicadores_de_desempeño' }" class="text-black">
               <q-item-section>Indicadores de desempeño</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'comparacion_parametros_desempeño' }" class="text-black">
-              <q-item-section>Comparacion de parametros de desempeño</q-item-section>
+              <q-item-section>Comparación de parámetros de desempeño</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'coordinadores_ambientales' }" class="text-black">
-              <q-item-section>Comparacion por Indicadores de desempeño</q-item-section>
+              <q-item-section>Comparación por Indicadores de desempeño</q-item-section>
             </q-item>
             <q-item clickable :to="{ name: 'desempeño_ambiental' }" class="text-black">
                 <q-item-section>Desempeño ambiental</q-item-section>

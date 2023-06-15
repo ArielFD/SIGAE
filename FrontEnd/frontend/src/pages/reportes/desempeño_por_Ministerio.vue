@@ -102,7 +102,7 @@
         </q-card>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -165,7 +165,7 @@ const columns = [
     {
         name: "politica",
         align: "center",
-        label: "Politica",
+        label: "Política",
         field: "politica",
         sortable: true,
     },
@@ -179,21 +179,21 @@ const columns = [
     {
         name: "plan",
         align: "center",
-        label: "Plan de accion",
+        label: "Plan de acción",
         field: "plan",
         sortable: true,
     },
     {
         name: "legislacion",
         align: "center",
-        label: "Legislacion",
+        label: "Legislación",
         field: "legislacion",
         sortable: true,
     },
     {
         name: "capacitacion",
         align: "center",
-        label: "Plan de Capacitacion",
+        label: "Plan de Capacitación",
         field: "capacitacion",
         sortable: true,
     },
@@ -207,35 +207,35 @@ const columns = [
     {
         name: "programa",
         align: "center",
-        label: "Programa de gestion ambiental",
+        label: "Programa de gestión ambiental",
         field: "programa",
         sortable: true,
     },
     {
         name: "recurso",
         align: "center",
-        label: "Recurso finaciero",
+        label: "Recurso financiero",
         field: "recurso",
         sortable: true,
     },
     {
         name: "aprovechamiento",
         align: "center",
-        label: "Aprovechamiento economico",
+        label: "Aprovechamiento económico",
         field: "aprovechamiento",
         sortable: true,
     },
     {
         name: "sistema",
         align: "center",
-        label: "Sistema de tratamiento",
+        label: "Sistema u órgano de tratamiento",
         field: "sistema",
         sortable: true,
     },
     {
         name: "carga",
         align: "center",
-        label: "Disminucion de carga contaminante",
+        label: "Disminución de carga contaminante",
         field: "carga",
         sortable: true,
     },

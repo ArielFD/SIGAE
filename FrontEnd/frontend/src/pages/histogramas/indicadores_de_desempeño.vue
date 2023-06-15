@@ -37,7 +37,7 @@
         </apexcharts>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -65,7 +65,7 @@ let data = reactive({
     fecha_actual: new Date(),
     opciones: ["OACE", "OSDE"],
     opcion: "OACE",
-    indicadores: ["Coordinador", "Diagnostico", "Politica", "Indicadores", "Plan de accion", "Legislacion", "Plan de capacitacion", "Acciones PML", "Programa de gestion ambiental", "recursos financieros", "Aprovechamiento Economico", "Sistema de tratamiento", "Carga contaminante"],
+    indicadores: ["Coordinador", "Diagnóstico", "Política", "Indicadores", "Plan de acción", "Legislación", "Plan de capacitación", "Acciones PML", "Programa de gestión ambiental", "recursos financieros", "Aprovechamiento Económico", "Sistema de tratamiento", "Carga contaminante"],
     indicador: "Coordinador",
     rows: [],
     organismos: [],

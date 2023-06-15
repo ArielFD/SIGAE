@@ -12,7 +12,7 @@
             
           </q-item>
           <q-item clickable :to="{ name: 'riesgoTecnologico' }" class="text-black">
-            <q-item-section>Riesgo Tecnologico</q-item-section>
+            <q-item-section>Riesgo Tecnológico</q-item-section>
             
           </q-item>
           <q-item clickable :to="{ name: 'datosDeLaEntidad' }"  class="text-black">

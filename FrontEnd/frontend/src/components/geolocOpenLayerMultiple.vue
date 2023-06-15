@@ -32,7 +32,7 @@ const geojsonSource = new VectorSource({
 
 let data = reactive({
     longitud: -82.337749,
-    latitud: 23.090006,
+    latitud: 23.105996,
     directa: [],
     indirecta: []
     // mostrar: false
@@ -237,7 +237,7 @@ function mostrar(params) {
     position: relative;
     margin: 0;
     padding: 0;
-    height: 600px;
+    height: 60vh;
     width: 99%;
 }
 

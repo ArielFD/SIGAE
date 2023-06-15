@@ -70,9 +70,9 @@
                     class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="director"/>
                   <q-input outlined dense v-model="data.coordinador" type="text" label="Nombre del Coordinador"
                     class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="coordinador"/>
-                  <q-input outlined dense v-model="data.telefono" type="text" label="Telefono" class="col-4 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="telefono"/>
+                  <q-input outlined dense v-model="data.telefono" type="text" label="Teléfono" class="col-4 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="telefono" mask="# ### ####"/>
                   <q-input outlined dense v-model="data.trabajadores" type="number" label="Trabajadores"
-                    class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="trabajadores"/>
+                    class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="trabajadores" min="0"/>
                   <q-input outlined dense v-model="data.PIB" type="text" label="PIB" class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="PIB"/>
                   <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.fuente"
                     :options="data.fuentes" label="Tipo de fuente" lazy-rules :rules="alerts.inputRules" ref="fuente"/>
@@ -120,10 +120,10 @@
                     class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="directorEdit"/>
                   <q-input outlined dense v-model="data.coordinadorEdit" type="text" label="Nombre del Coordinador"
                     class="col-6 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="coordinadorEdit"/>
-                  <q-input outlined dense v-model="data.telefonoEdit" type="text" label="Telefono"
-                    class="col-4 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="telefonoEdit"/>
+                  <q-input outlined dense v-model="data.telefonoEdit" type="text" label="Teléfono"
+                    class="col-4 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="telefonoEdit" mask="# ### ####"/>
                   <q-input outlined dense v-model="data.trabajadoresEdit" type="number" label="Trabajadores"
-                    class="col-3 q-pa-xs" />
+                    class="col-3 q-pa-xs" min="0"/>
                   <q-input outlined dense v-model="data.PIBEdit" type="text" label="PIB" class="col-3 q-pa-xs" lazy-rules :rules="alerts.inputRules" ref="PIBEdit"/>
                   <q-select class="col-6 text-black q-pa-xs" dense outlined v-model="data.fuenteEdit"
                     :options="data.fuentes" label="Tipo de fuente" lazy-rules :rules="alerts.inputRules" ref="fuenteEdit"/>
@@ -248,7 +248,7 @@ const columns = [
   {
     name: "telefono",
     align: "center",
-    label: "Telefono",
+    label: "Teléfono",
     field: "telefono",
     sortable: true,
   },

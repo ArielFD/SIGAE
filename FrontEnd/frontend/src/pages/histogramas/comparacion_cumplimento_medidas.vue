@@ -14,7 +14,7 @@
                 <q-btn flat icon="print" class="col-1  q-pa-xs" @click="auth.printMode = !auth.printMode" />
             </div>
             <p class="col-6">
-                <label><b>Comparacion del porciento de cumplimiento de medidas en Actas de Control:</b> </label> &nbsp;
+                <label><b>Comparación del porciento de cumplimiento de medidas en Actas de Control:</b> </label> &nbsp;
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OACE"
                     label="OACE" color="secondary" />
                 <q-radio v-model="data.organismo" checked-icon="task_alt" unchecked-icon="panorama_fish_eye" val="OSDE"
@@ -35,7 +35,7 @@
         </apexcharts>
         <div class="text-center q-mt-xl" v-if="auth.printMode == true">
             <p>_______________________________________</p>
-            <p>Director de Gestion Ambiental</p>
+            <p>Director de Gestión Ambiental</p>
         </div>
     </div>
 </template>
@@ -59,7 +59,7 @@ onMounted(() => {
 })
 
 let data = reactive({
-    titulo: "Histograma de comparacion de cumplimento de medidas en Actas de Control ",
+    titulo: "Histograma de comparación de cumplimento de medidas en Actas de Control ",
     fecha_actual: new Date(),
     fecha_anterior: "",
     organismo: "OACE",

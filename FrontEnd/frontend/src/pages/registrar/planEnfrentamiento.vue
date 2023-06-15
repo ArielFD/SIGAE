@@ -52,19 +52,19 @@
                                                 <div class="row">
                                                     <q-input outlined dense v-model="data.medidas" class="q-pa-sm col-3"
                                                         type="number" hint="Total de medidas" style="max-width: 150px"
-                                                        lazy-rules :rules="alerts.inputRules" ref="medidas" />
+                                                        lazy-rules :rules="alerts.inputRules" ref="medidas" min="0"/>
                                                     <q-input outlined dense v-model="data.cumplidas"
                                                         class="q-pa-sm col-3" type="number" style="max-width: 170px"
                                                         hint="Cumplidas" lazy-rules :rules="alerts.inputRules"
-                                                        ref="cumplidas" />
+                                                        ref="cumplidas" min="0"/>
                                                     <q-input outlined dense v-model="data.evaluadas"
                                                         class="q-pa-sm col-3" type="number" style="max-width: 150px"
                                                         hint="No evaluadas" lazy-rules :rules="alerts.inputRules"
-                                                        ref="evaluadas" />
+                                                        ref="evaluadas" min="0"/>
                                                     <q-input outlined dense v-model="data.incumplidas"
                                                         class="q-pa-sm col-3" type="number" style="max-width: 170px"
                                                         hint="Incumplidas" lazy-rules :rules="alerts.inputRules"
-                                                        ref="incumplidas" />
+                                                        ref="incumplidas" min="0"/>
                                                 </div>
                                             </q-item-section>
                                         </q-item>
@@ -167,7 +167,7 @@
                                 </div>
                                 <div>
                                     <q-item>
-                                        <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
+                                        <q-item-section avatar>Inversiones en ejecución o preparación:</q-item-section>
                                         <q-item-section>
                                             <div class="row">
                                                 <q-radio v-model="data.inversiones" checked-icon="task_alt"
@@ -201,7 +201,7 @@
                                                 </q-item>
                                                 <div>
                                                     <q-input outlined dense v-model="data.descripcion" class="q-pa-sm"
-                                                        type="textarea" label="Descripcion" style="max-width: 100%"
+                                                        type="textarea" label="Descripción" style="max-width: 100%"
                                                         lazy-rules :rules="alerts.inputRules" ref="descripcion" />
                                                 </div>
                                             </q-item-section>
@@ -266,19 +266,19 @@
                                                     <q-input outlined dense v-model="data.medidasEdit"
                                                         class="q-pa-sm col-3" type="number" hint="Total de medidas"
                                                         style="max-width: 150px" lazy-rules :rules="alerts.inputRules"
-                                                        ref="medidasEdit" />
+                                                        ref="medidasEdit" min="0"/>
                                                     <q-input outlined dense v-model="data.cumplidasEdit"
                                                         class="q-pa-sm col-3" type="number" style="max-width: 170px"
                                                         hint="Cumplidas" lazy-rules :rules="alerts.inputRules"
-                                                        ref="cumplidasEdit" />
+                                                        ref="cumplidasEdit" min="0"/>
                                                     <q-input outlined dense v-model="data.evaluadasEdit"
                                                         class="q-pa-sm col-3" type="number" style="max-width: 150px"
                                                         hint="No evaluadas" lazy-rules :rules="alerts.inputRules"
-                                                        ref="evaluadasEdit" />
+                                                        ref="evaluadasEdit" min="0"/>
                                                     <q-input outlined dense v-model="data.incumplidasEdit"
                                                         class="q-pa-sm col-3" type="number" style="max-width: 170px"
                                                         hint="Incumplidas" lazy-rules :rules="alerts.inputRules"
-                                                        ref="incumplidasEdit" />
+                                                        ref="incumplidasEdit" min="0"/>
                                                 </div>
                                             </q-item-section>
                                         </q-item>
@@ -382,7 +382,7 @@
                                 </div>
                                 <div>
                                     <q-item>
-                                        <q-item-section avatar>Inversiones en ejecucion o preparacion:</q-item-section>
+                                        <q-item-section avatar>Inversiones en ejecución o preparación:</q-item-section>
                                         <q-item-section>
                                             <div class="row">
                                                 <q-radio v-model="data.inversionesEdit" checked-icon="task_alt"
@@ -416,7 +416,7 @@
                                                 </q-item>
                                                 <div>
                                                     <q-input outlined dense v-model="data.descripcionEdit"
-                                                        class="q-pa-sm" type="textarea" label="Descripcion"
+                                                        class="q-pa-sm" type="textarea" label="Descripción"
                                                         style="max-width: 100%" lazy-rules :rules="alerts.inputRules"
                                                         ref="descripcionEdit" />
                                                 </div>
@@ -514,7 +514,7 @@ const columns = [
     {
         name: "inversiones",
         align: "center",
-        label: "Inversiones en ejecucion o preparacion",
+        label: "Inversiones en ejecución o preparación",
         field: "inversiones",
         sortable: true,
     },
@@ -740,15 +740,15 @@ function Edit(params) {
         .then(function (response) {
             ////console.log(response);
             data.cardEdit = false
-            alerts.alerts[1].message = "Plan de enfrentameinto editado";
+            alerts.alerts[1].message = "Plan de enfrentamiento editado";
             $q.notify(alerts.alerts[1]);
-            auth.postTraza("Plan de enfrentameinto editado", "Satisfactorio")
+            auth.postTraza("Plan de enfrentamiento editado", "Satisfactorio")
             getEnfrentamiento();
         })
         .catch(function (error) {
-            alerts.alerts[0].message = "Fallo editando el Plan de enfrentameinto";
+            alerts.alerts[0].message = "Fallo editando el Plan de enfrentamiento";
             $q.notify(alerts.alerts[0]);
-            auth.postTraza("Plan de enfrentameinto editado", "Fallo")
+            auth.postTraza("Plan de enfrentamiento editado", "Fallo")
             console.log(error);
         });
 
@@ -803,15 +803,15 @@ function Create() {
         .then(function (response) {
             ////console.log(response);
             data.cardCreate = false
-            alerts.alerts[1].message = "Plan de enfrentameinto creado";
+            alerts.alerts[1].message = "Plan de enfrentamiento creado";
             $q.notify(alerts.alerts[1]);
-            auth.postTraza("Plan de enfrentameinto creado", "Satisfactorio")
+            auth.postTraza("Plan de enfrentamiento creado", "Satisfactorio")
             getEnfrentamiento();
         })
         .catch(function (error) {
-            alerts.alerts[0].message = "Fallo creando el Plan de enfrentameinto";
+            alerts.alerts[0].message = "Fallo creando el Plan de enfrentamiento";
             $q.notify(alerts.alerts[0]);
-            auth.postTraza("Plan de enfrentameinto creado", "Fallo")
+            auth.postTraza("Plan de enfrentamiento creado", "Fallo")
             console.log(error);
         });
 }
@@ -825,15 +825,15 @@ function Delete(params) {
                 },
             })
             .then(function (response) {
-                alerts.alerts[1].message = "Plan de enfrentameinto eliminado";
+                alerts.alerts[1].message = "Plan de enfrentamiento eliminado";
                 $q.notify(alerts.alerts[1]);
-                auth.postTraza("Plan de enfrentameinto eliminado", "Satisfactorio")
+                auth.postTraza("Plan de enfrentamiento eliminado", "Satisfactorio")
                 getEnfrentamiento()
             })
             .catch(function (error) {
-                alerts.alerts[0].message = "Fallo eliminando el Plan de enfrentameinto";
+                alerts.alerts[0].message = "Fallo eliminando el Plan de enfrentamiento";
                 $q.notify(alerts.alerts[0]);
-                auth.postTraza("Plan de enfrentameinto eliminado", "Fallo")
+                auth.postTraza("Plan de enfrentamiento eliminado", "Fallo")
                 console.log(error);
             });
 

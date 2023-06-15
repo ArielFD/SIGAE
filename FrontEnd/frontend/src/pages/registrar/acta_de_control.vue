@@ -48,12 +48,12 @@
                     <q-select class="col-8 q-mr-xl text-black" use-input input-debounce="0" dense outlined v-model="model"
                       :options="options" @filter="filterFn" label="Entidad" style="max-width: 50%" lazy-rules
                       :rules="alerts.inputRules" ref="modelo" />
-                    <q-input outlined dense v-model="data.fechavisita" type="date" hint="Fecha de Visita" lazy-rules
+                    <q-input outlined dense v-model="data.fechavisita" type="date"  lazy-rules
                       :rules="alerts.inputRules" ref="fechavisita" />
                   </div>
                   <q-input outlined dense v-model="data.atendido_por" label="Atendido por" 
-                    style="max-width: 50%" lazy-rules :rules="alerts.inputRules" ref="atendido_por" />
-                  <q-input outlined dense v-model="data.comision_control" label="Comision" style="max-width: 50%"
+                    style="max-width: 80%" lazy-rules :rules="alerts.inputRules" ref="atendido_por" />
+                  <q-input outlined dense v-model="data.comision_control" label="Comisión" style="max-width: 80%"
                     lazy-rules :rules="alerts.inputRules" ref="comision_control" />
                   <div >Sistema de tratamiento:</div>
                   <div>
@@ -63,7 +63,7 @@
                       val="no" label="No" color="secondary" />
                   </div>
                   <div style="max-width: 100%" v-if="data.tratamiento == 'si'">
-                    <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
+                    <p class="q-pl-md q-pt-sm"> Estado técnico</p>
                     <div>
                       <q-item>
                         <q-item-section avatar style="width: 150px;">Idoneidad:</q-item-section>
@@ -116,25 +116,25 @@
                       label="No" color="secondary" />
                   </div>
                   <div style="max-width: 100%" v-if="data.tipoGrasa == 'si'">
-                    <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
+                    <p class="q-pl-md q-pt-sm"> Estado técnico</p>
                     <div class="row">
                       <q-input outlined dense v-model="data.estadoBien" type="number" label="Bien" class="q-pl-md"
-                        style="max-width: 70px" />
+                        style="max-width: 70px" min="0"/>
                       <q-input outlined dense v-model="data.estadoRegular" type="number" label="Regular" class="q-pl-md"
-                        style="max-width: 100px" />
+                        style="max-width: 100px" min="0"/>
                       <q-input outlined dense v-model="data.estadoMal" type="number" label="Mal" class="q-pl-md "
-                        style="max-width: 70px" />
+                        style="max-width: 70px" min="0"/>
                     </div>
                   </div>
                   <div>
                     <q-item>
-                      <q-item-section avatar style="width: 150px;">Politica ambiental:</q-item-section>
+                      <q-item-section avatar style="width: 150px;">Política ambiental:</q-item-section>
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.politica" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                            val="Si" label="Si" color="secondary" />
+                            val="si" label="Si" color="secondary" />
                           <q-radio v-model="data.politica" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                            val="No" label="No" color="secondary" />
+                            val="no" label="No" color="secondary" />
                         </div>
                       </q-item-section>
                     </q-item>
@@ -145,9 +145,9 @@
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.diagnostico" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                            val="Si" label="Si" color="secondary" />
+                            val="si" label="Si" color="secondary" />
                           <q-radio v-model="data.diagnostico" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                            val="No" label="No" color="secondary" />
+                            val="no" label="No" color="secondary" />
                         </div>
                       </q-item-section>
                     </q-item>
@@ -155,27 +155,27 @@
                   <div class="column">
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_corto" label="Medidas a corto" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                       <q-input outlined dense v-model="data.cumplidas_corto" label="Cumplidas a corto" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_mediano
-                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 150px" />
+                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 150px" min="0"/>
                       <q-input outlined dense v-model="data.cumplidas_mediano" label="Cumplidas a mediano" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_largo" label="Medidas a largo" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                       <q-input outlined dense v-model="data.cumplidas_largo" label="Cumplidas a largo" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                     </div>
                   </div>
                   <q-input outlined dense v-model="data.consumo_agua" label="Consumo de agua"
                     class=" q-pa-sm" style="max-width: 200px" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_agua" />
-                  <q-input outlined dense v-model="data.consumo_energetico" label="Consumo energetico"
+                  <q-input outlined dense v-model="data.consumo_energetico" label="Consumo energético"
                     style="max-width: 200px" class="q-pa-sm" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_energetico" />
                   <q-input v-model="data.deficiencias" filled type="textarea" label="Deficiencias"
@@ -223,8 +223,8 @@
                       :rules="alerts.inputRules" ref="fechavisitaEdit" />
                   </div>
                   <q-input outlined dense v-model="data.atendido_porEdit" label="Atendido por" 
-                    style="max-width: 50%" lazy-rules :rules="alerts.inputRules" ref="atendido_porEdit" />
-                  <q-input outlined dense v-model="data.comision_controlEdit" label="Comision" style="max-width: 50%"
+                    style="max-width: 80%" lazy-rules :rules="alerts.inputRules" ref="atendido_porEdit" />
+                  <q-input outlined dense v-model="data.comision_controlEdit" label="Comisión" style="max-width: 80%"
                     lazy-rules :rules="alerts.inputRules" ref="comision_controlEdit" />
                   <div >Sistema de tratamiento:</div>
                   <div>
@@ -234,7 +234,7 @@
                       val="no" label="No" color="secondary" />
                   </div>
                   <div style="max-width: 100%" v-if="data.tratamientoEdit == 'si'">
-                    <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
+                    <p class="q-pl-md q-pt-sm"> Estado técnico</p>
                     <div>
                       <q-item>
                         <q-item-section avatar style="width: 150px;">Idoneidad:</q-item-section>
@@ -250,7 +250,7 @@
                     </div>
                     <div>
                       <q-item>
-                        <q-item-section avatar style="width: 150px;">Estado tecnico:</q-item-section>
+                        <q-item-section avatar style="width: 150px;">Estado técnico:</q-item-section>
                         <q-item-section>
                           <div>
                             <q-radio v-model="data.estadoTecnicoEdit" checked-icon="task_alt"
@@ -287,25 +287,25 @@
                       val="no" label="No" color="secondary" />
                   </div>
                   <div style="max-width: 100%" v-if="data.tipoGrasaEdit == 'si'">
-                    <p class="q-pl-md q-pt-sm"> Estado tecnico</p>
+                    <p class="q-pl-md q-pt-sm"> Estado técnico</p>
                     <div class="row">
                       <q-input outlined dense v-model="data.estadoBienEdit" type="number" label="Bien" class="q-pl-md"
-                        style="max-width: 70px" />
+                        style="max-width: 70px" min="0"/>
                       <q-input outlined dense v-model="data.estadoRegularEdit" type="number" label="Regular"
-                        class="q-pl-md" style="max-width: 100px" />
+                        class="q-pl-md" style="max-width: 100px" min="0"/>
                       <q-input outlined dense v-model="data.estadoMalEdit" type="number" label="Mal"
-                        class="q-pl-md " style="max-width: 70px" />
+                        class="q-pl-md " style="max-width: 70px" min="0"/>
                     </div>
                   </div>
                   <div>
                     <q-item>
-                      <q-item-section avatar style="width: 150px;">Politica ambiental:</q-item-section>
+                      <q-item-section avatar style="width: 150px;">Política ambiental:</q-item-section>
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.politicaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                            val="Si" label="Si" color="secondary" />
+                            val="si" label="Si" color="secondary" />
                           <q-radio v-model="data.politicaEdit" checked-icon="task_alt" unchecked-icon="panorama_fish_eye"
-                            val="No" label="No" color="secondary" />
+                            val="no" label="No" color="secondary" />
                         </div>
                       </q-item-section>
                     </q-item>
@@ -316,9 +316,9 @@
                       <q-item-section>
                         <div>
                           <q-radio v-model="data.diagnosticoEdit" checked-icon="task_alt"
-                            unchecked-icon="panorama_fish_eye" val="Si" label="Si" color="secondary" />
+                            unchecked-icon="panorama_fish_eye" val="si" label="Si" color="secondary" />
                           <q-radio v-model="data.diagnosticoEdit" checked-icon="task_alt"
-                            unchecked-icon="panorama_fish_eye" val="No" label="No" color="secondary" />
+                            unchecked-icon="panorama_fish_eye" val="no" label="No" color="secondary" />
                         </div>
                       </q-item-section>
                     </q-item>
@@ -326,27 +326,27 @@
                   <div class="column">
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_cortoEdit" label="Medidas a corto" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                       <q-input outlined dense v-model="data.cumplidas_cortoEdit" label="Cumplidas a corto" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_medianoEdit
-                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 150px" />
+                        " label="Medidas a mediano" class="q-pa-sm" type="number" style="max-width: 150px" min="0"/>
                       <q-input outlined dense v-model="data.cumplidas_medianoEdit" label="Cumplidas a mediano"
-                        class="q-pa-sm" type="number" style="max-width: 150px" />
+                        class="q-pa-sm" type="number" style="max-width: 150px" min="0"/>
                     </div>
                     <div class="row">
                       <q-input outlined dense v-model="data.medidas_largoEdit" label="Medidas a largo" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                       <q-input outlined dense v-model="data.cumplidas_largoEdit" label="Cumplidas a largo" class="q-pa-sm"
-                        type="number" style="max-width: 150px" />
+                        type="number" style="max-width: 150px" min="0"/>
                     </div>
                   </div>
                   <q-input outlined dense v-model="data.consumo_aguaEdit" label="Consumo de agua"
                     class="q-pa-sm" style="max-width: 200px" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_aguaEdit" />
-                  <q-input outlined dense v-model="data.consumo_energeticoEdit" label="Consumo energetico"
+                  <q-input outlined dense v-model="data.consumo_energeticoEdit" label="Consumo energético"
                     style="max-width: 200px" class="q-pa-sm" lazy-rules :rules="alerts.inputRules"
                     ref="consumo_energeticoEdit" />
                   <q-input v-model="data.deficienciasEdit" filled type="textarea" label="Deficiencias"
@@ -434,7 +434,7 @@ const columns = [
   {
     name: "politica_ambiental",
     align: "center",
-    label: "Politica/Amb",
+    label: "Política/Amb",
     field: "politica_ambiental",
     sortable: true,
   },
@@ -542,8 +542,8 @@ let data = reactive({
   estadoBien: "0",
   estadoMal: "0",
   estadoRegular: "0",
-  politica: "No",
-  diagnostico: "No",
+  politica: "no",
+  diagnostico: "no",
 
   atendido_por: "",
   comision_control: "",
@@ -571,8 +571,8 @@ let data = reactive({
   estadoBienEdit: "0",
   estadoMalEdit: "0",
   estadoRegularEdit: "0",
-  politicaEdit: "No",
-  diagnosticoEdit: "No",
+  politicaEdit: "no",
+  diagnosticoEdit: "no",
 
   atendido_porEdit: "",
   comision_controlEdit: "",
@@ -615,8 +615,8 @@ function clear(params) {
   data.estadoBien = "0"
   data.estadoMal = "0",
     data.estadoRegular = "0"
-  data.politica = "No"
-  data.diagnostico = "No"
+  data.politica = "no"
+  data.diagnostico = "no"
 
   data.atendido_por = ""
   data.comision_control = ""
@@ -679,6 +679,31 @@ function clear(params) {
 //     }
 //   });
 // })
+
+watch(() => data.tratamiento, (value) => {
+  if(value!="no"){
+    data.idoniedad = "no"
+  data.estadoTecnico = "mal"
+  data.eficiencia = "mal"
+  }else{
+    data.idoniedad = ""
+  data.estadoTecnico = ""
+  data.eficiencia = ""
+  }
+})
+
+watch(() => data.tratamientoEdit, (value) => {
+  if(value!="no"){
+    data.idoniedadEdit = "no"
+  data.estadoTecnicoEdit = "mal"
+  data.eficienciaEdit = "mal"
+  }else{
+    data.idoniedadEdit = ""
+  data.estadoTecnicoEdit = ""
+  data.eficienciaEdit = ""
+  }
+})
+
 function generatePDF() {
   // create a new jsPDF instance
   var doc = new jsPDF();
@@ -1112,6 +1137,12 @@ async function getActacontrol(params) {
     })
     .then(function (response) {
       data.rows = response.data
+      data.rows.forEach(element => {
+        if(element.diagnostico_ambiental=="Si") element.diagnostico_ambiental="si"
+        if(element.diagnostico_ambiental=="No") element.diagnostico_ambiental="no"
+        if(element.politica_ambiental=="Si") element.politica_ambiental="si"
+        if(element.politica_ambiental=="No") element.politica_ambiental="no"
+      });
     }).catch(function (error) {
       console.log(error);
     });
