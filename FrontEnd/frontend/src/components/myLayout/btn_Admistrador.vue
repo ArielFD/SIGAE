@@ -68,7 +68,9 @@ const auth = useAuthStore();
 const alertRules = useAlertsRulesStore();
 const $q = useQuasar();
 
-function backup(params) {
+async function backup(params) {
+  // const filehandle=await window.showSaveFilePicker()
+  // console.log(filehandle);
   api
     .get("/backup", {
       headers: {

@@ -5,7 +5,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
-                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="multiple"
+                    :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="single"
                     v-model:selected="selected" v-model:pagination="pagination" wrap-cells/>
             </q-card-section>
 

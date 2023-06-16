@@ -6,7 +6,7 @@
         <q-card class="my-card q-ma-md bg-primary" bordered>
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
-                    :columns="columns" row-key="name" selection="multiple" v-model:selected="selected"
+                    :columns="columns" row-key="name" selection="single" v-model:selected="selected"
                     v-model:pagination="pagination" wrap-cells :hide-bottom="auth.printMode"
                     no-data-label="Datos no disponibles">
                     <template v-slot:top>

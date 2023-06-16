@@ -74,7 +74,7 @@
     </q-footer>
 
     <q-page-container class="row justify-center">
-      <router-view />
+      <router-view v-on:click="handleActivity" v-on:mousemove="handleActivity" v-on:keyup="handleActivity"/>
     </q-page-container>
   </q-layout>
 </template>
@@ -111,6 +111,20 @@ let data = reactive({
   Tittle: ""
 })
 
+var idleTime = 0;
+var idleInterval = setInterval(timerIncrement, 1440000);
+//v-on:scroll="handleScroll"
+function handleActivity(params) {
+  idleTime = 0
+}
+
+function timerIncrement() {
+  idleTime = idleTime + 1;
+  if (idleTime > 0) { // 24 minutes
+    cerrarSesion()
+  }
+}
+
 onMounted(() => {
   // if (!localStorage.getItem("fallo")) {
   //   localStorage.setItem("fallo", "0");
@@ -122,11 +136,12 @@ onMounted(() => {
   //     (auth.password = JSON.parse(localStorage.getItem("userData")).password);
   // }
   console.log(window.location.hostname);
+  auth.ip = window.location.hostname
   router.push("/Principal");
-  auth.getLocalIP().then((ipAddr) => {
-    auth.ip = ipAddr
-    console.log(auth.ip);
-  });
+  // auth.getLocalIP().then((ipAddr) => {
+  //   auth.ip = ipAddr
+  //   console.log(auth.ip);
+  // });
 
   getRol()
   getOrganismos()
@@ -141,52 +156,52 @@ onMounted(() => {
 })
 
 function getEntidades(params) {
-    api
-      .get("/getEntidades", {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        // console.log(response);
-        dataStore.entidad = response.data
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  api
+    .get("/getEntidades", {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      // console.log(response);
+      dataStore.entidad = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
 function getSalidas(params) {
-    api
-      .get("/getSalidas", {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        // console.log(response);
-        dataStore.salida = response.data
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  api
+    .get("/getSalidas", {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      // console.log(response);
+      dataStore.salida = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
 function getPrioridads(params) {
-    api
-      .get("/getPrioridad", {
-        headers: {
-          Authorization: "Bearer " + auth.jwt,
-        },
-      })
-      .then(function (response) {
-        //console.log(response);
-        dataStore.prioridad = response.data
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
+  api
+    .get("/getPrioridad", {
+      headers: {
+        Authorization: "Bearer " + auth.jwt,
+      },
+    })
+    .then(function (response) {
+      //console.log(response);
+      dataStore.prioridad = response.data
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
 
 function getMunicipios(params) {
   api
@@ -228,7 +243,7 @@ function getOSDEs(params) {
       },
     })
     .then(function (response) {
-      dataStore.osde=response.data
+      dataStore.osde = response.data
     })
     .catch(function (error) {
       console.log(error);
@@ -243,7 +258,7 @@ async function getOrganismos(params) {
     })
     .catch(function (error) {
       console.log(error);
-      if(!error.response) alert("Conexión perdida con el servidor")
+      if (!error.response) alert("Conexión perdida con el servidor")
     });
 }
 
@@ -303,7 +318,7 @@ function getRol(params) {
         }
         if (
           response.data.role.name === "Ejecutivo") {
-            console.log("Entro");
+          console.log("Entro");
           data.auth = false
           data.admin = false
           data.public = false
@@ -350,7 +365,7 @@ async function Login() {
     })
     .catch(function (error) {
       console.log(error);
-      if(!error.response) alert("Conexión perdida con el servidor")
+      if (!error.response) alert("Conexión perdida con el servidor")
       auth.postTraza("Login", "Fallo en la Operación")
       // let temp = parseInt(localStorage.getItem("fallo"));
       // temp++;
