@@ -137,6 +137,12 @@ const routes = [
         meta: { requireAuth: true },
         component: () => import("pages/histogramas/desempeño_ambiental.vue"),
       },
+      {
+        path: "histogramas/carga_contaminante",
+        name:"carga_contaminante",
+        meta: { requireAuth: true },
+        component: () => import("pages/histogramas/carga_contaminante.vue"),
+      },
 
       //############################Seguridad############################
       {

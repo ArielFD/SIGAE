@@ -28,6 +28,9 @@
             <q-item clickable :to="{ name: 'cumplimiento_plan_enfrentamiento' }" class="text-black">
               <q-item-section>Cumplimiento de plan de enfrentamiento</q-item-section>
             </q-item>
+            <q-item clickable :to="{ name: 'carga_contaminante' }" class="text-black">
+              <q-item-section>Comparación de Cargas Contaminantes</q-item-section>
+            </q-item>
           </q-list>
         <!-- </q-menu> -->
       </q-btn-dropdown>
