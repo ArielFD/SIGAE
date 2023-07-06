@@ -74,7 +74,7 @@
     </q-footer>
 
     <q-page-container class="row justify-center">
-      <router-view v-on:click="handleActivity" v-on:mousemove="handleActivity" v-on:keyup="handleActivity"/>
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
@@ -111,21 +111,10 @@ let data = reactive({
   Tittle: ""
 })
 
-var idleTime = 0;
-var idleInterval = setInterval(timerIncrement, 1440000);
-//v-on:scroll="handleScroll"
-function handleActivity(params) {
-  idleTime = 0
-}
-
-function timerIncrement() {
-  idleTime = idleTime + 1;
-  if (idleTime > 0) { // 24 minutes
-    cerrarSesion()
-  }
-}
-
 onMounted(() => {
+
+// Iniciar el temporizador de inactividad al cargar la página
+resetInactivityTimer();
   // if (!localStorage.getItem("fallo")) {
   //   localStorage.setItem("fallo", "0");
   // }
@@ -154,6 +143,18 @@ onMounted(() => {
   getOSDEs()
   getEntidades()
 })
+
+var inactivityTimer;
+
+// Función para reiniciar el temporizador de inactividad
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(cerrarSesion, 24 * 60 * 1000); // 24 minutos en milisegundos
+}
+
+// Event listener para detectar la actividad del usuario
+document.addEventListener("mousemove", resetInactivityTimer);
+document.addEventListener("keypress", resetInactivityTimer);
 
 function getEntidades(params) {
   api
