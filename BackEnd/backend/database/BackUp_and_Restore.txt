@@ -6,4 +6,9 @@ sudo -u postgres createdb -O postgres SIGAE     ###Crear DB con nombre SIGAE
 sudo -u postgres pg_restore -d SIGAE < backup_SIGAE_2352023.sql  ###Cargar la salva que se realizo con el backup
 #########################################################################################################
 #########################################################################################################
+On window
+pg_dump -U postgres -Fc SIGAE backup_SIGAE.sql ###Para hacer backup
+dropdb -U postgres SIGAE   ###Para hacer restore. Eliminar base de datos con nombre SIGAE para evitar conflicto con alguna base existente
+createdb -U postgres -O postgres SIGAE     ###Crear DB con nombre SIGAE
+pg_restore -U postgres -d SIGAE backup_SIGAE_2352023.sql  ###Cargar la salva que se realizo con el backup
 

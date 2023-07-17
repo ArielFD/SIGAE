@@ -47,12 +47,12 @@ module.exports = createCoreController(
     },
     async getContaminantes(ctx) {
       let data = ctx.query.filters;
-      
+
       let data1 = [],
         data2 = [],
         data3 = [];
       let rows = [];
-      
+
       let response = await strapi.db
         .query("api::cargacontaminante.cargacontaminante")
         .findMany({
@@ -93,6 +93,8 @@ module.exports = createCoreController(
             osde: response[0].entidad[0].osde.nombre,
           }
 
+          if(response[i].Flujo=="-" || response[i].Flujo=="NSD" || response[i].Flujo=="nds" || response[i].Flujo=="nsd") response[i].Flujo=temp.Flujo
+          else temp.Flujo=response[i].Flujo
           if(response[i].DB05=="-" || response[i].DB05=="NSD" || response[i].DB05=="nds" || response[i].DB05=="nsd") response[i].DB05=temp.DB05
           else temp.DB05=response[i].DB05
           if(response[i].DQ0=="-" || response[i].DQ0=="NSD"|| response[i].DQ0=="nds"|| response[i].DQ0=="nsd") response[i].DQ0=temp.DQ0
@@ -121,7 +123,7 @@ module.exports = createCoreController(
             entidad: response[i].entidad[0].entidad,
             DB05: parseFloat(response[i].DB05),
             DQ0: parseFloat(response[i].DQ0),
-            Flujo: parseFloat(10),
+            Flujo: parseFloat(response[i].Flujo),
             Grasas_aceites: parseFloat(response[i].Grasas_aceites),
             Hidrocarburos: parseFloat(response[i].Hidrocarburos),
             NTK: parseFloat(response[i].NTK),
@@ -139,17 +141,38 @@ module.exports = createCoreController(
         }
       }
 
-      const filteredRows = rows.filter(row => row.anno == data[0]);
-      console.log(filteredRows);
+      let entidades = await strapi.db
+      .query("api::entidad.entidad")
+      .findMany({
+        select: ["id", "entidad"],
+        where: { activo: 's'},
+      });
 
-      let test=parseFloat("353,8 mg L-1")
-      console.log(test);
+      entidades.forEach(element => {
+        element.visto="n"
+      });
+
+      const filteredRows=[]
+      while (data[0]>2006) {
+        const filteredRows1 = rows.filter(row => row.anno == data[0]);
+        filteredRows1.forEach(elementRow => {
+          entidades.forEach((element) => {
+            if(element.entidad==elementRow.entidad && element.visto=="n"){
+              filteredRows.push(elementRow)
+              element.visto="s"
+            }
+          });
+        });
+        data[0]=data[0]-1
+      }
+
       if (data[1] == "OACE") {
         for (let index = 0; index < data[2].split(",").length; index++) {
           filteredRows.forEach((element) => {
             switch (data[4]) {
               case "DB05": {
                 if (element.organismo == data[2].split(",")[index]) {
+                  console.log("Entra",data3[index]);
                   if (!data3[index]) {
                     data3[index] = calculoFlujo(element.DB05,element.Flujo);
                   } else {
@@ -295,5 +318,5 @@ module.exports = createCoreController(
 );
 
 function calculoFlujo(carga,flujo) {
-  return ((carga*flujo)*313/1000000).toFixed(2)
+  return parseFloat(((carga*flujo*313)/1000000).toFixed(2))
 }

@@ -521,12 +521,22 @@ function getSelectedString() {
 
 function onCreate() {
     modelo.value.validate();
+
+    if(data._DB05==0) data._DB05="-"
+    if(data._DQ0==0) data._DQ0="-"
+    if(data._PT==0) data._PT="-"
+    if(data._NTK==0) data._NTK="-"
+    if(data._ST==0) data._ST="-"
+    if(data._SSED==0) data._SSED="-"
+    if(data._PH==0) data._PH="-"
+    if(data._TEMP==0) data._TEMP="-"
+    if(data._COND==0) data._COND="-"
+    if(data.Hidrocarburos==0) data.Hidrocarburos="-"
+    if(data.Flujo==0) data.Flujo="-"
+    if(data.Grasas==0) data.Grasas="-"
+
     if (modelo.value.hasError) {
         alerts.alerts[0].message = "Rellene todo los campos obligatorios";
-        $q.notify(alerts.alerts[0]);
-        // form has error
-    } else if(data._DB05==0 || data._DQ0==0 || data._PT==0 || data._NTK==0 || data._ST==0 || data._SSED==0  || data._PH==0 || data._TEMP==0  || data._COND==0 || data.Hidrocarburos==0  || data.Flujo==0 || data.Grasas==0 ){
-        alerts.alerts[0].message = "No se admiten valores iguales a cero";
         $q.notify(alerts.alerts[0]);
         // form has error
     }else {
@@ -536,13 +546,22 @@ function onCreate() {
 
 function onEdit() {
     modeloEdit.value.validate();
+
+    if(data._DB05Edit==0) data._DB05Edit="-"
+    if(data._DQ0Edit==0) data._DQ0Edit="-"
+    if(data._PTEdit==0) data._PTEdit="-"
+    if(data._NTKEdit==0) data._NTKEdit="-"
+    if(data._STEdit==0) data._STEdit="-"
+    if(data._SSEDEdit==0) data._SSEDEdit="-"
+    if(data._PHEdit==0) data._PHEdit="-"
+    if(data._TEMPEdit==0) data._TEMPEdit="-"
+    if(data._CONDEdit==0) data._CONDEdit="-"
+    if(data.HidrocarburosEdit==0) data.HidrocarburosEdit="-"
+    if(data.FlujoEdit==0) data.FlujoEdit="-"
+    if(data.GrasasEdit==0) data.GrasasEdit="-"
+
     if (modeloEdit.value.hasError) {
         alerts.alerts[0].message = "Rellene todo los campos obligatorios";
-        $q.notify(alerts.alerts[0]);
-        // form has error
-    } 
-    else if(data._DB05Edit==0 || data._DQ0Edit==0 || data._PTEdit==0 || data._NTKEdit==0 || data._STEdit==0 || data._SSEDEdit==0 || data._PHEdit==0 || data._TEMPEdit==0 || data._CONDEdit==0 || data.HidrocarburosEdit==0 || data.FlujoEdit==0 || data.GrasasEdit==0){
-        alerts.alerts[0].message = "No se admiten valores iguales a cero";
         $q.notify(alerts.alerts[0]);
         // form has error
     }else {
