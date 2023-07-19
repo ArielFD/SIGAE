@@ -407,7 +407,9 @@ module.exports = createCoreController(
       }
 
       if(data[1]=="OACE"){
+
         for (let index = 0; index < data[2].split(",").length; index++) {
+          console.log(index);
           rows.forEach((element) => {
             switch (data[4]) {
               case "Totales": {
@@ -421,6 +423,13 @@ module.exports = createCoreController(
                     data2[index] = element.totalCumplidas;
                   } else {
                     data2[index] += element.totalCumplidas;
+                  }
+                  if(!data3[index]){
+                    data3[index]={corto:element.medidas_corto,mediano:element.medidas_mediano,largo:element.medidas_largo}
+                  }else{
+                    data3[index].corto+=element.medidas_corto
+                    data3[index].mediano+=element.medidas_mediano
+                    data3[index].largo+=element.medidas_largo
                   }
                   // if(data2[index]/data1[index]) data[2].split(",")[index]=data[2].split(",")[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
                   // else data[2].split(",")[index]=data[2].split(",")[index]+" 0%"
@@ -516,7 +525,9 @@ module.exports = createCoreController(
           });
         }
       }else{
+
         for (let index = 0; index < data[3].split(",").length; index++) {
+          console.log(index);
           rows.forEach((element) => {
             switch (data[4]) {
               case "Totales": {
@@ -530,6 +541,13 @@ module.exports = createCoreController(
                     data2[index] = element.totalCumplidas;
                   } else {
                     data2[index] += element.totalCumplidas;
+                  }
+                  if(!data3[index]){
+                    data3[index]={corto:element.medidas_corto,mediano:element.medidas_mediano,largo:element.medidas_largo}
+                  }else{
+                    data3[index].corto+=element.medidas_corto
+                    data3[index].mediano+=element.medidas_mediano
+                    data3[index].largo+=element.medidas_largo
                   }
                   // if(data2[index]/data1[index]) data[2].split(",")[index]=data[2].split(",")[index]+" "+((data2[index]/data1[index])*100).toFixed(2)+"%"
                   // else data[2].split(",")[index]=data[2].split(",")[index]+" 0%"
@@ -628,7 +646,7 @@ module.exports = createCoreController(
 
       data4.push(data1);
       data4.push(data2);
-      // data4.push(data3);
+      data4.push(data3);
 
       return data4;
     },
@@ -652,7 +670,7 @@ module.exports = createCoreController(
             trampa_grasa:true,
             residuals:true
           },
-          
+
         });
 
       let rows = [];
