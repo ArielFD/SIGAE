@@ -18,7 +18,7 @@
         >
           <template v-slot:top>
             <div style="width: 100%" class="row justify-between">
-              <div class="col-3 text-h6">Actas de Control</div>
+              <div class="col-3 text-h6">Carga contaminante</div>
               <div class="col-6" style="max-width: 300px">
                 <q-input dense debounce="400" color="primary" v-model="filter">
                   <template v-slot:prepend v-if="filter">
@@ -545,8 +545,6 @@ const options = ref(stringOptions);
 
 const modelo = ref(null);
 const modeloEdit = ref(null);
-
-const filter = ref('');
 
 let data = reactive({
   fecha_actual: new Date(),
