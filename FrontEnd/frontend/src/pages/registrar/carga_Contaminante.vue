@@ -546,6 +546,8 @@ const options = ref(stringOptions);
 const modelo = ref(null);
 const modeloEdit = ref(null);
 
+const filter = ref('');
+
 let data = reactive({
   fecha_actual: new Date(),
   rows: [],

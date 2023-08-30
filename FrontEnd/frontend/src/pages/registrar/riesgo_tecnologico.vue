@@ -4,7 +4,24 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Riesgo Tecnologico" dense :rows="data.rows"
                     :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="single"
-                    v-model:selected="selected" v-model:pagination="pagination" wrap-cells/>
+                    v-model:selected="selected" v-model:pagination="pagination" :filter="filter" wrap-cells>
+                    <template v-slot:top>
+              <div style="width: 100%" class="row justify-between">
+                <div class="col-3 text-h6">Riesgo Tecnologico</div>
+                
+                <div class="col-6" style="max-width: 300px">
+                  <q-input dense debounce="400" color="primary" v-model="filter">
+                    <template v-slot:prepend v-if="filter">
+                      <q-btn flat round color="secondary" icon="close" class="col-1" @click="filter = ''" />
+                    </template>
+                    <template v-slot:prepend v-else>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+            </template>
+        </q-table>
             </q-card-section>
 
             <q-card-actions class="justify-end">
@@ -40,7 +57,7 @@
 
                                 <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm"
                                     @click="data.cardCreateMaterial = true">Agregar</q-btn>
-                                <q-dialog v-model="data.cardCreateMaterial">
+                                <q-dialog v-model="data.cardCreateMaterial" persistent>
                                     <q-card class="my-card bg-primary" style="width:375px">
                                         <q-card-section>
                                             <div class="text-h6">Nuevo Material o Sustancia</div>
@@ -71,6 +88,7 @@
 
                                             <q-card-actions align="right">
                                                 <q-btn flat color="secondary" label="Crear" type="submit" />
+                                                <q-btn no-caps class="text-white bg-secondary" @click="clearMaterial" v-close-popup>Cerrar</q-btn>
                                             </q-card-actions>
                                         </form>
                                     </q-card>
@@ -152,6 +170,7 @@
 
                                             <q-card-actions align="right">
                                                 <q-btn flat color="secondary" label="Crear" type="submit" />
+                                                <q-btn no-caps class="text-white bg-secondary" @click="clearMaterial" v-close-popup>Cerrar</q-btn>
                                             </q-card-actions>
                                         </form>
                                     </q-card>
@@ -243,6 +262,8 @@ const cantidad = ref(null);
 const contencion = ref(null);
 const alcance = ref(null);
 
+const filter = ref('');
+
 let data = reactive({
     fecha_actual: new Date(),
     rows: [],
@@ -278,15 +299,24 @@ let data = reactive({
 })
 
 function clear(params) {
-    data.año= data.fecha_actual,
+    data.año= data.fecha_actual
     data.categoria= "",
     data.unidad= "",
     data.tipoMaterial= "",
     data.cantidad= "",
     data.contencion= "",
-    data.alcance= "",
-    data.sustancia= "no",
+    data.alcance= ""
+    data.sustancia= "no"
     model.value = []
+}
+
+function clearMaterial(params) {
+    data.categoria= "",
+    data.unidad= "",
+    data.tipoMaterial= "",
+    data.cantidad= "",
+    data.contencion= "",
+    data.alcance= ""
 }
 
 onMounted(() => {
@@ -379,6 +409,7 @@ function CreateMaterial(params) {
             data.id_Sustancia.push(response.data.data.id)
             data.id_Sustancias.push({ id: response.data.data.id })
             getSustancias(data.id_Sustancia);
+            clearMaterial()
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando el Material";
@@ -417,6 +448,7 @@ function Create() {
             auth.postTraza("Riesgo tecnologico creado", "Satisfactorio")
             data.rowsMateriales = [];
             getInstalacion();
+            clear()
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo creando el Riesgo tecnologico";
@@ -455,6 +487,7 @@ function Edit() {
             auth.postTraza("Riesgo tecnologico editado", "Satisfactorio")
             data.rowsMateriales = [];
             getInstalacion();
+            clear()
         })
         .catch(function (error) {
             alerts.alerts[0].message = "Fallo editando el Riesgo tecnologico";

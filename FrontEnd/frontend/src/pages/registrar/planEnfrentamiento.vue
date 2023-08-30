@@ -6,7 +6,24 @@
             <q-card-section>
                 <q-table class="my-sticky-header-table" title="Plan de enfrentamiento" dense :rows="data.rows"
                     :columns="columns" row-key="name" :selected-rows-label="getSelectedString" selection="single"
-                    v-model:selected="selected" v-model:pagination="pagination" wrap-cells/>
+                    v-model:selected="selected" v-model:pagination="pagination" :filter="filter" wrap-cells>
+                    <template v-slot:top>
+              <div style="width: 100%" class="row justify-between">
+                <div class="col-3 text-h6">Plan de enfrentamiento</div>
+                
+                <div class="col-6" style="max-width: 300px">
+                  <q-input dense debounce="400" color="primary" v-model="filter">
+                    <template v-slot:prepend v-if="filter">
+                      <q-btn flat round color="secondary" icon="close" class="col-1" @click="filter = ''" />
+                    </template>
+                    <template v-slot:prepend v-else>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                </div>
+              </div>
+            </template>
+        </q-table>
             </q-card-section>
 
             <q-card-actions class="justify-end">
@@ -557,6 +574,7 @@ const observacionesDesechosEdit = ref(null);
 const descripcionEdit = ref(null);
 const fechaEdit = ref(null);
 
+const filter = ref('');
 
 let data = reactive({
     rows: [],
