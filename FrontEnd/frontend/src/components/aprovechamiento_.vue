@@ -3,7 +3,7 @@
     <q-table title="Tabla de Aprovechamiento de Residuales" dense :rows="data.rows" :columns="columns" row-key="name"
       selection="single" v-model:selected="selected" />
     <q-btn no-caps class="text-white bg-secondary q-pa-sm q-ma-sm" @click="data.cardCreate = true">Agregar</q-btn>
-    <q-dialog v-model="data.cardCreate">
+    <q-dialog v-model="data.cardCreate" persistent>
       <q-card class="my-card bg-primary" style="width:300px">
         <q-card-section>
           <div class="text-h6">Nuevo Residual</div>
@@ -30,6 +30,7 @@
 
           <q-card-actions align="right">
             <q-btn flat color="secondary" label="Crear" type="submit" />
+            <q-btn no-caps class="text-white bg-secondary" @click="clear" v-close-popup>Cerrar</q-btn>
           </q-card-actions>
         </form>
       </q-card>
@@ -102,6 +103,17 @@ let data = reactive({
   fecha: "",
   tipoResidual: ""
 })
+
+ function clear(params) {
+  data.categoria= "",
+  data.unidad= "",
+  data.aprovechamiento= "",
+  data.cantidadGenerada= "",
+  data.disposicionFinal= "",
+  data.fecha= "",
+  data.tipoResidual= ""
+ }
+
 onMounted(() => {
   if (props.idResidual) {
     for (let index = 0; index < props.idResidual.length; index++) {
@@ -153,6 +165,7 @@ function Create() {
       data.arrIdResidual.push(response.data.data.id)
       getResidual(data.arrIdResidual);
       emit('addId', response.data.data.id)
+      clear()
     })
     .catch(function (error) {
       alerts.alerts[0].message = "Fallo creando el Aprovechamiento";
@@ -229,21 +242,23 @@ function getSelectedString() {
 }
 
 function onCreate() {
-  categoría.value.validate();
-  unidad.value.validate();
-  aprovechamiento.value.validate();
-  cantidadGenerada.value.validate();
-  disposicionFinal.value.validate();
-  fecha.value.validate();
-  tipoResidual.value.validate();
+  // categoría.value.validate();
+  // unidad.value.validate();
+  // aprovechamiento.value.validate();
+  // cantidadGenerada.value.validate();
+  // disposicionFinal.value.validate();
+  // fecha.value.validate();
+  // tipoResidual.value.validate();
 
-  if (categoría.value.hasError || unidad.value.hasError || aprovechamiento.value.hasError || cantidadGenerada.value.hasError || disposicionFinal.value.hasError || fecha.value.hasError || tipoResidual.value.hasError) {
-    alerts.alerts[0].message = "Rellene todo los campos obligatorios";
-    $q.notify(alerts.alerts[0]);
-    // form has error
-  } else {
-    Create();
-  }
+  // if (categoría.value.hasError || unidad.value.hasError || aprovechamiento.value.hasError || cantidadGenerada.value.hasError || disposicionFinal.value.hasError || fecha.value.hasError || tipoResidual.value.hasError) {
+  //   alerts.alerts[0].message = "Rellene todo los campos obligatorios";
+  //   $q.notify(alerts.alerts[0]);
+  //   // form has error
+  // } else {
+  //   Create();
+  // }
+
+  Create();
 }
 
 </script>
