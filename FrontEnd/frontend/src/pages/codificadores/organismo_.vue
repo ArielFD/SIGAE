@@ -256,6 +256,7 @@ function Delete(params) {
       auth.postTraza("OACE eliminado", "Fallo")
       console.log(error);
     });
+    selected.value = []
 }
 
 function getOrganismos(params) {

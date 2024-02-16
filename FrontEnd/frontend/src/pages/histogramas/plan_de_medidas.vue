@@ -250,7 +250,9 @@ async function getMedidas(params) {
       for (let i = 0; i < data2.length; i++) {
         data.cumplidas += data2[i];
       }
-      data.porcentaje=((data.cumplidas/data.medidas)*100).toFixed(2)
+      if(data.medidas>0) data.porcentaje=((data.cumplidas/data.medidas)*100).toFixed(2)
+      else data.porcentaje=0
+    
       data3.forEach(element => {
         if(element){
           data.corto=element.corto+data.corto

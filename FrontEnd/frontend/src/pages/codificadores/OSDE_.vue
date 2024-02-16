@@ -209,6 +209,7 @@ function Delete(params) {
       auth.postTraza("OSDE eliminado", "Fallo")
       console.log(error);
     });
+    selected.value = []
 }
 
 function getOSDEs(params) {

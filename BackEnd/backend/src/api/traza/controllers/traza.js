@@ -4,7 +4,7 @@
  * traza controller
  */
 const { exec } = require("child_process");
-
+const path = require("path");
 const { createCoreController } = require("@strapi/strapi").factories;
 
 module.exports = createCoreController("api::traza.traza", ({ strapi }) => ({
@@ -21,14 +21,22 @@ module.exports = createCoreController("api::traza.traza", ({ strapi }) => ({
   async backup(ctx) {
     const date = new Date();
     const dateString = `${date.getDate()}${date.getMonth() + 1}${date.getFullYear()}`;
-    const customBackupPath = "F:\\Trabajo\\Visual Studio Proyects\\FullStack proyects\\SIGAE\\SIGAE\\BackEnd\\backend\\database"; // Cambia esta ruta
-    const filePath = `${customBackupPath}\\backup_SIGAE_${dateString}.sql`;
+    const customBackupPath = "../../../../database"; // Cambia esta ruta
+    // const filePath = `${__dirname}\\${customBackupPath}\\backup_SIGAE_${dateString}.sql`;
+    const filePath = path.join(
+      __dirname,
+      customBackupPath,
+      `backup_SIGAE_${dateString}.sql`
+    );
 
     try {
-      await backupDatabase(filePath);
+      const response=await backupDatabase(filePath);
+      console.log(response);
+      ctx.status = 200;
       ctx.body = "Backup Completed";
     } catch (error) {
       console.error("Error en el respaldo:", error);
+      ctx.status = 500;
       ctx.body = "Backup Failed";
     }
   },

@@ -247,6 +247,7 @@ function Delete(params) {
       auth.postTraza("Categoría eliminada", "Fallo")
       console.log(error);
     });
+    selected.value = []
 }
 
 function getCategorias(params) {

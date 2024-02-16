@@ -246,6 +246,7 @@ function Delete(params) {
       auth.postTraza("Unidad eliminada", "Fallo")
       console.log(error);
     });
+    selected.value = []
 }
 
 function getUnidads(params) {

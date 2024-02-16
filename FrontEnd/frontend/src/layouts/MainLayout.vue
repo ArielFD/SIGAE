@@ -1,5 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" >
+    
+    
     <q-header elevated v-if="auth.printMode == false">
       <q-toolbar class="no-padding">
         <q-img src="~assets/Layout_/baner_1.png" class="banner1" />
@@ -73,9 +75,11 @@
       </q-toolbar>
     </q-footer>
 
-    <q-page-container class="row justify-center">
+    <q-page-container class="row justify-center " >
       <router-view/>
     </q-page-container>
+
+
   </q-layout>
 </template>
 

@@ -703,6 +703,7 @@ async function getDesempeño(params) {
     await api
         .get(`/getDesempenoData?filters[0]=${data.fecha_actual}`)
         .then(function (response) {
+            console.log(response);
             data.rows=response.data
         }).catch(function (error) {
             console.log(error);

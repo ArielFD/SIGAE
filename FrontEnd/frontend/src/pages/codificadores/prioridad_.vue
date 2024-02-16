@@ -250,6 +250,7 @@ const prioridadEdit = ref(null);
       auth.postTraza("Prioridad eliminada", "Fallo")
         console.log(error);
       });
+      selected.value = []
   }
   
   function getPrioridads(params) {

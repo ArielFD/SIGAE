@@ -246,6 +246,7 @@ const salidaEdit = ref(null);
       auth.postTraza("Periodo eliminado", "Fallo")
         console.log(error);
       });
+      selected.value = []
   }
   
   function getSalidas(params) {

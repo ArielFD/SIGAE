@@ -240,6 +240,7 @@ function Delete(params) {
       auth.postTraza("Estado eliminado", "Fallo")
       console.log(error);
     });
+    selected.value = []
 }
 
 function getEstados(params) {

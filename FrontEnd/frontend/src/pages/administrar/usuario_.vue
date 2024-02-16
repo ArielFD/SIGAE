@@ -437,6 +437,8 @@ function Delete(params) {
         $q.notify(alerts.alerts[0]);
         auth.postTraza("Usuario eliminado", "Fallo")
   }
+
+  selected.value = []
 }
 
 function getSelectedString() {

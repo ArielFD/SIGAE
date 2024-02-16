@@ -52,7 +52,7 @@
                             </div>
                         </div>
                     </template>
-                    <template v-slot:bottom-row>
+                    <!-- <template v-slot:bottom-row>
                         <q-tr>
                             <q-td>
                                 Total
@@ -96,7 +96,7 @@
                                 {{ data.rowTotal.porcientoTotal }}
                             </q-td>
                         </q-tr>
-                    </template>
+                    </template> -->
                 </q-table>
             </q-card-section>
         </q-card>

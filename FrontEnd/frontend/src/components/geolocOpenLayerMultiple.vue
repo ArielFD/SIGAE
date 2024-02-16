@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div id="map">
+        <div id="map" >
             <div id="popup"></div>
         </div>
     </div>
@@ -235,10 +235,10 @@ function mostrar(params) {
 <style>
 #map {
     position: relative;
-    margin: 0;
-    padding: 0;
     height: 60vh;
     width: 99%;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 #app {

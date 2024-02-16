@@ -206,6 +206,7 @@ function Delete(params) {
       auth.postTraza("Municipio eliminado", "Fallo")
       console.log(error);
     });
+    selected.value = []
 }
 
 function getMunicipios(params) {
